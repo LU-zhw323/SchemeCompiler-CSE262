@@ -7,7 +7,8 @@ package edu.lehigh.cse262.p1;
 public class App {
     public static void main(String[] args) {
         System.out.println("CSE 262 Project 1");
-        // [CSE 262] You should write code here to help you test your
-        // implementations
+        ReadList reader = new ReadList();
+        System.out.println(reader.read());
+
     }
 }

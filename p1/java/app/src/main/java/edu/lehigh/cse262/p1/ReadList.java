@@ -1,6 +1,8 @@
 package edu.lehigh.cse262.p1;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * ReadList is a wrapper class around the function `read`
@@ -14,7 +16,19 @@ public class ReadList<T> {
    * @return A list with the values that were read
    */
   List<T> read() {
-    // [CSE 262] Implement Me!
-    return null;
+    //Create a list with type string to use the scanner to read stdin
+    List<String> my_list = new ArrayList<>();
+    //Create scanner object
+    Scanner sc = new Scanner(System.in);
+    //Start reading from stdin
+    while(sc.hasNext()){
+      //Use nextline()function to grab entire line of input
+      String read = sc.nextLine();
+      //Use add()function to add each reading at the index 0 of the list
+      my_list.add(0,read);
+    }
+    //Use casting to return a T type of list
+    return (List<T>) my_list;
   }
+
 }
