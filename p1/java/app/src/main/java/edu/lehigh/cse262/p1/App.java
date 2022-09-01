@@ -6,17 +6,14 @@ import java.util.ArrayList;
  * methods to App. You may also add `import` statements.
  */
 public class App {
-    public static void main(String[] args) {
+    public static <T> void main(String[] args) {
         System.out.println("CSE 262 Project 1");
-        //ReadList reader = new ReadList();
-        //System.out.println(reader.read());
-        
-        List<String> test = new ArrayList<>();
-        test.add("x");
-        test.add("y");
-        test.add("z");
+        ReadList reader = new ReadList();
+        List<T> my_list = new ArrayList<>();
+        my_list = reader.read();
+        System.out.println(my_list);
         MyReverse list = new MyReverse<>();
-        System.out.println(list.reverse(test));
+        System.out.println(list.reverse(my_list));
 
     }
 }
