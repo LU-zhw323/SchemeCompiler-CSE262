@@ -1,5 +1,7 @@
 package edu.lehigh.cse262.p1;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -14,7 +16,11 @@ public class MyMap<T> {
    * @return A list of the results
    */
   List<T> map(List<T> list, Function<T, T> func) {
-    // [CSE 262] Implement Me!
-    return null;
+    List<T> my_map = new ArrayList<>();
+    Iterator<T>it = list.iterator();
+    while(it.hasNext()){
+      my_map.add(func.apply(it.next()));
+    }
+    return my_map;
   }
 }
