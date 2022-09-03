@@ -16,17 +16,16 @@ public class MyMap<T> {
    * @return A list of the results
    */
   List<T> map(List<T> list, Function<T, T> func) {
-    List<T> my_map = new ArrayList<>();
+    //List<T> my_map = new ArrayList<>();
     Iterator<T>it = list.iterator();
-    while(it.hasNext()){
-      T result = func.apply(it.next());
-      if(result == null){
-        System.out.println("Function has no return value");
-      }
-      else{
-        my_map.add(func.apply(result));
-      }
+    //Dealing with method with no return value like system.out
+    if(func.apply(it.next()) == null){
+      list.forEach(a -> func.apply(a));
     }
-    return my_map;
+    //Applying func to all element in the list
+    else{
+      list.replaceAll(a -> func.apply(a));
+    }
+    return list;
   }
 }

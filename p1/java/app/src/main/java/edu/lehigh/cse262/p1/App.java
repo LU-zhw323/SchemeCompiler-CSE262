@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+import javax.lang.model.type.NullType;
+
 /**
  * App is the entry point into our program. You are allowed to add fields and
  * methods to App. You may also add `import` statements.
@@ -18,19 +20,21 @@ public class App {
         /* 
         MyReverse list = new MyReverse<>();
         System.out.println(list.reverse(my_list));
-    
+        /* */
         List<Integer> my_list2 = new ArrayList<>();
         for(int i = 2; i < 10; i++){
             my_list2.add(i);
         }
+        
         Function<Integer, Double> func = a -> a / 2.0;
         MyMap<T> my_map = new MyMap<>();
         System.out.println(my_map.map((List<T>)my_list2, (Function<T,T>)func));
-        */
+        
+        /* 
         PrimeDivisors pm = new PrimeDivisors();
         
         System.out.println(pm.computeDivisors(100));
-
+        */
         
     }
 }

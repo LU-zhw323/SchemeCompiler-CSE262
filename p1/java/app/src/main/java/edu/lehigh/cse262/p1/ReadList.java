@@ -23,7 +23,7 @@ public class ReadList<T> {
     //Create scanner object
     Scanner sc = new Scanner(System.in);
     //A Function to convert string to T
-    Function<String, T> convert = t -> (T)t;
+    Function<String, T> convert = a -> (T)a;
     //Start reading from stdin
     while(sc.hasNext()){
       //Use nextline()function to grab entire line of input
