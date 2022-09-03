@@ -97,6 +97,7 @@ public class MyTree<T extends Comparable<T>> {
      * @param func A function to apply to each item
      */
     void inorder(Function<T, T> func){
+        //use another recursive method to traverse
         inorder(root, func);
     }
     private void inorder(TreeNode node , Function<T, T> func) {
@@ -116,6 +117,7 @@ public class MyTree<T extends Comparable<T>> {
      * @param func A function to apply to each item
      */
     void preorder(Function<T, T> func){
+        //use another recursive method to traverse
         preorder(root, func);
     }
     

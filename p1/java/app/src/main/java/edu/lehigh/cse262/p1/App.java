@@ -10,7 +10,7 @@ import java.util.function.Function;
 public class App {
     public static <T> void main(String[] args) {
         System.out.println("CSE 262 Project 1");
-        
+        /* 
         ReadList reader = new ReadList();
         List<T> my_list = new ArrayList<>();
         my_list = reader.read();
@@ -27,6 +27,10 @@ public class App {
         MyMap<T> my_map = new MyMap<>();
         System.out.println(my_map.map((List<T>)my_list2, (Function<T,T>)func));
         */
+        PrimeDivisors pm = new PrimeDivisors();
+        
+        System.out.println(pm.computeDivisors(100));
+
         
     }
 }

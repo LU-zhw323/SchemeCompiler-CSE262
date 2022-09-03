@@ -19,7 +19,13 @@ public class MyMap<T> {
     List<T> my_map = new ArrayList<>();
     Iterator<T>it = list.iterator();
     while(it.hasNext()){
-      my_map.add(func.apply(it.next()));
+      T result = func.apply(it.next());
+      if(result == null){
+        System.out.println("Function has no return value");
+      }
+      else{
+        my_map.add(func.apply(result));
+      }
     }
     return my_map;
   }
