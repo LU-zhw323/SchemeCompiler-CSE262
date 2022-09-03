@@ -2,11 +2,35 @@ package edu.lehigh.cse262.p1;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.Iterator;
 
 /**
  * A binary tree, implemented from scratch
  */
-public class MyTree<T> {
+public class MyTree<T extends Comparable<T>> {
+
+    //Declearing the members of BST
+    private TreeNode root;
+    private int size;
+
+    //Define another class TreeNode contains current value, left node and right node
+    private class TreeNode{
+        T value;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(T value){
+            this.value = value;
+            left = right = null;
+        }
+    }
+    
+    //Initialize tree
+    public MyTree(){
+        size = 0;
+        root = null;
+    }
+
+
     /**
      * Insert a value into the tree
      * 
@@ -14,11 +38,42 @@ public class MyTree<T> {
      */
     void insert(T value) {
         // [CSE 262] Implement Me!
+        // Empty tree
+        if(root == null){
+            root = new TreeNode(value);
+        }
+        else{
+            TreeNode current = root;
+            TreeNode parent = null;
+            //Iterate till we hit the end
+            while(current != null){
+                parent = current;
+                //go to left
+                if(value.compareTo(current.value) < 0){
+                    current = current.left;
+                }
+                //go to right
+                else{
+                    current = current.right;
+                }
+            }
+            //Set value
+            if(value.compareTo(parent.value) < 0){
+                parent.left = new TreeNode(value);
+            }
+            else{
+                parent.right = new TreeNode(value);
+            }
+        }
+        size ++;
     }
 
     /** Clear the tree */
     void clear() {
         // [CSE 262] Implement Me!
+        // Since the whole tree is built on a TreeNode, we just make it to null
+        root = null;
+        size = 0;
     }
 
     /**
@@ -28,6 +83,11 @@ public class MyTree<T> {
      */
     void inslist(List<T> l) {
         // [CSE 262] Implement Me!
+        // Use iterator to add all element to the BST
+        Iterator<T> it = l.iterator();
+        while(it.hasNext()){
+            insert(it.next());
+        }
     }
 
     /**
@@ -36,8 +96,17 @@ public class MyTree<T> {
      * 
      * @param func A function to apply to each item
      */
-    void inorder(Function<T, T> func) {
-        // [CSE 262] Implement Me!
+    void inorder(Function<T, T> func){
+        inorder(root, func);
+    }
+    private void inorder(TreeNode node , Function<T, T> func) {
+        TreeNode current = node;
+        func.apply(current.value);
+        if(current != null){
+            inorder(node.left, func);
+            System.out.print(node.value + " ");
+            inorder(node.right, func);
+        }
     }
 
     /**
@@ -46,7 +115,18 @@ public class MyTree<T> {
      * 
      * @param func A function to apply to each item
      */
-    void preorder(Function<T, T> func) {
+    void preorder(Function<T, T> func){
+        preorder(root, func);
+    }
+    
+    private void preorder(TreeNode node ,Function<T, T> func) {
         // [CSE 262] Implement Me!
+        TreeNode current = node;
+        func.apply(current.value);
+        if(current != null){
+            System.out.print(node.value + " ");
+            preorder(node.left, func);
+            preorder(node.right, func);
+        }
     }
 }
