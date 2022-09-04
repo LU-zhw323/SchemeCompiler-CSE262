@@ -14,19 +14,23 @@ public class PrimeDivisors {
    */
   List<Integer> computeDivisors(int value) {
     List<Integer> list = new ArrayList<>();
+    //if value is less than 2, just add it
     if(value < 2){
       list.add(value);
       return list;
     }
+    //Start from 2 to value/2
     for(int i = 2 ; i <= value/2; i++){
+      //loop til we have a remainder of division
       while(value % i == 0){
+        //check if it has duplicate element
         if(list.contains(i) == false){
           list.add(i);
         }
         value/=i;
       }
     }
-
+    //check if there is still a remainder after all devision
     if(value > 1){
       list.add(value);
     }

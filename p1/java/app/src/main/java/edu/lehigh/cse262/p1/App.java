@@ -9,7 +9,7 @@ import javax.lang.model.type.NullType;
  * App is the entry point into our program. You are allowed to add fields and
  * methods to App. You may also add `import` statements.
  */
-public class App {
+public class App <T>{
     public static <T> void main(String[] args) {
         System.out.println("CSE 262 Project 1");
         /* 
@@ -26,7 +26,8 @@ public class App {
             my_list2.add(i);
         }
         
-        Function<Integer, Double> func = a -> a / 2.0;
+        Function<Integer, Double> func = a -> {System.out.print(a);
+        return a / 2.0;};
         MyMap<T> my_map = new MyMap<>();
         System.out.println(my_map.map((List<T>)my_list2, (Function<T,T>)func));
         

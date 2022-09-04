@@ -3,6 +3,17 @@
 #
 # The order of elements in the list returned by read_list should the reverse of
 # the order in which they were entered.
+from sys import stdin
 
 def read_list():
-    pass
+    # create a list
+    list = []
+    # Start iterating til EOF
+    while True:
+        try:
+            # Add sth to list
+            list.insert(0, input())
+        # Reach EOF
+        except EOFError:
+            break
+    return list

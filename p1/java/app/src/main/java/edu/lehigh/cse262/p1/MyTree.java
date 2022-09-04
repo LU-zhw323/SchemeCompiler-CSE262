@@ -102,6 +102,7 @@ public class MyTree<T extends Comparable<T>> {
     }
     private void inorder(TreeNode node , Function<T, T> func) {
         TreeNode current = node;
+        //apply the func on each value
         func.apply(current.value);
         if(current != null){
             inorder(node.left, func);
@@ -124,6 +125,7 @@ public class MyTree<T extends Comparable<T>> {
     private void preorder(TreeNode node ,Function<T, T> func) {
         // [CSE 262] Implement Me!
         TreeNode current = node;
+        //apply the func on each value
         func.apply(current.value);
         if(current != null){
             System.out.print(node.value + " ");

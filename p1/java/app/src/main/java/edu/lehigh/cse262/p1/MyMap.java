@@ -17,8 +17,9 @@ public class MyMap<T> {
    */
   List<T> map(List<T> list, Function<T, T> func) {
     //List<T> my_map = new ArrayList<>();
-    Iterator<T>it = list.iterator();
+    //Iterator<T>it = list.iterator();
     //Dealing with method with no return value like system.out
+    /* 
     if(func.apply(it.next()) == null){
       list.forEach(a -> func.apply(a));
     }
@@ -26,6 +27,12 @@ public class MyMap<T> {
     else{
       list.replaceAll(a -> func.apply(a));
     }
+    */
+
+    //Since the method passed by func will always have return value T
+    //I would just need replaceAll() to replace all the function with the result of
+    //applying func: T
+    list.replaceAll(a -> func.apply(a));
     return list;
   }
 }

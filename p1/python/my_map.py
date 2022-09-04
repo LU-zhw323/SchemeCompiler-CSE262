@@ -5,4 +5,10 @@
 # `map` function.
 
 def my_map(func, l):
-    pass
+    list = []
+    #Iterate through the whole list
+    for element in l:
+        #Apply the function to each element and append the result to 
+        # a new list
+        list.append(func(element))
+    return list
