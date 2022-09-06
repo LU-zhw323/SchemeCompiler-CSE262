@@ -6,6 +6,10 @@
 from sys import stdin
 
 def read_list():
+
+    #Contributor: Zhenyu Wu
+
+    
     # create a list
     list = []
     # Start iterating til EOF

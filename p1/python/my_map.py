@@ -5,6 +5,7 @@
 # `map` function.
 
 def my_map(func, l):
+    #Contributor: Zhenyu Wu
     list = []
     #Iterate through the whole list
     for element in l:

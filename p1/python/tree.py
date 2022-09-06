@@ -17,6 +17,9 @@
 
 
 class tree:
+
+    #Contributor: Zhenyu Wu
+
     size = 0
     
     # Use the __init__ fuction to initialize the tree by passing the value as the value of root

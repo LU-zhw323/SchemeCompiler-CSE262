@@ -1,6 +1,9 @@
 # prime_divisors: compute the prime factorization of a number
 
 def prime_divisors(n):
+
+    #Contributor: Zhenyu Wu
+
     list=[]
     #For input less than 2, we just add it to the list
     if(n < 2):
