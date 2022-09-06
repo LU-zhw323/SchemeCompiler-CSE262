@@ -10,5 +10,18 @@
 ;; local to `read-list`.
 
 (define (read-list)
-  #f ;; [CSE 262] Implement Me!
+  (letrec
+    (
+      ;;input by user
+      (input (read))
+    )
+    ;;base case
+    (if (eof-object? input)
+      ;;return empty list
+      '()
+      ;;recursively add input
+      ;;use append to add input in a reverse order
+      (append (read-list) (list input))
+    )
   )
+)
