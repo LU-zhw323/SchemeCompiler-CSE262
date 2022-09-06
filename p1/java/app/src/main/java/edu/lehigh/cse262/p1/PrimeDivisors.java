@@ -13,6 +13,10 @@ public class PrimeDivisors {
    * @return A list of the prime divisors of `value`
    */
   List<Integer> computeDivisors(int value) {
+
+    //Contributor:Zhenyu Wu
+
+    
     List<Integer> list = new ArrayList<>();
     //if value is less than 2, just add it
     if(value < 2){

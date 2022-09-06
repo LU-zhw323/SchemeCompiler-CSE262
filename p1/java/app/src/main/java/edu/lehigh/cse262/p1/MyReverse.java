@@ -14,6 +14,7 @@ public class MyReverse<T> {
    * @return A list that is the reverse of `in`
    */
   List<T> reverse(List<T> in) {
+    //Contributor:Zhenyu Wu
     
     //Use a for loop to go through and reverse the list
     for(int i = 0, j = in.size() - 1; i < j ; i++){

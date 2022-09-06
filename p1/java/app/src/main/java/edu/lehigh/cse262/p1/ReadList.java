@@ -18,6 +18,9 @@ public class ReadList<T> {
    * @return A list with the values that were read
    */
   List<T> read() {
+    //Contributor:Zhenyu Wu
+
+
     //Create a list with type string to use the scanner to read stdin
     List<T> my_list = new ArrayList<>();
     //Create scanner object

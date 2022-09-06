@@ -16,6 +16,10 @@ public class MyMap<T> {
    * @return A list of the results
    */
   List<T> map(List<T> list, Function<T, T> func) {
+    //Contributor:Zhenyu Wu
+
+
+    
     //List<T> my_map = new ArrayList<>();
     //Iterator<T>it = list.iterator();
     //Dealing with method with no return value like system.out
