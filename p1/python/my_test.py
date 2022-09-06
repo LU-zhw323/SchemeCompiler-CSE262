@@ -3,11 +3,11 @@ import my_reverse
 import my_map
 import tree
 import prime_divisors
-#list = read_list.read_list()
-#print(list)
+list = read_list.read_list()
+print(list)
 #print(my_reverse.my_reverse(list))
 
-def func(x) : return int(int(x) * 2)
+#def func(x) : return int(int(x) * 2)
 #print(my_map.my_map(func, list))
 
 
@@ -18,8 +18,8 @@ def func(x) : return int(int(x) * 2)
 #print(t.size)
 #t.inorder(func)
 #t.display()
-p = prime_divisors.prime_divisors(200)
-print(p)
+#p = prime_divisors.prime_divisors(200)
+#print(p)
 
 
 

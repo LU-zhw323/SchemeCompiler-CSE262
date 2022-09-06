@@ -13,7 +13,7 @@ import javax.lang.model.type.NullType;
 public class App <T>{
     public static <T> void main(String[] args) {
         System.out.println("CSE 262 Project 1");
-        /* 
+        
         ReadList reader = new ReadList();
         List<T> my_list = new ArrayList<>();
         my_list = reader.read();
@@ -21,7 +21,7 @@ public class App <T>{
         /* 
         MyReverse list = new MyReverse<>();
         System.out.println(list.reverse(my_list));
-        /* */
+        /* 
         List<Integer> my_list2 = new ArrayList<>();
         for(int i = 2; i < 10; i++){
             my_list2.add(i);

@@ -97,9 +97,20 @@ this document.
 ### Read List
 
 * Did you run into any trouble using `let`?  Why?
+  * Actully, I didn't run into any trouble with 'let'
 * What happens if the user enters several values on one line?
+  1. In scheme, it is okey for user to enter several values on one line, and the code will still insert each read into the list  
+  2. In java, it will assume that all the values on one line is a single element that we will put into the list  
+    (probably because they are assumed to be a single string instead of seperate values)  
+  3. In python, exactly same as it in java  
 * What happens if the user enters non-integer values?
+  * All three of them, they perform well if user input non-integer values, I convert the input in java from string to T and insert into 
+    a list accept T, in python it is allowed that we put different vairbales with different types into a list, in scheme, I don't think there is a regulation on the types of elements in a list(probably like python)  
 * Contrast your experience solving this problem in Java, Python, and Scheme.
+  * Just like I mentioned, Java requires us to put a certain type of data into a certain type of list, which gave me the worst
+    experience of putting different types of variables into a single list(I don't know any solution to that issue instead of hard coding with cating and type check), but for python and scheme, they do support a list with different types of variable, no need for 
+    type checking and converting  
+
 
 ### Reverse
 
