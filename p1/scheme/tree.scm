@@ -41,6 +41,98 @@
 ;;     Scheme.
 
 (define (make-bst)
-  #f ;; [CSE 262] Implement Me!
+  ;;Contributor: Zhenyu Wu
+
+
+  (let ((tree '()) (size 0))
+    ;;The value of tree
+    (define (value tree) (cadr tree))
+
+    ;;The left branch
+    (define (left tree) (car tree))
+
+    ;;The right branch
+    (define (right tree) (caddr tree))
+
+    ;;Method that make a node with value left right which return a (value left right) list
+    (define (make-tree value left right) (list left value right))
+
+    
+    (define (ins x tree)
+      (cond
+        ;;No node, make one(basecase of recursion)
+        ((eq? tree '())
+          (make-tree x '() '())
+        )
+        
+       ;;equal value, return
+        ((= x (value tree)) tree)
+
+        ;;go to left, make a new tree with new left branch
+        ((< x (value tree)) (make-tree (value tree) (ins x (car tree)) (right tree)))
+
+        ;;go to right, same mechanism as left
+        ((> x (value tree)) (make-tree (value tree) (left tree) (ins x (right tree))))
+      )
+    )
+
+    (define (clean)
+      ;;since the whole tree is based on a list, just make that list null
+      (set! tree '())
+    )
+
+    (define (inslist lst)
+      ;;basecase
+      (if (eq? lst '())
+      '()
+      ;;recursively call the ins function and inslist, break the list into
+      ;;2 parts: 1st element and rest of the list, each time we add the element we take
+      ;;out from the list recursively to the tree that formed by previous element that has been
+      ;;added to the tree, similar method in my_reverse
+      (ins (car lst) (inslist (cdr lst)))))
+   
+    
+
+    (define (inorder f tree)
+      ;;basecase
+      (if (eq? tree '())
+        '()
+        (append (inorder (left tree))
+                ;;Since the value of node is only stored in the (value tree) which is the 
+                ;;cadr of tree node, we just apply f on (value tree)
+                (list (f (value tree)))
+                (inorder (right tree)))))
+
+
+    (define (preorder f tree)
+      ;;same idea with inorder but different traversal order
+      (if (eq? tree '())
+        '()
+        (append (list (f (value tree)))
+                (preorder (left tree))
+                (preorder (right tree)))))
+
+
+
+
+    ;;(define (dis) (set! size (+ size 1)))
+
+    ;;lambda expression to call method
+    (lambda(msg arg)
+      (cond
+        ((eq? msg 'display) (display))
+        ((eq? msg 'ins) (set! tree (ins arg tree)) tree)
+        ((eq? msg 'inslist) (set! tree (inslist (list 1 2 3 4))) tree)
+        ((eq? msg 'clean) (clean))
+        ((eq? msg 'inorder) (inorder f tree))
+        ((eq? msg 'preorder) (preorder f tree))
+      )
+    )
+  
+  
+  
+  
+  
   )
+)
 
