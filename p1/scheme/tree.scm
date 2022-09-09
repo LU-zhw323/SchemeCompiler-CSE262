@@ -115,19 +115,23 @@
     )
 
 
-    (define (display)
+    (define (display tree)
       ;;since it is just a list contains multilple different list, each with three sublist
-      ;;I just return the tree itself
-      tree
+      ;;I can just return the tree itself, but I print it in a list by postorder traversal
+      (if (eq? '() tree)
+        '()
+        (append (display (left tree))
+                (display (right tree))
+                (list (value tree))))
     )
 
 
-    ;;(define (dis) (set! size (+ size 1)))
+    
 
     ;;lambda expression to call method
     (lambda(msg arg)
       (cond
-        ((eq? msg 'display) (display))
+        ((eq? msg 'display) (display tree))
         ((eq? msg 'ins) (set! tree (ins arg tree)) tree)
         ((eq? msg 'inslist) (set! tree (inslist (list 1 2 3 4))) tree)
         ((eq? msg 'clean) (clean))
