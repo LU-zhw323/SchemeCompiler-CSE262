@@ -41,8 +41,7 @@
 ;;     Scheme.
 
 (define (make-bst)
-  ;;Contributor: Zhenyu Wu
-
+  
 
   (let ((tree '()) (size 0))
     ;;The value of tree
@@ -89,7 +88,8 @@
       ;;2 parts: 1st element and rest of the list, each time we add the element we take
       ;;out from the list recursively to the tree that formed by previous element that has been
       ;;added to the tree, similar method in my_reverse
-      (ins (car lst) (inslist (cdr lst)))))
+      (ins (car lst) (inslist (cdr lst))))
+    )
    
     
 
@@ -101,7 +101,8 @@
                 ;;Since the value of node is only stored in the (value tree) which is the 
                 ;;cadr of tree node, we just apply f on (value tree)
                 (list (f (value tree)))
-                (inorder (right tree)))))
+                (inorder (right tree))))
+      )
 
 
     (define (preorder f tree)
@@ -110,9 +111,13 @@
         '()
         (append (list (f (value tree)))
                 (preorder (left tree))
-                (preorder (right tree)))))
+                (preorder (right tree))))
+    )
 
 
+    (define (display)
+      tree
+    )
 
 
     ;;(define (dis) (set! size (+ size 1)))

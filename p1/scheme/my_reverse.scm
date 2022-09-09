@@ -7,7 +7,7 @@
 ;; Your implementation should be recursive.
 
 (define (my-reverse l)
-  ;;Contributor：Zhenyu Wu
+  
 
 
   ;; basecase where there is only null left in list(last element)
