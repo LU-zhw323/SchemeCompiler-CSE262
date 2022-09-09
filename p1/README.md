@@ -97,7 +97,7 @@ this document.
 ### Read List
 
 * Did you run into any trouble using `let`?  Why?
-  * Actully, I didn't run into any trouble with 'let'
+  * Actully, I didn't run into any trouble with 'let', I guess the issue may be losing the value of local variable during recursion. Since let would assign a location to put the values of identifier, once it leave the body of let, we will lose the value. I use letrec instead, which will create the location for identifiers first and all id are bound in all values as well as the bodys.  
 * What happens if the user enters several values on one line?
   1. In scheme, it is okey for user to enter several values on one line, and the code will still insert each read into the list  
   2. In java, it will assume that all the values on one line is a single element that we will put into the list  
@@ -151,10 +151,18 @@ I think it works, since a tree node is just a triple with generic value and two 
 
 
 * Contrast your experience solving this problem in Java, Python, and Scheme.
-Since java and python are alike, both has object. It is easier for me to build a BST with them. However, for scheme, a lot of recursion(again, may be it is just because I am not familiar with recursion). Without object, it is hard to build a tree with similar structure as java or python(I just define it as a list with three sub list), therefore, a lot of identifier miss.
+Since java and python are alike, both has object. It is easier for me to build a BST with them. However, for scheme, a lot of recursion(again, may be it is just because I am not familiar with recursion). Without object, it is hard to build a tree with similar structure as java or python(I just define it as a list with three sub list), therefore, a lot of issue with identifier miss.
 
 ### Prime Divisors
 
 * Why did you choose the Scheme constructs that you chose in order to solve this
   problem?
+  Since it is just the basic algorithm approach I would use to find all the prime factor of a number
+  I wrote a helper function inside to do the actual job, factorize the number with given factor til it is factorized to 1
+  Then call the helper function by passing number and factor(starting from 2 the smallest prime factor for a number(not a prime number))
+  An alternative way may be use 'letrec' to create a factor variable starting from 2 and increment it to find larger prime factors, which may not require a helper function
+  I just applied it in the way that I am most comfortable with.  
+
+
 * Contrast your experience solving this problem in Java, Python, and Scheme.
+  In java and python, since we still can use iteration, I just applied the traditional way that I am familiar with to do the computation. In scheme, without iteration, it will require a little bit more time to think about recursion, but still, the code is short and clean.

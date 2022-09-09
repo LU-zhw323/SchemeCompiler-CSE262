@@ -7,7 +7,7 @@
 (define (my-map func l)
 
   
-
+  ;;Contributor: Zhenyu Wu
 
   ;;Same idea with my_reverse, just compute func on each iteam for each recursion
   ;;Basecase where there is only '() left in list, return

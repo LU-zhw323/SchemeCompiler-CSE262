@@ -41,7 +41,7 @@
 ;;     Scheme.
 
 (define (make-bst)
-  
+  ;;Contributor: Zhenyu Wu
 
   (let ((tree '()) (size 0))
     ;;The value of tree
@@ -116,6 +116,8 @@
 
 
     (define (display)
+      ;;since it is just a list contains multilple different list, each with three sublist
+      ;;I just return the tree itself
       tree
     )
 
