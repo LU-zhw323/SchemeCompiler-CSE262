@@ -41,6 +41,7 @@ public class Scanner {
     //Below are tags that I used to identify each state, according to specification folder
     boolean PM = false;
     boolean ININT = false;
+    boolean INT_S = false;
     boolean PREDOUBLE = false;
     boolean INDOUBLE = false;
     boolean INID = false;
@@ -54,12 +55,10 @@ public class Scanner {
     boolean START = true;
     boolean CLEANBREAK = false;
     boolean IDENTIFIER_S = false;
-    boolean INT_S = false;
+    boolean Error = false;
     
 
-    //Literals
-    String liter = "";
-
+    
 
 
 
@@ -83,21 +82,27 @@ public class Scanner {
             tokens.add(error);
             return new TokenStream(tokens);
         }
+        //Literals
+        String tokenText = "";
+
 
         //Record the position in string
         int counter = 0;
         //Check if we are in one line
         boolean inLine = true;
         int line = 1;
-        int col = 1;
+        int col = 0;
+
+        int begin;
+        int end;
         while(counter < source.length()){
             //Check if this token is in the new line
             if(!inLine){
-                col = 1;
+                col = 0;
                 inLine = true;
             }
             //Get current token from the string
-            String current = "";
+            String current ="";
             current += source.charAt(counter);
             
 
@@ -110,26 +115,61 @@ public class Scanner {
 
             //Check if input will bring us to PM state
             if(PM){
-                PM_s(current);
-                if(ININT){
-                    liter += current;
-                    ININT = false;
+                if(current.matches("[\\s]")){
+                    PM = false;
+                    if(ININT){
+                        ININT = false;
+                        INT_S = true;
+                    }
+                    else if(INID){
+                        IDENTIFIER_S = true;
+                        INID = false;
+                    }
+                }
+                else{
+                    if(current.matches("[^\\d[+-]]")){
+                        tokenText += current;
+                        Error = true;
+                        ININT = false;
+                        IDENTIFIER_S = false;
+                    }
+                    else if(current.matches("[\\d]")){
+                        tokenText += current;
+                        ININT = true;
+                        IDENTIFIER_S = false;
+                    }
+                    else if(current.matches("[+-]")){
+                        tokenText += current;
+                        IDENTIFIER_S = true;
+                        col = counter;
+                    }
                 }
             }
             //Once we have['',\t,\n,\r] or reach the last token in file, we should return current token
             if(CLEANBREAK | counter == source.length()-1){
-                if(INT_S){
-                    int int_l = Integer.parseInt(liter);
-                    var INT = new Tokens.Int(liter, line, col, int_l);
+                if(ININT){
+                    int int_l = Integer.parseInt(tokenText);
+                    var INT = new Tokens.Int(tokenText, line, col, int_l);
                     tokens.add(INT);
-                    INT_S = false;
+                    ININT = false;
                     PM = false;
                 }
-                liter = "";
+                else if(IDENTIFIER_S){
+                    var ID = new Tokens.Identifier(tokenText, line, col);
+                    tokens.add(ID);
+                    IDENTIFIER_S = false;
+                    PM = false;
+                }
+                else if(Error){
+                    var error = new Tokens.Error(tokenText, line, col);
+                    tokens.add(error);
+                    Error = false;
+                    PM = false;
+                }
+                tokenText = "";
                 CLEANBREAK = false;
             }
 
-            col ++;
             counter ++;
             if(current.matches("\n")){
                 line += 1;
@@ -170,23 +210,7 @@ public class Scanner {
         }
     }
 
-    /**Helper function PM() decriping the state transition in PM state
-     * @param current Input character
-     * 
-     * 
-     * 
-     */
-    public void PM_s(String current){
-        if(current.matches("[\\d]")){
-            ININT = true;
-            INT_S = true;
-        }
-        else{
-            IDENTIFIER_S = true;
-        }
-        
-    }
-
+    
     /* 
     public Tokens.Int PM_INT(String current){
         liter += current;
