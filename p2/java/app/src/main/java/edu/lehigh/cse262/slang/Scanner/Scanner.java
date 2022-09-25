@@ -113,8 +113,15 @@ public class Scanner {
             
             //Check if input will bring us to PM state
             if(PM){
+                if(INDOUBLE){
+                    ININT = false;
+                }
                 if(CLEANBREAK){
-                    PM = false;
+                    //The problem here is if input is 3. a number follow by '.', since there is no input at PREDOUBLE
+                    //state, it will be a error. However, I haven't figure out a better way to solve it
+                    if(tokenText.charAt(tokenText.length()-1) == '.'){
+                        Error = true;
+                    }
                 }
                 else{
                     From_PM(current);
@@ -127,6 +134,11 @@ public class Scanner {
                     if(INDOUBLE){
                         ININT = false;
                     }
+                    if(tokenText.charAt(tokenText.length()-1) == '.'){
+                        Error = true;
+                    }
+                    System.out.println(tokenText);
+                    System.out.println(tokenText.charAt(tokenText.length()-1));
                 }
                 else{
                     FORM_INT_DOUBLE(current);
@@ -153,12 +165,14 @@ public class Scanner {
                     var INT = new Tokens.Int(tokenText, line, col, int_l);
                     tokens.add(INT);
                     ININT = false;
+                    PM = false;
                     
                 }
                 else if(INID){
                     var ID = new Tokens.Identifier(tokenText, line, col);
                     tokens.add(ID);
                     INID = false;
+                    PM = false;
                     
                 }
                 else if(INDOUBLE){
@@ -166,6 +180,7 @@ public class Scanner {
                     var Dou = new Tokens.Dbl(tokenText, line, col, dou_l);
                     tokens.add(Dou);
                     INDOUBLE = false;
+                    PM = false;
                     
                 }
                 
@@ -217,17 +232,13 @@ public class Scanner {
     
     public void From_PM(String current){
         //check error token
-        if(current.matches("[^\\d[+-]]")){
-            tokenText += current;
-            Error = true;
-        }
-        else if(current.matches("[\\d]")){
-            FORM_INT_DOUBLE(current);(current);
-            INID = false;
-        }
-        else if(current.matches("[+-]")){
+        if(current.matches("[+-]")){
             tokenText += current;
             INID = true;
+        }
+        else{
+            INID = false;
+            FORM_INT_DOUBLE(current);
         }
     }
 
@@ -245,7 +256,6 @@ public class Scanner {
                     tokenText += current;
                     INDOUBLE = true;
                     PREDOUBLE = false;
-                    Error = false;
                 }
                 else{
                     tokenText += current;
@@ -268,7 +278,7 @@ public class Scanner {
                 else if(current.matches("[.]")){
                     tokenText += current;
                     PREDOUBLE = true;
-                    Error = true;
+                    
                 }
                 else{
                     tokenText += current;
