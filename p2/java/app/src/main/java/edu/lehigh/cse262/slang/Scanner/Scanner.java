@@ -133,6 +133,12 @@ public class Scanner {
                 START = false;
                 //col = line_l;
             }
+            //Same as ' which we should handle first
+            else if(current.matches("\\'")){
+                ABBREV = true;
+                CLEANBREAK = true;
+                START = false;
+            }
             
 
             //Check state transition in START state
@@ -297,7 +303,6 @@ public class Scanner {
                     DEFINE = false;
                 }
 
-
                 if(LPRE){
                     if(counter == source.length()-1){
                         line_l -= 1;
@@ -317,6 +322,16 @@ public class Scanner {
                     tokens.add(RP);
                     RPRE = false;
                 }
+                else if(ABBREV){
+                    if(counter == source.length()-1){
+                        line_l -= 1;
+                    }
+                    col = line_l;
+                    var abb = new Tokens.Abbrev("\\'", line, col);
+                    tokens.add(abb);
+                    ABBREV = false;
+                }
+
                 
                 tokenText = "";
                 CLEANBREAK = false;
