@@ -3,6 +3,7 @@ package edu.lehigh.cse262.slang.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.plaf.synth.SynthEditorPaneUI;
 import javax.swing.text.AbstractDocument.Content;
 import javax.xml.transform.Source;
 
@@ -55,6 +56,8 @@ public class Scanner {
     boolean START = true;
     boolean CLEANBREAK = false;
     boolean Error = false;
+    boolean LPRE = false;
+    boolean RPRE = false;
     //tags for keywords
     boolean AND = false;
     boolean COND = false;
@@ -115,6 +118,23 @@ public class Scanner {
             String current ="";
             current += source.charAt(counter);
 
+            //Handle left and right parenthesis first, if we have a ( or ), we shall
+            //go to the cleanbreak and print what we have now as well as LP or RP
+            if(current.matches("\\(")){
+                LPRE = true;
+                CLEANBREAK = true;
+                START = false;
+                
+                //col = line_l;
+            }
+            else if(current.matches("\\)")){
+                RPRE = true;
+                CLEANBREAK = true;
+                START = false;
+                //col = line_l;
+            }
+            
+
             //Check state transition in START state
             if(START){
                 Start(current);
@@ -137,6 +157,7 @@ public class Scanner {
                     continue;
                 }
             }
+            
             
             //Check if input will bring us to PM state
             if(PM){
@@ -172,7 +193,9 @@ public class Scanner {
             //Check if input will bring us straight to INID state
             else if(INID){
                 if(!CLEANBREAK){
-                    if(current.matches("[[!$%&*/:<=>?-_^]|[a-z]|[A-Z][0-9][.+-]]")){
+                    //I didn't cover [.+-] for the reason that one of the fail test file suggests that a+ should fail
+                    if(current.matches("[[!$%&*/:<=>?-_^ && [^\\[\\]]][a-z][A-Z][0-9]]")){
+                        
                         tokenText += current;
                     }
                     else{
@@ -186,6 +209,7 @@ public class Scanner {
                     Check_key(keyword);
                 }
             }
+            
 
             
             
@@ -197,9 +221,12 @@ public class Scanner {
                 if(counter == source.length()-1){
                     line_l ++;
                 }
+
                 col = line_l - tokenText.length();
+                
                 //Check if we have to handle error
                 if(Error){
+                    
                     tokens.add(Check_error());
                 }
                 if(ININT){
@@ -269,12 +296,34 @@ public class Scanner {
                     tokens.add(key_w);
                     DEFINE = false;
                 }
+
+
+                if(LPRE){
+                    if(counter == source.length()-1){
+                        line_l -= 1;
+                    }
+                    col = line_l;
+                    var LP = new Tokens.LeftParen("\\(", line, col);
+                    tokens.add(LP);
+                    LPRE = false;
+                }
+                else if(RPRE){
+                    if(counter == source.length()-1){
+                        line_l -= 1;
+                    }
+                    
+                    col = line_l;
+                    var RP = new Tokens.RightParen("\\)", line, col);
+                    tokens.add(RP);
+                    RPRE = false;
+                }
                 
                 tokenText = "";
                 CLEANBREAK = false;
                 START = true;
             }
             line_l ++;
+            
             counter ++;
             //if there is a newline character, and a new line
             if(current.matches("\n")){
@@ -447,6 +496,15 @@ public class Scanner {
         INID = false;
         PM = false;
         INDOUBLE = false;
+        AND = false;
+        COND = false;
+        IF = false;
+        LAMBDA = false;
+        SET = false;
+        QUOTE = false;
+        BEGIN = false;
+        DEFINE = false;
+        OR = false;
         return error;
     }
 }
