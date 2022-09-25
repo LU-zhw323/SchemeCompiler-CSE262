@@ -42,7 +42,6 @@ public class Scanner {
     //Below are tags that I used to identify each state, according to specification folder
     boolean PM = false;
     boolean ININT = false;
-    boolean INT_S = false;
     boolean PREDOUBLE = false;
     boolean INDOUBLE = false;
     boolean INID = false;
@@ -55,9 +54,19 @@ public class Scanner {
     boolean ABBREV = false;
     boolean START = true;
     boolean CLEANBREAK = false;
-    boolean IDENTIFIER_S = false;
     boolean Error = false;
-    boolean Doub_S = false;
+    //tags for keywords
+    boolean AND = false;
+    boolean COND = false;
+    boolean IF = false;
+    boolean LAMBDA = false;
+    boolean SET = false;
+    boolean QUOTE = false;
+    boolean BEGIN = false;
+    boolean DEFINE = false;
+    boolean OR = false;
+
+
     
 
     
@@ -109,6 +118,24 @@ public class Scanner {
             //Check state transition in START state
             if(START){
                 Start(current);
+                START = false;
+            }
+            if(current.matches("[\\s]")){
+                CLEANBREAK = true;
+            }
+            //Check if we have error right now, if so we dont need to figure out what it is
+            if(Error){
+                if(!CLEANBREAK){
+                    tokenText += current;
+                    line_l ++;
+                    counter ++;
+                    //if there is a newline character, and a new line
+                    if(current.matches("\n")){
+                        line += 1;
+                        inLine = false;
+                    }
+                    continue;
+                }
             }
             
             //Check if input will bring us to PM state
@@ -128,7 +155,7 @@ public class Scanner {
                 }
             }
             //Check if input will bring us straight to ININT state
-            if(!PM&&ININT){
+            else if(ININT){
                 if(CLEANBREAK){
                     //TO check which state we are in
                     if(INDOUBLE){
@@ -137,11 +164,26 @@ public class Scanner {
                     if(tokenText.charAt(tokenText.length()-1) == '.'){
                         Error = true;
                     }
-                    System.out.println(tokenText);
-                    System.out.println(tokenText.charAt(tokenText.length()-1));
                 }
                 else{
                     FORM_INT_DOUBLE(current);
+                }
+            }
+            //Check if input will bring us straight to INID state
+            else if(INID){
+                if(!CLEANBREAK){
+                    if(current.matches("[[!$%&*/:<=>?-_^]|[a-z]|[A-Z][0-9][.+-]]")){
+                        tokenText += current;
+                    }
+                    else{
+                        tokenText += current;
+                        Error = true;
+                    }
+                }
+                //When there is a \t\r\n, we should check if input is a special form
+                else{
+                    keyword = tokenText.substring(0, tokenText.length());
+                    Check_key(keyword);
                 }
             }
 
@@ -181,11 +223,56 @@ public class Scanner {
                     tokens.add(Dou);
                     INDOUBLE = false;
                     PM = false;
-                    
+                }
+                else if(AND){
+                    var key_w = new Tokens.And(tokenText, line, col);
+                    tokens.add(key_w);
+                    AND = false;
+                }
+                else if(COND){
+                    var key_w = new Tokens.Cond(tokenText, line, col);
+                    tokens.add(key_w);
+                    COND = false;
+                }
+                else if(IF){
+                    var key_w = new Tokens.If(tokenText, line, col);
+                    tokens.add(key_w);
+                    IF = false;
+                }
+                else if(OR){
+                    var key_w = new Tokens.Or(tokenText, line, col);
+                    tokens.add(key_w);
+                    OR = false;
+                }
+                else if(SET){
+                    var key_w = new Tokens.Set(tokenText, line, col);
+                    tokens.add(key_w);
+                    SET = false;
+                }
+                else if(QUOTE){
+                    var key_w = new Tokens.Quote(tokenText, line, col);
+                    tokens.add(key_w);
+                    QUOTE = false;
+                }
+                else if(LAMBDA){
+                    var key_w = new Tokens.Lambda(tokenText, line, col);
+                    tokens.add(key_w);
+                    LAMBDA = false;
+                }
+                else if(BEGIN){
+                    var key_w = new Tokens.Begin(tokenText, line, col);
+                    tokens.add(key_w);
+                    BEGIN = false;
+                }
+                else if(DEFINE){
+                    var key_w = new Tokens.Define(tokenText, line, col);
+                    tokens.add(key_w);
+                    DEFINE = false;
                 }
                 
                 tokenText = "";
                 CLEANBREAK = false;
+                START = true;
             }
             line_l ++;
             counter ++;
@@ -212,7 +299,7 @@ public class Scanner {
         else if(current.matches("[\\d]")){
             ININT = true;
         }
-        else if(current.matches("([!$%&*/:<=>?-_^]|[a-z]|[A-Z])")){
+        else if(current.matches("[[!$%&*/:<=>?-_^]|[a-z]|[A-Z]]")){
             INID = true;
         }
         else if(current.matches("#")){
@@ -230,6 +317,10 @@ public class Scanner {
     }
 
     
+    /**Helper function From_PM which will take a input and scan it 
+     * @param current input token
+     * 
+     */
     public void From_PM(String current){
         //check error token
         if(current.matches("[+-]")){
@@ -287,6 +378,64 @@ public class Scanner {
             }
         }
     }
+
+    /**Helper function Check_key() will check if we have special form in input
+     * 
+     * 
+     * 
+     * @param tokenText the tokenText that we should check
+     */
+    public void Check_key(String keyword){
+        switch(keyword){
+            case "and":
+                AND = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+            case "cond":
+                COND = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+            case "if":
+                IF = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+            case "lambda":
+                LAMBDA = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+            case "quote":
+                QUOTE = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+            case "set!":
+                SET = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+            case "begin":
+                BEGIN = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+            case "define":
+                DEFINE = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+            case "or":
+                OR = true;
+                INID = false;
+                tokenText = keyword;
+                break;
+        }
+    }
+    
+    
     
     /**Helper function Check_error() which will generate a error token if Error flag is on
      * 
