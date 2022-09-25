@@ -58,6 +58,7 @@ public class Scanner {
     boolean Error = false;
     boolean LPRE = false;
     boolean RPRE = false;
+    boolean EOF = false;
     //tags for keywords
     boolean AND = false;
     boolean COND = false;
@@ -136,6 +137,12 @@ public class Scanner {
             //Same as ' which we should handle first
             else if(current.matches("\\'")){
                 ABBREV = true;
+                CLEANBREAK = true;
+                START = false;
+            }
+            
+            if(counter == source.length()-1){
+                EOF = true;
                 CLEANBREAK = true;
                 START = false;
             }
@@ -330,6 +337,16 @@ public class Scanner {
                     var abb = new Tokens.Abbrev("\\'", line, col);
                     tokens.add(abb);
                     ABBREV = false;
+                }
+
+                if(EOF){
+                    if(counter == source.length()-1){
+                        line_l -= 1;
+                    }
+                    col = line_l;
+                    var eof = new Tokens.Eof("\0", line, col);
+                    tokens.add(eof);
+                    EOF = false;
                 }
 
                 
