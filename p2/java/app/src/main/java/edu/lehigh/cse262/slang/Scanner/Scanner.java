@@ -59,7 +59,18 @@ public class Scanner {
     
 
     
+    //Literals
+    String tokenText = "";
 
+    //Record the position in string
+    int counter = 0;
+    //Check if we are in one line
+    boolean inLine = true;
+    int line = 1;
+    int col = 0;
+
+    //Length of line for each line of input
+    int line_l = 0;
 
 
     /**
@@ -82,23 +93,11 @@ public class Scanner {
             tokens.add(error);
             return new TokenStream(tokens);
         }
-        //Literals
-        String tokenText = "";
-
-
-        //Record the position in string
-        int counter = 0;
-        //Check if we are in one line
-        boolean inLine = true;
-        int line = 1;
-        int col = 0;
-
-        int begin;
-        int end;
+        
         while(counter < source.length()){
-            //Check if this token is in the new line
+            //Check if this token is in the new line, resest the lenght for this new line
             if(!inLine){
-                col = 0;
+                line_l = 0;
                 inLine = true;
             }
             //Get current token from the string
@@ -111,42 +110,47 @@ public class Scanner {
                 Start(current);
             }
 
-
-
+            
             //Check if input will bring us to PM state
             if(PM){
-                if(current.matches("[\\s]")){
+                if(CLEANBREAK){
                     PM = false;
-                    if(ININT){
-                        ININT = false;
-                        INT_S = true;
-                    }
-                    else if(INID){
-                        IDENTIFIER_S = true;
-                        INID = false;
-                    }
                 }
                 else{
-                    if(current.matches("[^\\d[+-]]")){
+                    From_PM(current);
+                }
+            }
+            //Check if input will bring us straight to ININT state
+            if(!PM && ININT){
+                From_INT(current);
+            }
+            //Check if input can be scanned as a double
+            if(PREDOUBLE){
+                if(CLEANBREAK){
+                    PREDOUBLE = false;
+                }
+                else{
+                    if(current.matches("[\\d]")){
+                        INDOUBLE = true;
+                    }
+                    else{
                         tokenText += current;
                         Error = true;
-                        ININT = false;
-                        IDENTIFIER_S = false;
-                    }
-                    else if(current.matches("[\\d]")){
-                        tokenText += current;
-                        ININT = true;
-                        IDENTIFIER_S = false;
-                    }
-                    else if(current.matches("[+-]")){
-                        tokenText += current;
-                        IDENTIFIER_S = true;
-                        col = counter;
                     }
                 }
             }
+           
             //Once we have['',\t,\n,\r] or reach the last token in file, we should return current token
             if(CLEANBREAK | counter == source.length()-1){
+                //increment 1 if we are at the last element of input
+                if(counter == source.length()-1){
+                    line_l ++;
+                }
+                col = line_l - tokenText.length();
+                //Check if we have to handle error
+                if(Error){
+                    tokens.add(Check_error());
+                }
                 if(ININT){
                     int int_l = Integer.parseInt(tokenText);
                     var INT = new Tokens.Int(tokenText, line, col, int_l);
@@ -154,22 +158,17 @@ public class Scanner {
                     ININT = false;
                     PM = false;
                 }
-                else if(IDENTIFIER_S){
+                else if(INID){
                     var ID = new Tokens.Identifier(tokenText, line, col);
                     tokens.add(ID);
-                    IDENTIFIER_S = false;
+                    INID = false;
                     PM = false;
                 }
-                else if(Error){
-                    var error = new Tokens.Error(tokenText, line, col);
-                    tokens.add(error);
-                    Error = false;
-                    PM = false;
-                }
+                
                 tokenText = "";
                 CLEANBREAK = false;
             }
-
+            line_l ++;
             counter ++;
             if(current.matches("\n")){
                 line += 1;
@@ -211,10 +210,48 @@ public class Scanner {
     }
 
     
-    /* 
-    public Tokens.Int PM_INT(String current){
-        liter += current;
+    public void From_PM(String current){
+        //check error token
+        if(current.matches("[^\\d[+-]]")){
+            tokenText += current;
+            Error = true;
+        }
+        else if(current.matches("[\\d]")){
+            From_INT(current);
+            INID = false;
+        }
+        else if(current.matches("[+-]")){
+            tokenText += current;
+            INID = true;
+        }
+    }
+    public void From_INT(String current){
+        if(!CLEANBREAK){
+            if(current.matches("[\\d]")){
+                tokenText += current;
+            }
+            else if(current.matches("[.]")){
+                tokenText += current;
+                PREDOUBLE = true;
+                ININT = false;
+            }
+            else{
+                tokenText += current;
+                Error = true;
+            }
+        }
+    }
+    public void From_Double(String current){
+
         
     }
-    */
+
+    public Tokens.Error Check_error(){
+        var error = new Tokens.Error(tokenText, line, col);
+        Error = false;
+        ININT = false;
+        INID = false;
+        PM = false;
+        return error;
+    }
 }
