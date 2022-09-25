@@ -3,6 +3,7 @@ package edu.lehigh.cse262.slang.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.AbstractDocument.Content;
 import javax.xml.transform.Source;
 
 import edu.lehigh.cse262.slang.Scanner.Tokens.Char;
@@ -56,6 +57,7 @@ public class Scanner {
     boolean CLEANBREAK = false;
     boolean IDENTIFIER_S = false;
     boolean Error = false;
+    boolean Doub_S = false;
     
 
     
@@ -103,13 +105,11 @@ public class Scanner {
             //Get current token from the string
             String current ="";
             current += source.charAt(counter);
-            
 
             //Check state transition in START state
             if(START){
                 Start(current);
             }
-
             
             //Check if input will bring us to PM state
             if(PM){
@@ -121,27 +121,24 @@ public class Scanner {
                 }
             }
             //Check if input will bring us straight to ININT state
-            if(!PM && ININT){
-                From_INT(current);
-            }
-            //Check if input can be scanned as a double
-            if(PREDOUBLE){
+            if(!PM&&ININT){
                 if(CLEANBREAK){
-                    PREDOUBLE = false;
+                    //TO check which state we are in
+                    if(INDOUBLE){
+                        ININT = false;
+                    }
                 }
                 else{
-                    if(current.matches("[\\d]")){
-                        INDOUBLE = true;
-                    }
-                    else{
-                        tokenText += current;
-                        Error = true;
-                    }
+                    FORM_INT_DOUBLE(current);
                 }
             }
+
+            
+            
            
             //Once we have['',\t,\n,\r] or reach the last token in file, we should return current token
             if(CLEANBREAK | counter == source.length()-1){
+                
                 //increment 1 if we are at the last element of input
                 if(counter == source.length()-1){
                     line_l ++;
@@ -156,13 +153,20 @@ public class Scanner {
                     var INT = new Tokens.Int(tokenText, line, col, int_l);
                     tokens.add(INT);
                     ININT = false;
-                    PM = false;
+                    
                 }
                 else if(INID){
                     var ID = new Tokens.Identifier(tokenText, line, col);
                     tokens.add(ID);
                     INID = false;
-                    PM = false;
+                    
+                }
+                else if(INDOUBLE){
+                    double dou_l = Double.parseDouble(tokenText);
+                    var Dou = new Tokens.Dbl(tokenText, line, col, dou_l);
+                    tokens.add(Dou);
+                    INDOUBLE = false;
+                    
                 }
                 
                 tokenText = "";
@@ -170,6 +174,7 @@ public class Scanner {
             }
             line_l ++;
             counter ++;
+            //if there is a newline character, and a new line
             if(current.matches("\n")){
                 line += 1;
                 inLine = false;
@@ -192,7 +197,7 @@ public class Scanner {
         else if(current.matches("[\\d]")){
             ININT = true;
         }
-        else if(current.matches("([\\p{P}]|[a-z]|[A-Z])")){
+        else if(current.matches("([!$%&*/:<=>?-_^]|[a-z]|[A-Z])")){
             INID = true;
         }
         else if(current.matches("#")){
@@ -217,7 +222,7 @@ public class Scanner {
             Error = true;
         }
         else if(current.matches("[\\d]")){
-            From_INT(current);
+            FORM_INT_DOUBLE(current);(current);
             INID = false;
         }
         else if(current.matches("[+-]")){
@@ -225,33 +230,64 @@ public class Scanner {
             INID = true;
         }
     }
-    public void From_INT(String current){
-        if(!CLEANBREAK){
-            if(current.matches("[\\d]")){
+
+
+    /**Helper function FORM_INT_DOUBLE which will take a input and scan it as either double or int
+     * @param current input token
+     * 
+     */
+    public void FORM_INT_DOUBLE(String current){
+        if(CLEANBREAK==false){
+            //Check if we are in PREDOUBLE state
+            if(PREDOUBLE){
+                //Transition to INDOUBLE only happens when we read a digit
+                if(current.matches("[\\d]")){
+                    tokenText += current;
+                    INDOUBLE = true;
+                    PREDOUBLE = false;
+                    Error = false;
+                }
+                else{
+                    tokenText += current;
+                    Error = true;
+                }
+            }
+            //Check if we are in INDOUBLE state
+            else if(INDOUBLE){
+                if(current.matches("[^\\d]")){
+                    Error = true;
+                }
                 tokenText += current;
             }
-            else if(current.matches("[.]")){
-                tokenText += current;
-                PREDOUBLE = true;
-                ININT = false;
-            }
+            //Case we are in ININT state
             else{
-                tokenText += current;
-                Error = true;
+                if(current.matches("[\\d]")){
+                    tokenText += current;
+                }
+                //if we read a '.', make a transition to PREDOUBLE
+                else if(current.matches("[.]")){
+                    tokenText += current;
+                    PREDOUBLE = true;
+                    Error = true;
+                }
+                else{
+                    tokenText += current;
+                    Error = true;
+                }
             }
         }
     }
-    public void From_Double(String current){
-
-        
-    }
-
+    
+    /**Helper function Check_error() which will generate a error token if Error flag is on
+     * 
+     */
     public Tokens.Error Check_error(){
         var error = new Tokens.Error(tokenText, line, col);
         Error = false;
         ININT = false;
         INID = false;
         PM = false;
+        INDOUBLE = false;
         return error;
     }
 }
