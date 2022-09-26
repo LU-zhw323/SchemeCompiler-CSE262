@@ -59,6 +59,8 @@ public class Scanner {
     boolean LPRE = false;
     boolean RPRE = false;
     boolean EOF = false;
+    boolean INCHAR = false;
+    boolean INBOOL = false; 
     //tags for keywords
     boolean AND = false;
     boolean COND = false;
@@ -69,6 +71,8 @@ public class Scanner {
     boolean BEGIN = false;
     boolean DEFINE = false;
     boolean OR = false;
+    boolean VCB = false;
+    
 
 
     
@@ -122,9 +126,12 @@ public class Scanner {
             //Handle left and right parenthesis first, if we have a ( or ), we shall
             //go to the cleanbreak and print what we have now as well as LP or RP
             if(current.matches("\\(")){
-                LPRE = true;
-                CLEANBREAK = true;
-                START = false;
+                if(!VCB){
+                    LPRE = true;
+                    CLEANBREAK = true;
+                    START = false;
+                }
+                
                 
                 //col = line_l;
             }
@@ -227,6 +234,39 @@ public class Scanner {
             else if(INSTR){
                 FORM_STR(current);
             }
+            else if(VCB){
+                if(!CLEANBREAK){
+                    if(PRECHAR){
+                        if(tokenText.length()>=3){
+                            INCHAR = false;
+                            tokenText += current;
+                            Error = true;
+                        }
+                        else{
+                            if(!current.matches("[\\s]")){
+                                tokenText += current;
+                                INCHAR = true;
+                            }
+                            else{
+                                tokenText += current;
+                                Error = true;
+                            }
+                        }
+                    }
+                    else{
+                        if(current.matches("#")){
+                            tokenText += current;
+                        }
+                        else if(current.equals("\\")){
+                            tokenText += current;
+                            PRECHAR = true;
+                        }
+                    }
+                }
+                else{
+                    
+                }
+            }
             
 
             if(!CLEANBREAK){
@@ -244,6 +284,7 @@ public class Scanner {
                 if(Error){
                     
                     tokens.add(Check_error());
+                    Error = false;
                 }
                 if(ININT){
                     int int_l = Integer.parseInt(tokenText);
@@ -315,23 +356,25 @@ public class Scanner {
                 else if(INSTR){
                     String Str_l = "";
                     Str_l = tokenText.substring(1, tokenText.length()-1);
-                    /* 
-                    for(int i = 1; i <= tokenText.length()-1; i++){
-                        String t = "";
-                        t += tokenText.charAt(i);
-                        if(t.matches("\n")){
-                            Str_l += "\n";
-                        }
-                        else{
-                            Str_l += t;
-                        }
-                    }
-                    */
                     var str = new Tokens.Str(tokenText, line, col, Str_l);
                     tokens.add(str);
                     INSTR = false;
                     //See comment in Form_STR, reset the length of line to ensure
                     //the cols of rest of stuffs are correct
+                    line_l --;
+                }
+                else if(INCHAR){
+                    char char_l;
+                    if(tokenText.length()==1){
+                        char_l = tokenText.charAt(0);
+                    }
+                    else{
+                        char_l = tokenText.charAt(2);
+                    }
+
+                    var chr = new Tokens.Char(tokenText, line, col, char_l);
+                    tokens.add(chr);
+                    INCHAR = false;
                     line_l --;
                 }
 
@@ -409,7 +452,7 @@ public class Scanner {
             INID = true;
         }
         else if(current.matches("#")){
-            VEC = true;
+            VCB = true;
         }
         else if(current.matches("\"")){
             INSTR = true;
@@ -590,6 +633,13 @@ public class Scanner {
         BEGIN = false;
         DEFINE = false;
         OR = false;
+        INCHAR = false;
+        INSTR = false;
+        INBOOL = false;
+        LPRE = false;
+        RPRE = false;
+        ABBREV = false;
+        VCB = false;
         return error;
     }
 }
