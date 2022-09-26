@@ -41,26 +41,47 @@ public class Scanner {
     }
 
     //Below are tags that I used to identify each state, according to specification folder
+    //State where we input [+-]
     boolean PM = false;
+    //State to read int
     boolean ININT = false;
+    //State between double and int when we read '.'
     boolean PREDOUBLE = false;
+    //State to read double
     boolean INDOUBLE = false;
+    //State to read ID
     boolean INID = false;
-    boolean INCOMMENT = false;
+    //State to read string
     boolean INSTR = false;
+    //State where we input \t\n\r in INSTR state
     boolean INSTR_p = false;
+    //State to read vector
     boolean VEC = false;
+    //State between VCB and INCHAR when we read '\' after '#'
     boolean PRECHAR = false;
-    String keyword = "";
-    boolean ABBREV = false;
-    boolean START = true;
-    boolean CLEANBREAK = false;
-    boolean Error = false;
-    boolean LPRE = false;
-    boolean RPRE = false;
-    boolean EOF = false;
+    //State to read character
     boolean INCHAR = false;
-    boolean INBOOL = false; 
+    //State of different keywords
+    String keyword = "";
+    //State to read '
+    boolean ABBREV = false;
+    //State to read a new input
+    boolean START = true;
+    //State where we want output
+    boolean CLEANBREAK = false;
+    //State of Error message
+    boolean Error = false;
+    //State of '('
+    boolean LPRE = false;
+    //State of ')'
+    boolean RPRE = false;
+    //State where we reach eof
+    boolean EOF = false;
+    //State to read boolean
+    boolean INBOOL = false;
+    //State where we read '#'
+    boolean VCB = false;
+
     //tags for keywords
     boolean AND = false;
     boolean COND = false;
@@ -71,7 +92,6 @@ public class Scanner {
     boolean BEGIN = false;
     boolean DEFINE = false;
     boolean OR = false;
-    boolean VCB = false;
     
 
 
@@ -170,7 +190,7 @@ public class Scanner {
                     tokenText += current;
                     line_l ++;
                     counter ++;
-                    //if there is a newline character, and a new line
+                    //if there is a newline character, add a new line
                     if(current.matches("\n")){
                         line += 1;
                         inLine = false;
@@ -186,7 +206,7 @@ public class Scanner {
                     ININT = false;
                 }
                 if(CLEANBREAK){
-                    //The problem here is if input is 3. a number follow by '.', since there is no input at PREDOUBLE
+                    //The problem here is if input is '3.' a number follow by '.', since there is no input at PREDOUBLE
                     //state, it will be a error. However, I haven't figure out a better way to solve it
                     if(tokenText.charAt(tokenText.length()-1) == '.'){
                         Error = true;
@@ -234,6 +254,7 @@ public class Scanner {
             else if(INSTR){
                 FORM_STR(current);
             }
+            //Check if input will bring us straight to VCB state
             else if(VCB){
                 if(!CLEANBREAK){
                     if(PRECHAR){
@@ -268,6 +289,13 @@ public class Scanner {
                             tokenText += current;
                             INBOOL = true;
                         }
+                        else if(current.matches("\\(")){
+                            tokenText += current;
+                            VEC = true;
+                            LPRE = true;
+                            CLEANBREAK = true;
+                            line_l ++;
+                        }
                     }
                 }
                 else{
@@ -290,11 +318,9 @@ public class Scanner {
                 line_l ++;
             }
            
-            //Once we have['',\t,\n,\r] or reach the last token in file, we should return current token
+            //Once we have['',\t,\n,\r] or reach the last token in file, we should output current token
             if(CLEANBREAK|EOF){
                 
-                
-
                 col = line_l - tokenText.length();
                 
                 //Check if we have to handle error
@@ -403,6 +429,13 @@ public class Scanner {
                     tokens.add(bool);
                     INBOOL = false;
                     VCB = false;
+                }
+                else if(VEC){
+                    var vec = new Tokens.Vec(tokenText, line, col);
+                    tokens.add(vec);
+                    VEC = false;
+                    VCB = false;
+                    line_l --;
                 }
 
                 if(LPRE){
@@ -646,6 +679,7 @@ public class Scanner {
      */
     public Tokens.Error Check_error(){
         var error = new Tokens.Error(tokenText, line, col);
+        //reset eveything
         Error = false;
         ININT = false;
         INID = false;
@@ -667,6 +701,7 @@ public class Scanner {
         RPRE = false;
         ABBREV = false;
         VCB = false;
+        VEC = false;
         return error;
     }
 }
