@@ -264,6 +264,14 @@ public class Scanner {
                     }
                 }
                 else{
+                    //Catch error where we are still in PRECHAR and read a \n\t\r
+                    if(PRECHAR && !INCHAR){
+                        Error = true;
+                    }
+                    //For the situation that we input a \n\t\r after '#'
+                    else{
+                        INCHAR = true;
+                    }
                     
                 }
             }
@@ -365,17 +373,17 @@ public class Scanner {
                 }
                 else if(INCHAR){
                     char char_l;
-                    if(tokenText.length()==1){
+                    if(tokenText.length()<3){
                         char_l = tokenText.charAt(0);
                     }
                     else{
                         char_l = tokenText.charAt(2);
                     }
-
                     var chr = new Tokens.Char(tokenText, line, col, char_l);
                     tokens.add(chr);
                     INCHAR = false;
                     line_l --;
+                    VCB = false;
                 }
 
                 if(LPRE){
