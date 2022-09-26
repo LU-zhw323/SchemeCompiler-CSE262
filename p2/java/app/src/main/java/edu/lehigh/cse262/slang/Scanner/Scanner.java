@@ -253,6 +253,9 @@ public class Scanner {
                             }
                         }
                     }
+                    else if(INBOOL){
+                        Error = true;
+                    }
                     else{
                         if(current.matches("#")){
                             tokenText += current;
@@ -260,6 +263,10 @@ public class Scanner {
                         else if(current.equals("\\")){
                             tokenText += current;
                             PRECHAR = true;
+                        }
+                        else if(current.matches("[tf]")){
+                            tokenText += current;
+                            INBOOL = true;
                         }
                     }
                 }
@@ -270,7 +277,9 @@ public class Scanner {
                     }
                     //For the situation that we input a \n\t\r after '#'
                     else{
-                        INCHAR = true;
+                        if(!INBOOL){
+                            INCHAR = true;
+                        }
                     }
                     
                 }
@@ -383,6 +392,16 @@ public class Scanner {
                     tokens.add(chr);
                     INCHAR = false;
                     line_l --;
+                    VCB = false;
+                }
+                else if(INBOOL){
+                    boolean bool_l = false;
+                    if(tokenText.charAt(1) == 't'){
+                        bool_l = true;
+                    }
+                    var bool = new Tokens.Bool(tokenText, line, col, bool_l);
+                    tokens.add(bool);
+                    INBOOL = false;
                     VCB = false;
                 }
 
