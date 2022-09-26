@@ -140,10 +140,10 @@ public class Scanner {
                 CLEANBREAK = true;
                 START = false;
             }
-            
+            //A new if statement that identify the eof
             if(counter == source.length()-1){
                 EOF = true;
-                CLEANBREAK = true;
+                //CLEANBREAK = true;
                 START = false;
             }
             
@@ -153,6 +153,7 @@ public class Scanner {
                 Start(current);
                 START = false;
             }
+            //A new if statement that identify '\n\t\r'
             if(current.matches("[\\s]")){
                 CLEANBREAK = true;
             }
@@ -218,22 +219,24 @@ public class Scanner {
                 }
                 //When there is a \t\r\n, we should check if input is a special form
                 else{
-                    keyword = tokenText.substring(0, tokenText.length());
+                    keyword = tokenText.substring(0, tokenText.length()-1);
                     Check_key(keyword);
                 }
             }
+            //Check if input will bring us straight to INSTR state
+            else if(INSTR){
+                FORM_STR(current);
+            }
             
 
-            
-            
+            if(!CLEANBREAK){
+                line_l ++;
+            }
            
             //Once we have['',\t,\n,\r] or reach the last token in file, we should return current token
-            if(CLEANBREAK | counter == source.length()-1){
+            if(CLEANBREAK|EOF){
                 
-                //increment 1 if we are at the last element of input
-                if(counter == source.length()-1){
-                    line_l ++;
-                }
+                
 
                 col = line_l - tokenText.length();
                 
@@ -309,6 +312,28 @@ public class Scanner {
                     tokens.add(key_w);
                     DEFINE = false;
                 }
+                else if(INSTR){
+                    String Str_l = "";
+                    Str_l = tokenText.substring(1, tokenText.length()-1);
+                    /* 
+                    for(int i = 1; i <= tokenText.length()-1; i++){
+                        String t = "";
+                        t += tokenText.charAt(i);
+                        if(t.matches("\n")){
+                            Str_l += "\n";
+                        }
+                        else{
+                            Str_l += t;
+                        }
+                    }
+                    */
+                    var str = new Tokens.Str(tokenText, line, col, Str_l);
+                    tokens.add(str);
+                    INSTR = false;
+                    //See comment in Form_STR, reset the length of line to ensure
+                    //the cols of rest of stuffs are correct
+                    line_l --;
+                }
 
                 if(LPRE){
                     if(counter == source.length()-1){
@@ -349,16 +374,16 @@ public class Scanner {
                     EOF = false;
                 }
 
-                
+                line_l ++;
                 tokenText = "";
                 CLEANBREAK = false;
                 START = true;
             }
-            line_l ++;
+            
             
             counter ++;
             //if there is a newline character, and a new line
-            if(current.matches("\n")){
+            if(current.matches("\n")&&!INSTR){
                 line += 1;
                 inLine = false;
             }
@@ -514,6 +539,34 @@ public class Scanner {
                 tokenText = keyword;
                 break;
         }
+    }
+    /**Helper function FORM_STR() will check if we have special form in input
+     * 
+     * 
+     * 
+     * @param current the current input that we should check
+     */
+    public void FORM_STR(String current){
+        if(current.matches("[\\s]")){
+            tokenText += current;
+            CLEANBREAK = false;
+            //line_l ++;
+                
+        }
+        
+        if(current.matches("\"")){
+            if(!tokenText.isEmpty()){
+                //Since it will be transferred to Cleanbreak, increment here to ensure the col of 
+                //string is correct
+                line_l ++;
+                CLEANBREAK = true;
+            }
+            tokenText += current;
+        }
+        else{
+            tokenText += current;
+        }
+        
     }
     
     
