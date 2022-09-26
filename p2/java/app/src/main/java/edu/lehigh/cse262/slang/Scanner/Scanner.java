@@ -121,11 +121,27 @@ public class Scanner {
      *
      * @return A list of tokens
      */
+    /** 
+     * My overall idea is to use multiple boolean to indicate the states
+     * Each time when we have a new input tokenText(At beginning of file or After \n\t\r), we will enter a START state
+     * Inside the START state, we will determine which state the following tokenText should go to based on its 1st character
+     * Then we make a transistion to the corresponding state from START state and not allowed to going back
+     * Inside those primary state(PM,INIT,INID,VCB,INSTR), we continue to read input and add them to current tokenText
+     * IF there is a specific token that trigger the condition of state transistion, we will move to new state
+     * IF there is an error token we read at current state, we will not stop. We keep reading the whole tokenText and raise the Error flag
+     * When we read \n\t\r or '(' or ')' or EOF, we trigger the CLEANBREAK to output the tokenText we read
+     * In the CLEANBREAK, if the Error flag is still raised, we will reset every state to only output the Error message
+     * In the CLEANBREAk, I also enable '(' and ')' to be determined in another if statement besides those of normal token state to let
+     * the tokenText before them to output, therefore, something like 'a(b)' can be recognized as 'a','(', 'b', ')'
+     * After we output current tokenText, we going back to START state to read next tokenText
+     * 
+     * 
+     * 
+     */
     public TokenStream scanTokens(String source) {
         // [CSE 262] Right now, this function is not implemented, so we are returning an
         // error token.
         var tokens = new ArrayList<Tokens.BaseToken>();
-
         //Check if the input is empty
         if(source.isBlank()){
             var error = new Tokens.Error("Empty file", 0, 0);
