@@ -27,7 +27,32 @@ class Scanner:
         pass
 
     def scanTokens(self, source):
-        return TokenStream([])
+        #The source file that we read
+        ori_text = TokenStream(source)
+
+        #line and col to record
+        line = 1
+        col = 0
+        #Split the original file by \n to get tokens on different line
+        line_s = source.split('\n')
+        line_text = TokenStream(line_s)
+        #Reading input line by line
+        while(line_text.hasNext()):
+            #Split tokens in each line by \t\r
+            inline_token = TokenStream(line_text.nextToken().split())
+            while(inline_token.hasNext()):
+                #Take out tokentext from line of tokens
+                tokenText = TokenStream(inline_token.nextToken())
+                while(tokenText.hasNext):
+                    #PM state
+                    if tokenText.nextToken() == '+':
+                        
+                col += 1
+                inline_token.popToken()
+
+            line_text.popToken()
+            line += 1
+            pass
 
 
 def tokenToXml(token):

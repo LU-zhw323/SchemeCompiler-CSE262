@@ -81,6 +81,7 @@ public class Scanner {
     boolean INBOOL = false;
     //State where we read '#'
     boolean VCB = false;
+    boolean INCOMMENT = false;
 
     //tags for keywords
     boolean AND = false;
@@ -182,6 +183,21 @@ public class Scanner {
                 ABBREV = true;
                 CLEANBREAK = true;
                 START = false;
+            }
+            else if(current.matches(";")){
+                INCOMMENT = true;
+            }
+
+            if(INCOMMENT){
+                if(current.matches("[\\s]")){
+                    if(current.matches("\\n")){
+                        inLine = true;
+                        line ++;
+                    }
+                    INCOMMENT = false;
+                }
+                counter ++;
+                continue;
             }
             //A new if statement that identify the eof
             if(counter == source.length()-1){
