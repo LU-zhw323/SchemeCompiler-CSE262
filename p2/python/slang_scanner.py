@@ -1,6 +1,9 @@
 # [CSE 262] This file is a minimal skeleton for a Scheme scanner in Python.  It
 # provides a transliteration of the TokenStream class, and the shell of a
 # Scanner class.  Please see the README.md file for more discussion.
+from curses.ascii import isdigit
+from pickle import NONE
+
 
 class TokenStream:
     def __init__(self, tokens):
@@ -29,7 +32,14 @@ class Scanner:
     def scanTokens(self, source):
         #The source file that we read
         ori_text = TokenStream(source)
+        #boolean flag to determine state
+        PM = False
+        INIT = False
+        INID = False
+        INSTR = False
 
+        #Final TokenStream that we will return
+        token = []
         #line and col to record
         line = 1
         col = 0
@@ -43,16 +53,15 @@ class Scanner:
             while(inline_token.hasNext()):
                 #Take out tokentext from line of tokens
                 tokenText = TokenStream(inline_token.nextToken())
-                while(tokenText.hasNext):
-                    #PM state
-                    if tokenText.nextToken() == '+':
-                        
+                #check INIT
+                
                 col += 1
                 inline_token.popToken()
 
             line_text.popToken()
             line += 1
-            pass
+        
+        return TokenStream(token)
 
 
 def tokenToXml(token):
