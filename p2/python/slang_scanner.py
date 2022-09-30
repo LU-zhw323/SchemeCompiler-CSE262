@@ -66,21 +66,21 @@ class Scanner:
                     for i in range(0, len(tokenText)):
                         if tokenText[i] == '(':
                             if len(tokent)!=0:
-                                temp.append(deter_token(tokent,line,col))
-                                tokent = ""
+                                temp.append(deter_token(tokent,line,col,True))
                                 col += len(tokent)
                                 temp.append(["LPRE", line, col])
+                                tokent = ""
                                 col += 1
                             else:
                                 temp.append(["LPRE", line, col])
                                 col += 1
                         elif tokenText[i] == ')':
                             if len(tokent)!=0:
-                                temp.append(deter_token(tokent,line,col))
-                                tokent = ""
+                                temp.append(deter_token(tokent,line,col,False))
                                 col += len(tokent)
                                 print(col)
                                 temp.append(["RPRE", line, col])
+                                tokent = ""
                                 col += 1
                             else:
                                 temp.append(["RPRE", line, col])
@@ -88,8 +88,12 @@ class Scanner:
                         else: tokent += tokenText[i]
                     col += 1
                 #The rest of the token(doesn't contain '(' or ')' which will break tokens into parts)
-                else: 
-                    temp = deter_token(tokenText, line, col)
+                else:
+                    #Abbrev
+                    if re.match("'", tokenText[0]):
+                       temp.append(["Abbrev", line, col])
+                       tokenText = tokenText[1:len(tokenText)]
+                    temp.append(deter_token(tokenText, line, col, False))
                     col += len(tokenText)
                     col += 1
                 result.append(temp)
@@ -99,35 +103,35 @@ class Scanner:
             line_text.popToken()
             line += 1
             col = 0
-        
+        result.append(["EOF", line, col])
         return TokenStream(result)
 
-def deter_token(tokenText, line, col):
+def deter_token(tokenText, line, col,VCB):
         temp = []
         #INT
         if(re.match("[0-9]", tokenText[0])):
             if tokenText.isdigit(): 
-                temp = ["Int", line, col, tokenText]
+                temp = ["Int", line, col, int(tokenText)]
             #DOUBLE
             elif(tokenText.count('.') == 1 and not tokenText.startswith('.') and not tokenText.endswith('.')):
                     partial_token = tokenText.split('.')
                     if(partial_token[0].isdigit() and partial_token[1].isdigit()):
-                        temp = ["Double", line, col, tokenText]
+                        temp = ["Double", line, col, float(tokenText)]
                     else:  temp = ["Error", line, col, tokenText]
             else: temp = ["Error", line, col, tokenText]
         #PM
         elif(re.match("[+-]", tokenText[0])):
             pm = tokenText[0]
             if len(tokenText) != 1:
-                tokenText = tokenText[1:len(tokenText)-1]
+                tokenText = tokenText[1:len(tokenText)]
                 #PM->INT
                 if(tokenText.isdigit()):
-                    temp = ["Int", line, col, pm+tokenText]
+                    temp = ["Int", line, col, int(pm+tokenText)]
                 #PM->DOUBLE
                 elif(tokenText.count('.') == 1 and not tokenText.startswith('.') and not tokenText.endswith('.')):
                     partial_token = tokenText.split('.')
                     if(partial_token[0].isdigit() and partial_token[1].isdigit()):
-                        temp = ["Double", line, col, tokenText]
+                        temp = ["Double", line, col, float(pm+tokenText)]
                     else:  temp = ["Error", line, col, tokenText]
                 else: temp = ["Error", line, col, pm+tokenText]
             #PM->Identifier
@@ -164,6 +168,34 @@ def deter_token(tokenText, line, col):
                 #Identifier
                 if ID:
                     temp = ["Identifier", line, col, tokenText]
+        #VCB
+        elif(re.match("#", tokenText[0])):
+            if len(tokenText) == 1:
+                #Vector
+                #Which means that this one was passed by the if statement of LPRE
+                if VCB:
+                    temp = ["Vector", line, col]
+                else:
+                    temp = ["Char", line, col]
+            else:
+                #Char
+                if tokenText[1] == '\\':
+                    if len(tokenText) != 3:
+                        temp = ["Error", line, col, tokenText]
+                    else:
+                        temp = ["Char", line, col, tokenText]
+                        
+                #bool
+                elif re.match("[tf]", tokenText[1]):
+                    if len(tokenText) != 3:
+                        temp = ["Error", line, col, tokenText]
+                    else:
+                        temp = ["Bool", line, col, tokenText]
+                else: temp = ["Error", line, col, tokenText]
+        #
+            
+
+        
             
          
         return temp
