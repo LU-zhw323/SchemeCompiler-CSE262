@@ -32,16 +32,6 @@ class Scanner:
     
 
     def scanTokens(self, source):
-        #The source file that we read
-        ori_text = TokenStream(source)
-        #boolean flag to determine state
-        PM = False
-        ININT = False
-        INID = False
-        INSTR = False
-        INDOUBLE = False
-        Error = False
-
         #Final TokenStream that we will return
         result = []
         #line and col to record
@@ -54,13 +44,38 @@ class Scanner:
         while(line_text.hasNext()):
             #Split tokens in each line by \t\r
             inline_token = TokenStream(line_text.nextToken().split())
-            inline = str(line_text.nextNextToken())
-            line_size = 0
+            #Accumulate String
+            Accu_str = ""
+            INSTR = False
             while(inline_token.hasNext()):
                 #Take out tokentext from line of tokens
                 tokent = ""
                 tokenText = str(inline_token.nextToken())
                 temp = []
+                #Concat strings seperated by /t
+                Accu_str += tokenText
+                if not INSTR:
+                    if tokenText.count('"') == 1:
+                        INSTR = True
+                        col += len(tokenText)
+                        col += 1
+                        inline_token.popToken()
+                        if not inline_token.hasNext():
+                            result.append(["Error", line, col, Accu_str])
+                        continue
+                elif INSTR:
+                    if tokenText.count('"') == 1:
+                        INSTR = False
+                        tokenText = Accu_str
+                        Accu_str = ""
+                    else:
+                        col += len(tokenText)
+                        col += 1
+                        inline_token.popToken()
+                        if not inline_token.hasNext():
+                            result.append(["Error", line, col, Accu_str])
+                        continue
+                      
                 #Handle special inline '()'
                 if(tokenText.count('(') != 0 or tokenText.count(')') != 0):
                     for i in range(0, len(tokenText)):
@@ -192,12 +207,14 @@ def deter_token(tokenText, line, col,VCB):
                     else:
                         temp = ["Bool", line, col, tokenText]
                 else: temp = ["Error", line, col, tokenText]
-        #
-            
-
+        #String
+        elif(re.match("\"", tokenText[0])):
+            if(re.match("\"", tokenText[len(tokenText)-1])):
+                temp = ["String", line,col, tokenText[1:len(tokenText)-1]]
+            else: temp = ["Error", line, col, tokenText]
+        #Error
+        else: temp = ["Error", line, col, tokenText]
         
-            
-         
         return temp
 
 
