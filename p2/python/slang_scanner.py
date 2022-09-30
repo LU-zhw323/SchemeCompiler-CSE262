@@ -57,11 +57,10 @@ class Scanner:
                 if not INSTR:
                     if tokenText.count('"') == 1:
                         INSTR = True
-                        col += len(tokenText)
-                        col += 1
                         inline_token.popToken()
                         if not inline_token.hasNext():
                             result.append(["Error", line, col, Accu_str])
+                        col += 1
                         continue
                 elif INSTR:
                     if tokenText.count('"') == 1:
@@ -69,11 +68,10 @@ class Scanner:
                         tokenText = Accu_str
                         Accu_str = ""
                     else:
-                        col += len(tokenText)
-                        col += 1
                         inline_token.popToken()
                         if not inline_token.hasNext():
                             result.append(["Error", line, col, Accu_str])
+                        col += 1
                         continue
                       
                 #Handle special inline '()'
@@ -120,6 +118,8 @@ class Scanner:
             col = 0
         result.append(["EOF", line, col])
         return TokenStream(result)
+
+
 
 def deter_token(tokenText, line, col,VCB):
         temp = []
