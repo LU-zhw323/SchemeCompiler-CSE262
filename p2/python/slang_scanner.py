@@ -3,6 +3,7 @@
 # Scanner class.  Please see the README.md file for more discussion.
 from lib2to3.pgen2 import token
 import re
+from tkinter.messagebox import YES
 
 class TokenStream:
     def __init__(self, tokens):
@@ -66,7 +67,7 @@ class Scanner:
                         if tokenText[i] == '(':
                             if len(tokent)!=0:
                                 temp.append(deter_token(tokent,line,col))
-                    
+                                tokent = ""
                                 col += len(tokent)
                                 temp.append(["LPRE", line, col])
                                 col += 1
@@ -76,7 +77,7 @@ class Scanner:
                         elif tokenText[i] == ')':
                             if len(tokent)!=0:
                                 temp.append(deter_token(tokent,line,col))
-                                #tokent = ""
+                                tokent = ""
                                 col += len(tokent)
                                 print(col)
                                 temp.append(["RPRE", line, col])
@@ -86,7 +87,7 @@ class Scanner:
                                 col += 1
                         else: tokent += tokenText[i]
                     col += 1
-                       
+                #The rest of the token(doesn't contain '(' or ')' which will break tokens into parts)
                 else: 
                     temp = deter_token(tokenText, line, col)
                     col += len(tokenText)
@@ -103,13 +104,68 @@ class Scanner:
 
 def deter_token(tokenText, line, col):
         temp = []
-        if(tokenText.isdigit()):
-            temp = ["Int", line, col, tokenText]
-        elif(tokenText.count('.') == 1 and not tokenText.startswith('.') and not tokenText.endswith('.')):
+        #INT
+        if(re.match("[0-9]", tokenText[0])):
+            if tokenText.isdigit(): 
+                temp = ["Int", line, col, tokenText]
+            #DOUBLE
+            elif(tokenText.count('.') == 1 and not tokenText.startswith('.') and not tokenText.endswith('.')):
                     partial_token = tokenText.split('.')
                     if(partial_token[0].isdigit() and partial_token[1].isdigit()):
-                        temp = ["Int", line, col, tokenText]
+                        temp = ["Double", line, col, tokenText]
                     else:  temp = ["Error", line, col, tokenText]
+            else: temp = ["Error", line, col, tokenText]
+        #PM
+        elif(re.match("[+-]", tokenText[0])):
+            pm = tokenText[0]
+            if len(tokenText) != 1:
+                tokenText = tokenText[1:len(tokenText)-1]
+                #PM->INT
+                if(tokenText.isdigit()):
+                    temp = ["Int", line, col, pm+tokenText]
+                #PM->DOUBLE
+                elif(tokenText.count('.') == 1 and not tokenText.startswith('.') and not tokenText.endswith('.')):
+                    partial_token = tokenText.split('.')
+                    if(partial_token[0].isdigit() and partial_token[1].isdigit()):
+                        temp = ["Double", line, col, tokenText]
+                    else:  temp = ["Error", line, col, tokenText]
+                else: temp = ["Error", line, col, pm+tokenText]
+            #PM->Identifier
+            else:
+                temp = ["Identifier", line, col, pm]
+        #IDENTIFIER
+        elif(re.match("[!$%&*/:<=>?-_^]|[a-z]|[A-Z]", tokenText[0])):
+            ID = True
+            for i in range(1,len(tokenText)):
+                if not re.match("[!$%&*/:<=>?-_^]|[a-z]|[A-Z]|[0-9]|[+-]", tokenText[i]):
+                    temp = ["Error", line, col, tokenText]
+                    ID = False
+                    break
+            #Keyword
+            if tokenText == "and":
+                temp = ["And", line, col]
+            elif tokenText == "begin":
+                temp = ["Begin", line, col]
+            elif tokenText == "cond":
+                temp = ["Cond", line, col]
+            elif tokenText == "if":
+                temp = ["If", line, col]
+            elif tokenText == "quote":
+                temp = ["Quote", line, col]
+            elif tokenText == "define":
+                temp = ["Define", line, col]
+            elif tokenText == "lambda":
+                temp = ["Lambda", line, col]
+            elif tokenText == "or":
+                temp = ["or", line, col]
+            elif tokenText == "set!":
+                temp = ["Set", line, col]
+            else:
+                #Identifier
+                if ID:
+                    temp = ["Identifier", line, col, tokenText]
+            
+         
         return temp
 
 
