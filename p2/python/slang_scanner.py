@@ -47,11 +47,24 @@ class Scanner:
             #Accumulate String
             Accu_str = ""
             INSTR = False
-            while(inline_token.hasNext()):
+            INCOMMENT = False
+            while(inline_token.hasNext() and not INCOMMENT):
                 #Take out tokentext from line of tokens
                 tokent = ""
                 tokenText = str(inline_token.nextToken())
                 temp = []
+                #Delete comment
+                if tokenText.count(';') != 0:
+                    if tokenText.startswith(';'):
+                        INCOMMENT = True
+                        continue
+                    else:
+                        INCOMMENT = True
+                        index_comment = tokenText.find(';',0,len(tokenText))
+                        tokenText = tokenText[0:index_comment]
+                        if len(tokenText) == 0: continue
+                        
+
                 #Concat strings seperated by /t
                 Accu_str += tokenText
                 if not INSTR:
