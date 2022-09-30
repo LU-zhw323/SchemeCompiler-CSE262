@@ -83,22 +83,22 @@ class Scanner:
                             if len(tokent)!=0:
                                 temp.append(deter_token(tokent,line,col,True))
                                 col += len(tokent)
-                                temp.append(["LPRE", line, col])
+                                temp.append(["LPRE", line, i])
                                 tokent = ""
                                 col += 1
                             else:
-                                temp.append(["LPRE", line, col])
+                                temp.append(["LPRE", line, i])
                                 col += 1
                         elif tokenText[i] == ')':
                             if len(tokent)!=0:
                                 temp.append(deter_token(tokent,line,col,False))
                                 col += len(tokent)
                                 print(col)
-                                temp.append(["RPRE", line, col])
+                                temp.append(["RPRE", line, i])
                                 tokent = ""
                                 col += 1
                             else:
-                                temp.append(["RPRE", line, col])
+                                temp.append(["RPRE", line, i])
                                 col += 1
                         else: tokent += tokenText[i]
                     col += 1
