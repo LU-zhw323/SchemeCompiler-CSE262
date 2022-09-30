@@ -28,6 +28,8 @@ class Scanner:
     def __init__(self):
         pass
 
+    
+
     def scanTokens(self, source):
         #The source file that we read
         ori_text = TokenStream(source)
@@ -55,53 +57,60 @@ class Scanner:
             line_size = 0
             while(inline_token.hasNext()):
                 #Take out tokentext from line of tokens
+                tokent = ""
                 tokenText = str(inline_token.nextToken())
                 temp = []
-                if tokenText.count('(') != 0:
-                    num = tokenText.count('(')
-                    for i in range(0 ,len(tokenText)):
-                        if(tokenText[i] == '('):
-                            temp = ["LeftParen", line, col+i]
-                            result.append(temp)
-                    col += num
-                    tokenText = tokenText.replace('(','')
-                elif tokenText.count(')') != 0:
-                    num = tokenText.count(')')
-                    for i in range(0 ,len(tokenText)):
-                        if(tokenText[i] == ')'):
-                            temp = ["RightParen", line, col+i]
-                            result.append(temp)
-                    col += num
-                    tokenText = tokenText.replace(')','')
-                
-
-                if(tokenText.isdigit()):
-                    ININT = True
-                elif(tokenText.count('.') == 1 and not tokenText.startswith('.') and not tokenText.endswith('.')):
-                    partial_token = tokenText.split('.')
-                    if(partial_token[0].isdigit() and partial_token[1].isdigit()):
-                        INDOUBLE = True
-                    else: Error = True
-                
-                if ININT:
-                    temp = ["Int", line ,col, tokenText]
-                    ININT = False
-                elif INDOUBLE:
-                    temp = ["Double", line, col, tokenText]
-                    INDOUBLE = False
-                elif Error:
-                    temp = ["Error", line, col, tokenText]
-                    Error = False
+                #Handle special inline '()'
+                if(tokenText.count('(') != 0 or tokenText.count(')') != 0):
+                    for i in range(0, len(tokenText)):
+                        if tokenText[i] == '(':
+                            if len(tokent)!=0:
+                                temp.append(deter_token(tokent,line,col))
+                    
+                                col += len(tokent)
+                                temp.append(["LPRE", line, col])
+                                col += 1
+                            else:
+                                temp.append(["LPRE", line, col])
+                                col += 1
+                        elif tokenText[i] == ')':
+                            if len(tokent)!=0:
+                                temp.append(deter_token(tokent,line,col))
+                                #tokent = ""
+                                col += len(tokent)
+                                print(col)
+                                temp.append(["RPRE", line, col])
+                                col += 1
+                            else:
+                                temp.append(["RPRE", line, col])
+                                col += 1
+                        else: tokent += tokenText[i]
+                    col += 1
+                       
+                else: 
+                    temp = deter_token(tokenText, line, col)
+                    col += len(tokenText)
+                    col += 1
                 result.append(temp)
                 inline_token.popToken()
-                col += len(tokenText)
-                col += 1
+                
 
             line_text.popToken()
             line += 1
             col = 0
         
         return TokenStream(result)
+
+def deter_token(tokenText, line, col):
+        temp = []
+        if(tokenText.isdigit()):
+            temp = ["Int", line, col, tokenText]
+        elif(tokenText.count('.') == 1 and not tokenText.startswith('.') and not tokenText.endswith('.')):
+                    partial_token = tokenText.split('.')
+                    if(partial_token[0].isdigit() and partial_token[1].isdigit()):
+                        temp = ["Int", line, col, tokenText]
+                    else:  temp = ["Error", line, col, tokenText]
+        return temp
 
 
 def tokenToXml(token):
