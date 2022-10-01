@@ -1,13 +1,16 @@
 ;; charvec2string takes a vector of characters and returns a string
 (define (charvec2string cv)
-    (let f((cv cv)
-            (acc ""));f
+    ;;A inner function to accumulate string to do tail recursion
+    ;;acc-> accumulate string
+    ;;cv-> vector after modify
+    (let f((acc "")
+            (cv cv))
+        ;;Base case where we return accumulate string
         (if(equal? 0 (vector-length cv))
             acc
-            (f (subvector cv 0 (- (vector-length cv) 1)) (string-append acc (make-string 1 (vector-ref x 0))))
+            ;;Recursion, each time we add the head of current vector to string and pop out the head from the current string
+            (f (string-append acc (make-string 1 (vector-ref cv 0))) (subvector cv 1 (vector-length cv)))
         )
             
-    );let
-
-
-);function
+    )
+)
