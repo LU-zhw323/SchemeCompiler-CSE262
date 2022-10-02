@@ -7,7 +7,7 @@
         ;;Each time I increment the position index until it hits the last element
         (if (eq? pos (length l))
             acc
-            ;;Set the corresponding value in the list to vector, then do recursion
+            ;;Set the corresponding value at index 'pos' in the list to vector, then do recursion
             (begin
                 (vector-set! acc pos (list-ref l pos))
                 (f acc l (+ pos 1))
