@@ -16,4 +16,23 @@
 ;;
 ;; Example: (three-zip '(1 2 3 4) '("hi" "bye" "hello") '(a b c))
 ;;          -> ('(1 "hi" a) '(2 "bye" b) '(3 "hello" c) '(4 "hello" c))
-(define (three-zip l1 l2 l3) '())
+(define (three-zip l1 l2 l3) 
+    (define (find-cdr l)
+        (if (null? (cdr l))
+            l
+            (cdr l)
+        )
+    )
+
+    (let f((l1 l1)
+            (l2 l2)
+            (l3 l3)
+            (acc '()))
+        (if (and (and (null? (cdr l1)) (null? (cdr l2))) (null? (cdr l3)))
+            (reverse (cons (list (car l1) (car l2) (car l3)) acc))
+            (f (find-cdr l1) (find-cdr l2) (find-cdr l3) (cons (list (car l1) (car l2) (car l3)) acc))
+        )
+      
+    );let
+
+)
