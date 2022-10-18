@@ -4,6 +4,6 @@ compileJava { options.debug = false }
 
 jar { 
     manifest { 
-        attributes( 'Main-Class': 'edu.lehigh.cse262.jscheme.JScheme' ) 
+        attributes( 'Main-Class': 'edu.lehigh.cse262.slang.Slang' ) 
     } 
 }
