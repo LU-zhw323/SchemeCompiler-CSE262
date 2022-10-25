@@ -4,7 +4,7 @@ package edu.lehigh.cse262.slang.Parser;
  * AstToXml is a visitor that produces, for each AST node, a string
  * representation of that node as XML. Note that this is not the same as an XML
  * file.
- * 
+ *
  * The escaping rules for AstToXml are the same as for TokenToXml.
  *
  * [CSE 262] Unlike TokenToXml, this file does nest some tags inside of other
@@ -215,7 +215,7 @@ public class AstToXml implements IAstVisitor<String> {
             sb.append(((Nodes.BaseNode) i).visitString(this));
         indentation--;
         sb.append("</Vector>\n");
-        return null;
+        return sb.toString();
     }
 
     @Override
