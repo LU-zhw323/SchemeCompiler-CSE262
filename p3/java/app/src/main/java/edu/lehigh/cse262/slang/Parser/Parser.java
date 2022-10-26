@@ -46,7 +46,13 @@ public class Parser {
             if(dat != null){
                 res.add(dat);
             }
-            
+			else{
+				var expres = Expres_node(current, symbol_list, tokens);
+				if(expres != null){
+					res.add(expres);
+				}
+			}
+            /*
             if(current instanceof Tokens.LeftParen){
 				tokens.popToken();
 				current = tokens.nextToken();
@@ -55,6 +61,7 @@ public class Parser {
 					res.add(expres);
 				}
 			}
+			 */
             
 
 
@@ -155,6 +162,13 @@ public class Parser {
 	 */
 	public Nodes.BaseNode Expres_node(Tokens.BaseToken current, List<String> symbol_list,  TokenStream tokens) throws Exception{
 		Nodes.BaseNode res = null;
+		if(tokens.hasNext()){
+			tokens.popToken();
+		}
+		else{
+			throw new Exception("Parsing error");
+		}
+		current = tokens.nextToken();
 		//Speical form quote
 		if(current instanceof Tokens.Quote){
 			IValue datnum = null;
@@ -208,9 +222,9 @@ public class Parser {
 				}
 				current = tokens.nextToken();
 				if(current instanceof Tokens.LeftParen){
-					tokens.popToken();
-					Tokens.BaseToken special = tokens.nextToken();
-					nodes.add(Expres_node(special, symbol_list, tokens));
+					//tokens.popToken();
+					//Tokens.BaseToken special = tokens.nextToken();
+					nodes.add(Expres_node(current, symbol_list, tokens));
 					
 				}
 				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
@@ -257,9 +271,9 @@ public class Parser {
 				}
 				current = tokens.nextToken();
 				if(current instanceof Tokens.LeftParen){
-					tokens.popToken();
-					Tokens.BaseToken special = tokens.nextToken();
-					node = Expres_node(special, symbol_list, tokens);
+					//tokens.popToken();
+					//Tokens.BaseToken special = tokens.nextToken();
+					node = Expres_node(current, symbol_list, tokens);
 					
 				}
 				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
@@ -314,9 +328,9 @@ public class Parser {
 			}
 			next = tokens.nextToken();
 			if(next instanceof Tokens.LeftParen){
-				tokens.popToken();
-				Tokens.BaseToken special = tokens.nextToken();
-				expr = Expres_node(special, symbol_list, tokens);
+				//tokens.popToken();
+				//Tokens.BaseToken special = tokens.nextToken();
+				expr = Expres_node(next, symbol_list, tokens);
 			}
 			else if(next instanceof Tokens.Identifier || next instanceof Tokens.Int || next instanceof Tokens.Dbl || next instanceof Tokens.Bool || next instanceof Tokens.Char || next instanceof Tokens.Str){
 				expr = Data_node(next, symbol_list, tokens);
@@ -338,15 +352,19 @@ public class Parser {
 				throw new Exception("Set error");
 			}
 		}
+		//Special form Tick
+		else if(current instanceof Tokens.Abbrev){
+
+		}
 		//Basic application(defult form)
 		else{
 			List<Nodes.BaseNode> nodes = new ArrayList<>();
 			while(tokens.hasNext()){
 				current = tokens.nextToken();
 				if(current instanceof Tokens.LeftParen){
-					tokens.popToken();
-					Tokens.BaseToken special = tokens.nextToken();
-					nodes.add(Expres_node(special, symbol_list, tokens));
+					//tokens.popToken();
+					//Tokens.BaseToken special = tokens.nextToken();
+					nodes.add(Expres_node(current, symbol_list, tokens));
 				}
 				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
 					nodes.add(Data_node(current, symbol_list, tokens));
