@@ -289,6 +289,55 @@ public class Parser {
 				expre_count += 1;
 			}
 		}
+		//Special form set!
+		else if(current instanceof Tokens.Set){
+			Nodes.Identifier id = null;
+			Nodes.BaseNode expr = null;
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Parsing error");
+			}
+			var next = tokens.nextToken();
+			if(next instanceof Tokens.Identifier){
+				id = (Nodes.Identifier)Data_node(next,symbol_list, tokens);
+			}
+			else{
+				throw new Exception("Set error");
+			}
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Set error");
+			}
+			next = tokens.nextToken();
+			if(next instanceof Tokens.LeftParen){
+				tokens.popToken();
+				Tokens.BaseToken special = tokens.nextToken();
+				expr = Expres_node(special, symbol_list, tokens);
+			}
+			else if(next instanceof Tokens.Identifier || next instanceof Tokens.Int || next instanceof Tokens.Dbl || next instanceof Tokens.Bool || next instanceof Tokens.Char || next instanceof Tokens.Str){
+				expr = Data_node(next, symbol_list, tokens);
+			}
+			else{
+				throw new Exception("Set error");
+			}
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Set error");
+			}
+			next = tokens.nextToken();
+			if(next instanceof Tokens.RightParen){
+				res = new Nodes.Set(id, expr);
+			}
+			else{
+				throw new Exception("Set error");
+			}
+		}
 		//Basic application(defult form)
 		else{
 			List<Nodes.BaseNode> nodes = new ArrayList<>();
