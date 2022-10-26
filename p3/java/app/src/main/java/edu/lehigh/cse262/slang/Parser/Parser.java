@@ -184,9 +184,21 @@ public class Parser {
 				throw new Exception("Quote error");
 			}
 		}
-		//Speical form and
-		else if(current instanceof Tokens.And){
+		//Speical form and, begin, or
+		else if(current instanceof Tokens.And || current instanceof Tokens.Begin || current instanceof Tokens.Or){
 			List<Nodes.BaseNode> nodes = new ArrayList<>();
+			boolean and = false;
+			boolean begin = false;
+			boolean or = false;
+			if(current instanceof Tokens.And){
+				and = true;
+			}
+			else if(current instanceof Tokens.Begin){
+				begin = true;
+			}
+			else{
+				or = true;
+			}
 			while(tokens.hasNext()){
 				if(tokens.hasNext()){
 					tokens.popToken();
@@ -205,7 +217,15 @@ public class Parser {
 					nodes.add(Data_node(current, symbol_list, tokens));
 				}
 				else if(current instanceof Tokens.RightParen){
-					res = new Nodes.And(nodes);
+					if(and){
+						res = new Nodes.And(nodes);
+					}
+					else if(begin){
+						res = new Nodes.Begin(nodes);
+					}
+					else if(or){
+						res = new Nodes.Or(nodes);
+					}
 					nodes = null;
 					break;
 				}
