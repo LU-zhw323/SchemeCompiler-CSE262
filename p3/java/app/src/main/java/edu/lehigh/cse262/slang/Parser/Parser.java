@@ -162,6 +162,24 @@ public class Parser {
 	 */
 	public Nodes.BaseNode Expres_node(Tokens.BaseToken current, List<String> symbol_list,  TokenStream tokens) throws Exception{
 		Nodes.BaseNode res = null;
+		//Special form Tick
+		if(current instanceof Tokens.Abbrev){
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Parsing error");
+			}
+			var datnum = Data_node(tokens.nextToken(), symbol_list, tokens);
+			if(datnum == null){
+				throw new Exception("Tick error");
+			}
+			else{
+				IValue node = (IValue) datnum;
+				res = new Nodes.Tick(node);
+				return res;
+			}
+		}
 		if(tokens.hasNext()){
 			tokens.popToken();
 		}
@@ -351,10 +369,6 @@ public class Parser {
 			else{
 				throw new Exception("Set error");
 			}
-		}
-		//Special form Tick
-		else if(current instanceof Tokens.Abbrev){
-
 		}
 		//Basic application(defult form)
 		else{
