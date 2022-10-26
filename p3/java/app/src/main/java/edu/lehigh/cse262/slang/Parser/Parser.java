@@ -153,15 +153,15 @@ public class Parser {
 	 */
 	public Nodes.BaseNode Expres_node(Tokens.BaseToken current, List<String> symbol_list,  TokenStream tokens) throws Exception{
 		Nodes.BaseNode res = null;
-		if(tokens.hasNext()){
-			tokens.popToken();
-		}
-		else{
-			throw new Exception("Parsing error");
-		}
-		Tokens.BaseToken special = tokens.nextToken();
 		//Speical form quote
-		if(special instanceof Tokens.Quote){
+		if(tokens.nextNextToken() instanceof Tokens.Quote){
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Parsing error");
+			}
+			Tokens.BaseToken special = tokens.nextToken();
 			IValue datnum = null;
 			if(tokens.hasNext()){
 				tokens.popToken();
@@ -193,6 +193,7 @@ public class Parser {
 		else{
 			List<Nodes.BaseNode> nodes = new ArrayList<>();
 			while(tokens.hasNext()){
+				Tokens.BaseToken special = tokens.nextToken();
 				if(special instanceof Tokens.LeftParen){
 					nodes.add(Expres_node(special, symbol_list, tokens));
 				}
