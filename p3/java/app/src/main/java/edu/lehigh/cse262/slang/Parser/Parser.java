@@ -48,6 +48,8 @@ public class Parser {
             }
             
             if(current instanceof Tokens.LeftParen){
+				tokens.popToken();
+				current = tokens.nextToken();
 				var expres = Expres_node(current, symbol_list, tokens);
 				if(expres != null){
 					res.add(expres);
@@ -154,14 +156,7 @@ public class Parser {
 	public Nodes.BaseNode Expres_node(Tokens.BaseToken current, List<String> symbol_list,  TokenStream tokens) throws Exception{
 		Nodes.BaseNode res = null;
 		//Speical form quote
-		if(tokens.nextNextToken() instanceof Tokens.Quote){
-			if(tokens.hasNext()){
-				tokens.popToken();
-			}
-			else{
-				throw new Exception("Parsing error");
-			}
-			Tokens.BaseToken special = tokens.nextToken();
+		if(current instanceof Tokens.Quote){
 			IValue datnum = null;
 			if(tokens.hasNext()){
 				tokens.popToken();
@@ -193,14 +188,19 @@ public class Parser {
 		else{
 			List<Nodes.BaseNode> nodes = new ArrayList<>();
 			while(tokens.hasNext()){
-				Tokens.BaseToken special = tokens.nextToken();
-				if(special instanceof Tokens.LeftParen){
+				current = tokens.nextToken();
+				if(current instanceof Tokens.LeftParen){
+					tokens.popToken();
+					Tokens.BaseToken special = tokens.nextToken();
 					nodes.add(Expres_node(special, symbol_list, tokens));
 				}
-				else if(special instanceof Tokens.Identifier || special instanceof Tokens.Int || special instanceof Tokens.Dbl || special instanceof Tokens.Bool || special instanceof Tokens.Char || special instanceof Tokens.Str){
-					nodes.add(Data_node(special, symbol_list, tokens));
+				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
+					nodes.add(Data_node(current, symbol_list, tokens));
 				}
-				else if(special instanceof Tokens.RightParen){
+				else if(current instanceof Tokens.RightParen){
+					if(nodes == null){
+						throw new Exception("Application error");
+					}
 					res = new Nodes.Apply(nodes);
 					nodes = null;
 					break;
