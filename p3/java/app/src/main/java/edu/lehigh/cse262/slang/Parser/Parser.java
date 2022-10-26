@@ -40,66 +40,55 @@ public class Parser {
 		int pop_count = 0;
         while(tokens.hasNext()){
             Tokens.BaseToken current = tokens.nextToken();
-            //Where this is a new line
-            if(ini_line != out_line){
-                if(VEC){
-                    VEC = false;
-                    throw new Exception("Vector error");
-                }
-            }
+            
             //Basic datnum
-            var dat = Data_node(current, symbol_list);
+            var dat = Data_node(current, symbol_list, tokens);
             if(dat != null){
                 res.add(dat);
             }
             
-            //Vector <datnum>
-            if(current instanceof Tokens.Vec){
-				tokens.popToken();
-				int ini_line = 0;
-        		int out_line = ini_line;
-				//Value list for vector
-				List<IValue> datnum = new ArrayList<>();
-				while(tokens.hasNext()){
-					Tokens.BaseToken next = tokens.nextToken();
-					ini_line = current.line;
-					if(ini_line != out_line){
-						throw new Exception("Vector error");
-					}
-					if(next instanceof Tokens.LeftParen){
-						throw new Exception("Vector error");
-					}
-					else if(next instanceof Tokens.RightParen){
-						var node = new Nodes.Vec(datnum);
-						res.add(node);
-						datnum = null;
-						break;
-					}
-					var temp = Data_node(next,symbol_list);
-					if(temp instanceof Nodes.Identifier){
-						throw new Exception("vector error");
-					}
-					IValue x = (IValue)temp;
-					datnum.add(x);
-					tokens.popToken();
-					out_line = ini_line;	
-				}
-				if(datnum != null){
-					throw new Exception("Vector error");
-				}
-            }
-            else if(current instanceof Tokens.LeftParen){
-                Tokens.BaseToken next = null;
-                if(tokens.hasNextNext()){
-                    next = tokens.nextNextToken();
+            if(current instanceof Tokens.LeftParen){
+                if(tokens.hasNext()){
+                    tokens.popToken();
                 }
                 else{
                     throw new Exception("Parsing error");
                 }
-                if(next instanceof Tokens.Quote){
-                    quote = true;
-                }
-            }
+				Tokens.BaseToken special = tokens.nextToken();
+				//Speical form quote
+				if(special instanceof Tokens.Quote){
+					IValue datnum = null;
+					if(tokens.hasNext()){
+						tokens.popToken();
+					}
+					else{
+						throw new Exception("Parsing error");
+					}
+					Tokens.BaseToken next = tokens.nextToken();
+					if(next instanceof Tokens.LeftParen || next instanceof Tokens.RightParen){
+						throw new Exception("Quote error");
+					}
+					var node = Data_node(next, symbol_list, tokens);
+					if(tokens.hasNext()){
+						tokens.popToken();
+					}
+					else{
+						throw new Exception("Quote error");
+					}
+					Tokens.BaseToken end = tokens.nextToken();
+					if(end instanceof Tokens.RightParen){
+						datnum = (IValue) node;
+						res.add(new Nodes.Quote(datnum)); 
+					}
+					else{
+						throw new Exception("Quote error");
+					}
+				}
+				//Basic application(defult form)
+				else{
+
+				}
+			}
             
 
 
@@ -113,12 +102,16 @@ public class Parser {
 
     /**
      * Helper function to determine the datnum 
-     * @param token token to passin
-     * 
+     * @param current token to passin
+     * @param symbol_list list of name of symbol
+	 * @param tokens TokenStream that we are workding on
+	 * 
+	 * 
+	 * 
      * @return The corresponding node for that token
      * 
      */
-    public Nodes.BaseNode Data_node(Tokens.BaseToken current, List<String> symbol_list){
+    public Nodes.BaseNode Data_node(Tokens.BaseToken current, List<String> symbol_list, TokenStream tokens) throws Exception{
         Nodes.BaseNode res = null;
         //Int <datum>
         if(current instanceof Tokens.Int){
@@ -157,7 +150,38 @@ public class Parser {
             }
             
         }
+		//Vector <datnum>
+		else if(current instanceof Tokens.Vec){
+			tokens.popToken();
+			//Value list for vector
+			List<IValue> datnum = new ArrayList<>();
+			while(tokens.hasNext()){
+				Tokens.BaseToken next = tokens.nextToken();
+				if(next instanceof Tokens.LeftParen){
+					throw new Exception("Vector error");
+				}
+				else if(next instanceof Tokens.RightParen){
+					res = new Nodes.Vec(datnum);
+					datnum = null;
+					break;
+				}
+				var temp = Data_node(next,symbol_list, tokens);
+				if(temp instanceof Nodes.Identifier){
+					throw new Exception("vector error");
+				}
+				IValue x = (IValue)temp;
+				datnum.add(x);
+				tokens.popToken();	
+			}
+			if(datnum != null){
+				throw new Exception("Vector error");
+			}
+		}
         return res;
-
     }
+
+	/**
+	 * Helper function to build expression
+	 * @param 
+	 */
 }
