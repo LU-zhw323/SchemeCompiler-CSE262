@@ -238,6 +238,57 @@ public class Parser {
 				throw new Exception("And error");
 			}
 		}
+		//Special form if
+		else if(current instanceof Tokens.If){
+			Nodes.BaseNode cond = null;
+			Nodes.BaseNode ifTure = null;
+			Nodes.BaseNode ifFalse = null;
+			int expre_count = 1;
+			while(tokens.hasNext()){
+				Nodes.BaseNode node = null;
+				if(tokens.hasNext()){
+					tokens.popToken();
+				}
+				else{
+					throw new Exception("Parsing error");
+				}
+				if(expre_count > 4){
+					throw new Exception("If error");
+				}
+				current = tokens.nextToken();
+				if(current instanceof Tokens.LeftParen){
+					tokens.popToken();
+					Tokens.BaseToken special = tokens.nextToken();
+					node = Expres_node(special, symbol_list, tokens);
+					
+				}
+				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
+					node = Data_node(current, symbol_list, tokens);
+				}
+				else if(current instanceof Tokens.RightParen){
+					if(expre_count < 4){
+						throw new Exception("If error");
+					}
+					res = new Nodes.If(cond,ifTure, ifFalse);
+					break;
+				}
+				else{
+					throw new Exception("If error");
+				}
+				switch(expre_count){
+					case 1: 
+						cond = node;
+						break;
+					case 2:
+						ifTure = node;
+						break;
+					case 3:
+						ifFalse = node;
+						break;
+				}
+				expre_count += 1;
+			}
+		}
 		//Basic application(defult form)
 		else{
 			List<Nodes.BaseNode> nodes = new ArrayList<>();
