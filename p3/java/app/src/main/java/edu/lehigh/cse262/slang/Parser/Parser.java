@@ -48,45 +48,9 @@ public class Parser {
             }
             
             if(current instanceof Tokens.LeftParen){
-                if(tokens.hasNext()){
-                    tokens.popToken();
-                }
-                else{
-                    throw new Exception("Parsing error");
-                }
-				Tokens.BaseToken special = tokens.nextToken();
-				//Speical form quote
-				if(special instanceof Tokens.Quote){
-					IValue datnum = null;
-					if(tokens.hasNext()){
-						tokens.popToken();
-					}
-					else{
-						throw new Exception("Parsing error");
-					}
-					Tokens.BaseToken next = tokens.nextToken();
-					if(next instanceof Tokens.LeftParen || next instanceof Tokens.RightParen){
-						throw new Exception("Quote error");
-					}
-					var node = Data_node(next, symbol_list, tokens);
-					if(tokens.hasNext()){
-						tokens.popToken();
-					}
-					else{
-						throw new Exception("Quote error");
-					}
-					Tokens.BaseToken end = tokens.nextToken();
-					if(end instanceof Tokens.RightParen){
-						datnum = (IValue) node;
-						res.add(new Nodes.Quote(datnum)); 
-					}
-					else{
-						throw new Exception("Quote error");
-					}
-				}
-				//Basic application(defult form)
-				else{
-
+				var expres = Expres_node(current, symbol_list, tokens);
+				if(expres != null){
+					res.add(expres);
 				}
 			}
             
@@ -182,6 +146,74 @@ public class Parser {
 
 	/**
 	 * Helper function to build expression
-	 * @param 
+	 * @param current token that we uesed to determine the form
+	 * @param tokens TokenStream
+	 * 
+	 * @return The node of expression
 	 */
+	public Nodes.BaseNode Expres_node(Tokens.BaseToken current, List<String> symbol_list,  TokenStream tokens) throws Exception{
+		Nodes.BaseNode res = null;
+		if(tokens.hasNext()){
+			tokens.popToken();
+		}
+		else{
+			throw new Exception("Parsing error");
+		}
+		Tokens.BaseToken special = tokens.nextToken();
+		//Speical form quote
+		if(special instanceof Tokens.Quote){
+			IValue datnum = null;
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Parsing error");
+			}
+			Tokens.BaseToken next = tokens.nextToken();
+			if(next instanceof Tokens.LeftParen || next instanceof Tokens.RightParen){
+				throw new Exception("Quote error");
+			}
+			var node = Data_node(next, symbol_list, tokens);
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Quote error");
+			}
+			Tokens.BaseToken end = tokens.nextToken();
+			if(end instanceof Tokens.RightParen){
+				datnum = (IValue) node;
+				res = new Nodes.Quote(datnum); 
+			}
+			else{
+				throw new Exception("Quote error");
+			}
+		}
+		//Basic application(defult form)
+		else{
+			List<Nodes.BaseNode> nodes = new ArrayList<>();
+			while(tokens.hasNext()){
+				if(special instanceof Tokens.LeftParen){
+					nodes.add(Expres_node(special, symbol_list, tokens));
+				}
+				else if(special instanceof Tokens.Identifier || special instanceof Tokens.Int || special instanceof Tokens.Dbl || special instanceof Tokens.Bool || special instanceof Tokens.Char || special instanceof Tokens.Str){
+					nodes.add(Data_node(special, symbol_list, tokens));
+				}
+				else if(special instanceof Tokens.RightParen){
+					res = new Nodes.Apply(nodes);
+					nodes = null;
+					break;
+				}
+				else{
+					throw new Exception("Application error");
+				}
+				tokens.popToken();
+			}
+			if(nodes != null){
+				throw new Exception("Application error");
+			}
+			
+		}
+		return res;
+	}
 }
