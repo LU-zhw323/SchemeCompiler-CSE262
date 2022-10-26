@@ -262,12 +262,12 @@ public class Parser {
 					break;
 				}
 				else{
-					throw new Exception("And error");
+					throw new Exception("And, Begin, Or error");
 				}
 				//tokens.popToken();
 			}
 			if(nodes != null){
-				throw new Exception("And error");
+				throw new Exception("And, Begin, Or error");
 			}
 		}
 		//Special form if
@@ -321,10 +321,18 @@ public class Parser {
 				expre_count += 1;
 			}
 		}
-		//Special form set!
-		else if(current instanceof Tokens.Set){
+		//Special form set! & define
+		else if(current instanceof Tokens.Set || current instanceof Tokens.Define){
 			Nodes.Identifier id = null;
 			Nodes.BaseNode expr = null;
+			boolean set = false;
+			boolean define = false;
+			if(current instanceof Tokens.Set){
+				set = true;
+			}
+			else{
+				define = true;
+			}
 			if(tokens.hasNext()){
 				tokens.popToken();
 			}
@@ -334,15 +342,19 @@ public class Parser {
 			var next = tokens.nextToken();
 			if(next instanceof Tokens.Identifier){
 				id = (Nodes.Identifier)Data_node(next,symbol_list, tokens);
+				if(define){
+					String name = ((Tokens.Identifier)next).tokenText;
+					symbol_list.add(name);
+				}
 			}
 			else{
-				throw new Exception("Set error");
+				throw new Exception("Set, define error");
 			}
 			if(tokens.hasNext()){
 				tokens.popToken();
 			}
 			else{
-				throw new Exception("Set error");
+				throw new Exception("Set,define error");
 			}
 			next = tokens.nextToken();
 			if(next instanceof Tokens.LeftParen){
@@ -354,20 +366,26 @@ public class Parser {
 				expr = Data_node(next, symbol_list, tokens);
 			}
 			else{
-				throw new Exception("Set error");
+				throw new Exception("Set,define error");
 			}
 			if(tokens.hasNext()){
 				tokens.popToken();
 			}
 			else{
-				throw new Exception("Set error");
+				throw new Exception("Set,define error");
 			}
 			next = tokens.nextToken();
 			if(next instanceof Tokens.RightParen){
-				res = new Nodes.Set(id, expr);
+				if (set){
+					res = new Nodes.Set(id, expr);
+				}
+				else if(define){
+					res = new Nodes.Define(id,expr);
+				}
+
 			}
 			else{
-				throw new Exception("Set error");
+				throw new Exception("Set,define error");
 			}
 		}
 		//Basic application(defult form)
