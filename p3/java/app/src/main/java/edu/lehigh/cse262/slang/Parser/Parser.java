@@ -184,6 +184,40 @@ public class Parser {
 				throw new Exception("Quote error");
 			}
 		}
+		//Speical form and
+		else if(current instanceof Tokens.And){
+			List<Nodes.BaseNode> nodes = new ArrayList<>();
+			while(tokens.hasNext()){
+				if(tokens.hasNext()){
+					tokens.popToken();
+				}
+				else{
+					throw new Exception("Parsing error");
+				}
+				current = tokens.nextToken();
+				if(current instanceof Tokens.LeftParen){
+					tokens.popToken();
+					Tokens.BaseToken special = tokens.nextToken();
+					nodes.add(Expres_node(special, symbol_list, tokens));
+					
+				}
+				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
+					nodes.add(Data_node(current, symbol_list, tokens));
+				}
+				else if(current instanceof Tokens.RightParen){
+					res = new Nodes.And(nodes);
+					nodes = null;
+					break;
+				}
+				else{
+					throw new Exception("And error");
+				}
+				//tokens.popToken();
+			}
+			if(nodes != null){
+				throw new Exception("And error");
+			}
+		}
 		//Basic application(defult form)
 		else{
 			List<Nodes.BaseNode> nodes = new ArrayList<>();
