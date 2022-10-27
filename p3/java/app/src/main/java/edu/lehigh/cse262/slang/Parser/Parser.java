@@ -152,12 +152,7 @@ public class Parser {
 		}
 		//Cons <datum>
 		else if(current instanceof Tokens.LeftParen){
-			boolean expres = true;
-			tokens.popToken();
-			current = tokens.nextToken();
-			if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str || current instanceof Tokens.Vec){
-
-			}
+			
 		}
         return res;
     }
@@ -407,6 +402,7 @@ public class Parser {
 		//Special form cond
 		else if(current instanceof Tokens.Cond){
 			List<Nodes.Cond.Condition> conditions = new ArrayList<>();
+			System.out.println("yes");
 			//Outer loop for cond
 			while(tokens.hasNext()){
 				if(tokens.hasNext()){
@@ -485,6 +481,81 @@ public class Parser {
 			}
 			if(conditions != null){
 				throw new Exception("Cond error");
+			}
+		}
+		//Special form Lambda
+		else if(current instanceof Tokens.Lambda){
+			List<Nodes.Identifier> ids = new ArrayList<>();
+			List<Nodes.BaseNode> bodys = new ArrayList<>();
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Parsing error");
+			}
+			current = tokens.nextToken();
+			//Get formal
+			if(current instanceof Tokens.LeftParen){
+				boolean form = false;
+				while(tokens.hasNext()){
+					tokens.popToken();
+					current = tokens.nextToken();
+					if(current instanceof Tokens.Identifier){
+						ids.add((Nodes.Identifier)Data_node(current,symbol_list,tokens));
+						form = true;
+					}
+					else if(current instanceof Tokens.RightParen){
+						form = false;
+						break;
+					}
+					else{
+						throw new Exception("Lambda error");
+					}
+				}
+				if(form){
+					throw new Exception("Lambdae error");
+				}
+			}
+			//Get body
+			if(tokens.hasNext()){
+				tokens.popToken();
+			}
+			else{
+				throw new Exception("Lambda error");
+			}
+			current = tokens.nextToken();//括号
+			if(current instanceof Tokens.LeftParen){
+				boolean def = false;
+				while(tokens.hasNext()){
+					current = tokens.nextToken();
+					if(current instanceof Tokens.RightParen){
+						def = false;
+						break;
+					}
+					var node = Expres_node(current,symbol_list,tokens);
+					def = true;
+					if(node != null){
+						if(node instanceof Nodes.Define){
+							bodys.add(node);
+						}
+						else{
+							bodys.add(node);
+							def = false;
+							break;
+						}
+					}
+					else{
+						throw new Exception("Lambda error");
+					}
+					tokens.popToken();
+				}
+				if(bodys == null || def == true){
+					throw new Exception("Lambda error");
+				}
+				res = new Nodes.LambdaDef(ids, bodys);
+			}
+			else{
+				throw new Exception("Lambda error");
 			}
 		}
 		//Basic application(defult form)
