@@ -388,6 +388,86 @@ public class Parser {
 				throw new Exception("Set,define error");
 			}
 		}
+		//Special form cond
+		else if(current instanceof Tokens.Cond){
+			Nodes.BaseNode test = null;
+			List<Nodes.BaseNode> expressions = new ArrayList<>();
+			List<Nodes.Cond.Condition> conditions = new ArrayList<>();
+			//Outer loop for cond
+			while(tokens.hasNext()){
+				if(tokens.hasNext()){
+					tokens.popToken();
+				}
+				else{
+					throw new Exception("Parsing error");
+				}
+				current = tokens.nextToken();
+				//Into single condition
+				if(current instanceof Tokens.LeftParen){
+					int expre_count = 1;
+					while(tokens.hasNext()){
+						if(tokens.hasNext()){
+							tokens.popToken();
+						}
+						else{
+							throw new Exception("Parsing error");
+						}
+						var next = tokens.nextToken();
+						if(next instanceof Tokens.LeftParen){
+							var node = Expres_node(next,symbol_list, tokens);
+							if(expre_count == 1){
+								test = node;
+							}
+							else{
+								expressions.add(node);
+							}
+						}
+						else if(next instanceof Tokens.Identifier || next instanceof Tokens.Int || next instanceof Tokens.Dbl || next instanceof Tokens.Bool || next instanceof Tokens.Char || next instanceof Tokens.Str){
+							var node = Data_node(next, symbol_list, tokens);
+							if(expre_count == 1){
+								test = node;
+							}
+							else{
+								expressions.add(node);
+							}
+						}
+						else if(next instanceof Tokens.RightParen){
+							var temp = new Nodes.Cond.Condition(test,expressions);
+							conditions.add(temp);
+							test = null;
+							expressions = null;
+							expre_count = 1;
+							break;
+						}
+						else{
+							throw new Exception("Cond error");
+						}
+						expre_count += 1;
+					}
+					if(test != null || expressions != null){
+						throw new Exception("Cond error");
+					}
+				}
+				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
+
+				}
+				else if(current instanceof Tokens.RightParen){
+					if(conditions == null){
+						throw new Exception("Cond error");
+					}
+					res = new Nodes.Cond(conditions);
+					conditions = null;
+					break;
+				}
+				else{
+					throw new Exception("Cond error");
+				}
+				
+			}
+			if(conditions != null){
+				throw new Exception("Cond error");
+			}
+		}
 		//Basic application(defult form)
 		else{
 			List<Nodes.BaseNode> nodes = new ArrayList<>();
