@@ -150,11 +150,40 @@ public class Parser {
 				throw new Exception("Vector error");
 			}
 		}
-		//Cons <datum>
-		else if(current instanceof Tokens.LeftParen){
-			
+		//Cons <datnum>
+		else if(current instanceof Tokens.Abbrev){
+			if(tokens.hasNext()){
+				tokens.popToken();
+				if((tokens.nextToken() instanceof Tokens.LeftParen) == false){
+					return res;
+				}
+			}
+			else{
+				throw new Exception("Parsing error");
+			}
+			List<IValue> nodes = new ArrayList<>();
+			while(tokens.hasNext()){
+				if(tokens.hasNext()){
+					tokens.popToken();
+				}
+				else{
+					throw new Exception("Parsing error");
+				}
+				current = tokens.nextToken();
+				if(current instanceof Tokens.RightParen){
+					res = new Nodes.Cons(nodes, null);
+					nodes = null;
+					break;
+				}
+				var node = Data_node(current,symbol_list,tokens);
+				if(node == null){
+					throw new Exception("Cons error");
+				}
+				IValue temp = (IValue) node;
+				nodes.add(temp);
+			}
 		}
-        return res;
+		return res;
     }
 
 	/**
@@ -402,7 +431,6 @@ public class Parser {
 		//Special form cond
 		else if(current instanceof Tokens.Cond){
 			List<Nodes.Cond.Condition> conditions = new ArrayList<>();
-			System.out.println("yes");
 			//Outer loop for cond
 			while(tokens.hasNext()){
 				if(tokens.hasNext()){
