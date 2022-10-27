@@ -150,6 +150,15 @@ public class Parser {
 				throw new Exception("Vector error");
 			}
 		}
+		//Cons <datum>
+		else if(current instanceof Tokens.LeftParen){
+			boolean expres = true;
+			tokens.popToken();
+			current = tokens.nextToken();
+			if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str || current instanceof Tokens.Vec){
+
+			}
+		}
         return res;
     }
 
@@ -246,7 +255,11 @@ public class Parser {
 					
 				}
 				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
-					nodes.add(Data_node(current, symbol_list, tokens));
+					var temp = Data_node(current, symbol_list, tokens);
+					if(temp instanceof Nodes.Symbol){
+						throw new Exception("Use symbol as expression");
+					}
+					nodes.add(temp);
 				}
 				else if(current instanceof Tokens.RightParen){
 					if(and){
@@ -296,6 +309,9 @@ public class Parser {
 				}
 				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
 					node = Data_node(current, symbol_list, tokens);
+					if(node instanceof Nodes.Symbol){
+						throw new Exception("Use symbol as expression");
+					}
 				}
 				else if(current instanceof Tokens.RightParen){
 					if(expre_count < 4){
@@ -425,6 +441,9 @@ public class Parser {
 						}
 						else if(next instanceof Tokens.Identifier || next instanceof Tokens.Int || next instanceof Tokens.Dbl || next instanceof Tokens.Bool || next instanceof Tokens.Char || next instanceof Tokens.Str){
 							var node = Data_node(next, symbol_list, tokens);
+							if(node instanceof Nodes.Symbol){
+								throw new Exception("Use symbol as expression");
+							}
 							if(expre_count == 1){
 								test = node;
 							}
@@ -479,7 +498,11 @@ public class Parser {
 					nodes.add(Expres_node(current, symbol_list, tokens));
 				}
 				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
-					nodes.add(Data_node(current, symbol_list, tokens));
+					var temp = Data_node(current, symbol_list, tokens);
+					if(temp instanceof Nodes.Symbol){
+						throw new Exception("Use symbol as expression");
+					}
+					nodes.add(temp);
 				}
 				else if(current instanceof Tokens.RightParen){
 					if(nodes == null){
