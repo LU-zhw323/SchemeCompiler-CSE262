@@ -526,6 +526,7 @@ public class Parser {
 			current = tokens.nextToken();//括号
 			if(current instanceof Tokens.LeftParen){
 				boolean def = false;
+				int expre_count = 0;
 				while(tokens.hasNext()){
 					current = tokens.nextToken();
 					if(current instanceof Tokens.RightParen){
@@ -539,9 +540,13 @@ public class Parser {
 							bodys.add(node);
 						}
 						else{
-							bodys.add(node);
-							def = false;
-							break;
+							if(expre_count == 0){
+								bodys.add(node);
+								expre_count++;
+							}
+							else{
+								throw new Exception("Lambda error");
+							}
 						}
 					}
 					else{
