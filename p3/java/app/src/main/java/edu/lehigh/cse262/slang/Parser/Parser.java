@@ -390,9 +390,9 @@ public class Parser {
 		}
 		//Special form cond
 		else if(current instanceof Tokens.Cond){
+			List<Nodes.Cond.Condition> conditions = new ArrayList<>();
 			Nodes.BaseNode test = null;
 			List<Nodes.BaseNode> expressions = new ArrayList<>();
-			List<Nodes.Cond.Condition> conditions = new ArrayList<>();
 			//Outer loop for cond
 			while(tokens.hasNext()){
 				if(tokens.hasNext()){
@@ -432,11 +432,13 @@ public class Parser {
 							}
 						}
 						else if(next instanceof Tokens.RightParen){
+							if(test == null || expressions.isEmpty()){
+								throw new Exception("Cond error");
+							}
 							var temp = new Nodes.Cond.Condition(test,expressions);
 							conditions.add(temp);
 							test = null;
-							expressions = null;
-							expre_count = 1;
+							expressions.clear();
 							break;
 						}
 						else{
@@ -444,19 +446,16 @@ public class Parser {
 						}
 						expre_count += 1;
 					}
-					if(test != null || expressions != null){
+					if(test != null || !expressions.isEmpty()){
 						throw new Exception("Cond error");
 					}
 				}
-				else if(current instanceof Tokens.Identifier || current instanceof Tokens.Int || current instanceof Tokens.Dbl || current instanceof Tokens.Bool || current instanceof Tokens.Char || current instanceof Tokens.Str){
-
-				}
 				else if(current instanceof Tokens.RightParen){
-					if(conditions == null){
+					if(conditions.isEmpty()){
 						throw new Exception("Cond error");
 					}
 					res = new Nodes.Cond(conditions);
-					conditions = null;
+					conditions.clear();
 					break;
 				}
 				else{
@@ -464,7 +463,7 @@ public class Parser {
 				}
 				
 			}
-			if(conditions != null){
+			if(!conditions.isEmpty()){
 				throw new Exception("Cond error");
 			}
 		}
