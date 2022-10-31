@@ -1,4 +1,4 @@
-package edu.lehigh.cse262.slang.Scanner;
+package edu.lehigh.cse262.jscheme.Scanner;
 
 import java.util.ArrayList;
 
@@ -11,10 +11,10 @@ public class XmlToTokens {
     /** Remove escape characters from a string */
     private static String unescape(String s) {
         var unescaped = s
-                .replace("'", "\\'")
-                .replace("\n", "\\n")
-                .replace("\t", "\\t")
-                .replace("\\", "\\\\"); // must do this last!
+                .replace("\\'", "'")
+                .replace("\\n", "\n")
+                .replace("\\t", "\t")
+                .replace("\\\\", "\\"); // must do this last!
         return unescaped;
     }
 
@@ -52,6 +52,12 @@ public class XmlToTokens {
             int valStart = token.indexOf("val=");
             int valEnd = token.length() - 3;
 
+            // Sam Whitton suggested adding this code, which consumes a trailing
+            // '\r', so that \r\n line endings on Windows machines don't cause
+            // problems.
+            if (token.charAt(token.length() - 1) == '\r')
+                valEnd--;
+
             // It's pretty straightforward to re-create the scanned tokens from
             // here
             if (type.equals("AbbrevToken")) {
@@ -72,13 +78,13 @@ public class XmlToTokens {
                 if (val.equals("\\")) {
                     literal = '\\';
                     val = "#\\\\";
-                } else if (val.equals("\\t")) {
+                } else if (val.equals("\t")) {
                     literal = '\t';
                     val = "#\\tab";
-                } else if (val.equals("\\n")) {
+                } else if (val.equals("\n")) {
                     literal = '\n';
                     val = "#\\newline";
-                } else if (val.equals("\\'")) {
+                } else if (val.equals("'")) {
                     literal = '\'';
                     val = "#\\'";
                 } else if (val.equals(" ")) {
