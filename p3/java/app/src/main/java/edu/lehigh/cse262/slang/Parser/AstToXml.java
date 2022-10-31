@@ -220,7 +220,10 @@ public class AstToXml implements IAstVisitor<String> {
 
     @Override
     public String visitSymbol(Nodes.Symbol expr) throws Exception {
-        throw new Exception("Symbol should not be visited during AST printing");
+        var sb = new StringBuilder();
+        indent(sb);
+        sb.append("<Symbol val='" + expr.name + "' />\n");
+        return sb.toString();
     }
 
     @Override
