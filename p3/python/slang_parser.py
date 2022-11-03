@@ -47,46 +47,37 @@ def make_datnum(tokens, symbol_list):
     special_datnum = {slang_scanner.VECTOR:"VECTOR", slang_scanner.ABBREV:"CONS"}
     if(token.type in special_datnum.keys()):
         if(token.type == slang_scanner.VECTOR):
-            val = []
             if tokens.hasNext():
                 tokens.popToken()
             else:
                 print("Vector error")
                 exit()
-            while(tokens.hasNext()):
-                if(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
-                    return {"VECTOR":val}
-                else:
-                    temp = make_datnum(tokens, symbol_list)
-                    if temp == None:
-                        print("Vector error")
-                        exit()
-                    val.append(temp)
-                tokens.popToken()
-            print("Vector error")
-            exit()
         else:
             if tokens.hasNext():
                 tokens.popToken()
                 if(tokens.nextToken().type != slang_scanner.LEFT_PAREN):
                     return None
             else:
-                print("Cons error")
+                print("Cons or Vector error")
                 exit()
-            val = []
             tokens.popToken()
-            while(tokens.hasNext()):
+        val = []
+        while(tokens.hasNext()):
                 if(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
-                    return{"CONS": val}
+                    return{special_datnum[token.type]:val}
                 else:
                     temp = make_datnum(tokens, symbol_list)
                     if temp == None:
-                        print("Cons error")
+                        print("Cons or Vector error")
+                        exit()
+                    elif "IDENTIFIER" in temp.keys():
+                        print("Cons or Vector error")
                         exit()
                     val.append(temp)
                 tokens.popToken()
-            print("Cons error")
-            exit()
+        print("Cons  or Vector error")
+        exit()
+            
     return None
 
 

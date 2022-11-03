@@ -139,6 +139,9 @@ public class Parser {
 					break;
 				}
 				var temp = Data_node(next,symbol_list, tokens);
+				if(temp == null){
+					throw new Exception("Vector error");
+				}
 				if(temp instanceof Nodes.Identifier){
 					throw new Exception("vector error");
 				}
@@ -177,6 +180,9 @@ public class Parser {
 				}
 				var node = Data_node(current,symbol_list,tokens);
 				if(node == null){
+					throw new Exception("Cons error");
+				}
+				if(node instanceof Nodes.Identifier){
 					throw new Exception("Cons error");
 				}
 				IValue temp = (IValue) node;
