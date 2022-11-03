@@ -318,6 +318,8 @@ def make_datnum(tokens, symbol_list):
     if(token.type in basic_datnum.keys()):
         if(token.tokenText in symbol_list):
             return {"SYMBOL": token.tokenText}
+        if(token.type == slang_scanner.BOOL):
+            return {"BOOL": token.literal}
         return {basic_datnum[token.type]:token.tokenText}
     #Special datnum
     special_datnum = {slang_scanner.VECTOR:"VECTOR", slang_scanner.ABBREV:"CONS"}
