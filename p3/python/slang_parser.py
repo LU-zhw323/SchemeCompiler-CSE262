@@ -35,6 +35,7 @@ class Parser:
             res.append(node)
             print(node)
             tokens.popToken()
+        return res
 
 def make_expres(tokens,symbol_list):
     #Tick
