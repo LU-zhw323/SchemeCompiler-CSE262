@@ -27,10 +27,45 @@ class Parser:
         res = []
         index = 0
         while(tokens.hasNext()):
-            x = make_datnum(tokens, symbol_list)
-            res.append(x)
-            print(x)
+            node = make_datnum(tokens, symbol_list)
+            if(node == None):
+                node = make_expres(tokens, symbol_list)
+            res.append(node)
+            print(node)
             tokens.popToken()
+
+def make_expres(tokens,symbol_list):
+    if tokens.hasNext():
+                tokens.popToken()
+    else:
+        print("Parse error")
+        exit()
+    current = tokens.nextToken()
+    #Quote
+    if(current.type == slang_scanner.QUOTE):
+        temp = []
+        if tokens.hasNext():
+                tokens.popToken()
+        else:
+            print("Quote error")
+            exit()
+        val = make_datnum(tokens, symbol_list)
+        if val == None or "IDENTIFIER" in temp.keys():
+            print("Quote error")
+            exit()
+        if tokens.hasNext():
+                tokens.popToken()
+        else:
+            print("Quote error")
+            exit()
+        if tokens.nextToken() == slang_scanner.RIGHT_PAREN:
+            return {"QUOTE": val}
+        else:
+            print("Quote error")
+            exit()
+    
+
+
 
 
 
@@ -81,7 +116,6 @@ def make_datnum(tokens, symbol_list):
                 tokens.popToken()
         print("Cons  or Vector error")
         exit()
-            
     return None
 
 

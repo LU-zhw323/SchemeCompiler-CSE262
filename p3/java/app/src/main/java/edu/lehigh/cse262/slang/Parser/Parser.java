@@ -213,6 +213,10 @@ public class Parser {
 			if(datnum == null){
 				throw new Exception("Tick error");
 			}
+			//Identifier is not datnum
+			if(datnum instanceof Nodes.Identifier){
+				throw new Exception("Tick error");
+			}
 			else{
 				IValue node = (IValue) datnum;
 				res = new Nodes.Tick(node);
@@ -240,6 +244,10 @@ public class Parser {
 				throw new Exception("Quote error");
 			}
 			var node = Data_node(next, symbol_list, tokens);
+			//Identifier is not datnum
+			if(node instanceof Nodes.Identifier){
+				throw new Exception("Quote error");
+			}
 			if(tokens.hasNext()){
 				tokens.popToken();
 			}
