@@ -20,3 +20,6 @@
 <IntToken line=1 col=1 val='52' />
 <RParenToken line=1 col=20 />
 <RParenToken line=1 col=20 />
+<LParenToken line=1 col=4 />
+<QuoteToken line=1 col=4 />
+<IntToken line=1 col=1 val='32'/>

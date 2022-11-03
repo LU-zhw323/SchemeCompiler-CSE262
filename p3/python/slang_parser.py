@@ -35,34 +35,31 @@ class Parser:
             tokens.popToken()
 
 def make_expres(tokens,symbol_list):
-    if tokens.hasNext():
-                tokens.popToken()
-    else:
+    tokens.popToken()
+    if not tokens.hasNext():
         print("Parse error")
         exit()
     current = tokens.nextToken()
     #Quote
     if(current.type == slang_scanner.QUOTE):
-        temp = []
-        if tokens.hasNext():
-                tokens.popToken()
-        else:
+        tokens.popToken()
+        if not tokens.hasNext():
             print("Quote error")
             exit()
         val = make_datnum(tokens, symbol_list)
-        if val == None or "IDENTIFIER" in temp.keys():
+        if val == None or "IDENTIFIER" in val.keys():
             print("Quote error")
             exit()
-        if tokens.hasNext():
-                tokens.popToken()
-        else:
+        tokens.popToken()
+        if not tokens.hasNext():
             print("Quote error")
             exit()
-        if tokens.nextToken() == slang_scanner.RIGHT_PAREN:
+        if tokens.nextToken().type == slang_scanner.RIGHT_PAREN:
             return {"QUOTE": val}
         else:
             print("Quote error")
             exit()
+
     
 
 
@@ -82,23 +79,20 @@ def make_datnum(tokens, symbol_list):
     special_datnum = {slang_scanner.VECTOR:"VECTOR", slang_scanner.ABBREV:"CONS"}
     if(token.type in special_datnum.keys()):
         if(token.type == slang_scanner.VECTOR):
-            if tokens.hasNext():
-                tokens.popToken()
-            else:
-                print("Vector error")
+            tokens.popToken()
+            if not tokens.hasNext():
+                print("Vector or Cons error")
                 exit()
         else:
-            if tokens.hasNext():
-                tokens.popToken()
-                if(tokens.nextToken().type != slang_scanner.LEFT_PAREN):
-                    return None
-            else:
-                print("Cons or Vector error")
+            tokens.popToken()
+            if not tokens.hasNext():
+                print("Vector or Cons error")
                 exit()
-            if tokens.hasNext():
-                tokens.popToken()
-            else:
-                print("Vector error")
+            if(tokens.nextToken().type != slang_scanner.LEFT_PAREN):
+                    return None
+            tokens.popToken()
+            if not tokens.hasNext():
+                print("Vector or Cons error")
                 exit()
         val = []
         while(tokens.hasNext()):
