@@ -151,6 +151,62 @@ def make_expres(tokens,symbol_list):
             print("Set,define error")
             exit()
         return {special_tok[current.type]:{"ID":id, "EXPRESSION":expre}}
+    elif(current.type == slang_scanner.COND):
+        res = {"COND":{}}
+        cond_count = 1
+        while tokens.hasNext():
+            tokens.popToken()
+            if not tokens.hasNext():
+                print("Parsing error")
+                exit()
+            if(tokens.nextToken().type == slang_scanner.LEFT_PAREN):
+                each_cond = {"Test":{}, "Expres":{}}
+                count = 1
+                expre_count = 1
+                while(tokens.hasNext()):
+                    tokens.popToken()
+                    if not tokens.hasNext():
+                        print("Parsing error")
+                        exit()
+                    node = make_datnum(tokens, symbol_list)
+                    if(node != None):
+                        if("SYMBOL" in node.keys()):
+                            print("Use symbol as expression")
+                            exit()
+                    else:
+                        if(tokens.nextToken().type == slang_scanner.LEFT_PAREN):
+                            node = make_expres(tokens,symbol_list)
+                        elif(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
+                            if(each_cond["Test"] == {} or each_cond["Expres"] == {}):
+                                print("Cond error")
+                                exit()
+                            res["COND"].update({cond_count:each_cond})
+                            cond_count += 1
+                            break
+                        else:
+                            print("Cond error")
+                            exit()
+                    if count == 1: each_cond["Test"].update(node)
+                    else: 
+                        each_cond["Expres"].update({expre_count:node})
+                        expre_count += 1
+                    count += 1
+                if cond_count == 1:
+                    print("Cond error")
+                    exit()
+            elif(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
+                if(res["COND"] == {}):
+                    print("Cond error")
+                    exit()
+                return res 
+            else:
+                print("Cond error")
+                exit()
+        print("Cond error")
+        exit()
+
+            
+
     #apply
     else:
         val = []
