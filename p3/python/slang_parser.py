@@ -60,7 +60,11 @@ def make_datnum(tokens, symbol_list):
             else:
                 print("Cons or Vector error")
                 exit()
-            tokens.popToken()
+            if tokens.hasNext():
+                tokens.popToken()
+            else:
+                print("Vector error")
+                exit()
         val = []
         while(tokens.hasNext()):
                 if(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
