@@ -84,8 +84,8 @@ def main(args):
             if mode == "-parse":
                 expressions = slang_parser.Parser(defaultEnv.poundT, defaultEnv.poundF, defaultEnv.empty).parse(slang_scanner.XmlToTokens(
                     codeToRun))
-                for expr in expressions:
-                    print(slang_parser_visitors.AstToXml(expr))
+                #for expr in expressions:
+                    #print(slang_parser_visitors.AstToXml(expr))
 
             # INTERPRET mode
             if mode == "-interpret":

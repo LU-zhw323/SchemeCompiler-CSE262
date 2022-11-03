@@ -6,6 +6,8 @@ import slang_scanner
 # each "type", by putting some values into a hash table.
 
 
+# A poor-man's enum: each of our token types is just a number
+AND, APPLY, BEGIN, BOOL, CHAR, COND, CONS, DBL, DEFINE, IDENTIFIER, IF, INT, LAMBDA, OR, QUOTE, SET, STR, SYMBOL, TICK, VEC = range(0, 20)
 class Parser:
     """The parser class is responsible for parsing a stream of tokens to produce
     an AST"""
@@ -17,8 +19,74 @@ class Parser:
         self.false = false
         self.empty = empty
 
+
     def parse(self, tokens):
         """parse() is the main routine of the parser.  It parses the token
         stream into an AST."""
+        symbol_list = []
+        res = []
+        index = 0
+        while(tokens.hasNext()):
+            x = make_datnum(tokens, symbol_list)
+            res.append(x)
+            print(x)
+            tokens.popToken()
 
-        raise Exception("parse() is not implemented yet! (slang_parser.py)")
+
+
+def make_datnum(tokens, symbol_list):
+    token = tokens.nextToken()
+    #Basic datnum
+    basic_datnum = {slang_scanner.BOOL:"BOOL", slang_scanner.CHAR:"CHAR", slang_scanner.INT:"INT", slang_scanner.DBL:"Dbl", slang_scanner.STR:"STR", 
+    slang_scanner.IDENTIFIER : "IDENTIFIER"}
+    if(token.type in basic_datnum.keys()):
+        if(token.tokenText in symbol_list):
+            return {"SYMBOL": token.tokenText}
+        return {basic_datnum[token.type]:token.tokenText}
+    #Special datnum
+    special_datnum = {slang_scanner.VECTOR:"VECTOR", slang_scanner.ABBREV:"CONS"}
+    if(token.type in special_datnum.keys()):
+        if(token.type == slang_scanner.VECTOR):
+            val = []
+            if tokens.hasNext():
+                tokens.popToken()
+            else:
+                print("Vector error")
+                exit()
+            while(tokens.hasNext()):
+                if(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
+                    return {"VECTOR":val}
+                else:
+                    temp = make_datnum(tokens, symbol_list)
+                    if temp == None:
+                        print("Vector error")
+                        exit()
+                    val.append(temp)
+                tokens.popToken()
+            print("Vector error")
+            exit()
+        else:
+            if tokens.hasNext():
+                tokens.popToken()
+                if(tokens.nextToken().type != slang_scanner.LEFT_PAREN):
+                    return None
+            else:
+                print("Cons error")
+                exit()
+            val = []
+            tokens.popToken()
+            while(tokens.hasNext()):
+                if(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
+                    return{"CONS": val}
+                else:
+                    temp = make_datnum(tokens, symbol_list)
+                    if temp == None:
+                        print("Cons error")
+                        exit()
+                    val.append(temp)
+                tokens.popToken()
+            print("Cons error")
+            exit()
+    return None
+
+
