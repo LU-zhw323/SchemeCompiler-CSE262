@@ -23,6 +23,8 @@ class Parser:
     def parse(self, tokens):
         """parse() is the main routine of the parser.  It parses the token
         stream into an AST."""
+        #In python part, I use dictionary(a mapping of k/v) to represent each node, the general idea
+        #is similar to the java one
         symbol_list = []
         res = []
         index = 0
@@ -59,6 +61,123 @@ def make_expres(tokens,symbol_list):
         else:
             print("Quote error")
             exit()
+    #Begin, and ,or 
+    elif(current.type == slang_scanner.AND or current.type == slang_scanner.BEGIN or current.type ==slang_scanner.OR):
+        special_tok = {slang_scanner.AND:"AND", slang_scanner.BEGIN:"BEGIN", slang_scanner.OR:"OR"}
+        val = []
+        while(tokens.hasNext()):
+            tokens.popToken()
+            if not tokens.hasNext():
+                print("Parse error")
+                exit()
+            node = make_datnum(tokens, symbol_list)
+            if(node != None):
+                if("SYMBOL" in node.keys()):
+                    print("Use symbol as expression")
+                    exit()
+                val.append(node)
+            else:
+                if(tokens.nextToken().type == slang_scanner.LEFT_PAREN):
+                    node = make_expres(tokens,symbol_list)
+                    val.append(node)
+                elif(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
+                    return {special_tok[current.type]:val}
+                else:
+                    print("AND,BEGIN,OR error")
+                    exit()
+        print("AND,BEGIN,OR error")
+        exit()
+    #If
+    elif(current.type == slang_scanner.IF):
+        cond = {}
+        ifTrue = {}
+        ifFalse = {}
+        count = 1
+        while(tokens.hasNext()):
+            if count > 4:
+                print("IF error")
+                exit()
+            tokens.popToken()
+            if not tokens.hasNext():
+                print("Parse error")
+                exit()
+            node = make_datnum(tokens, symbol_list)
+            if(node != None):
+                if("SYMBOL" in node.keys()):
+                    print("Use symbol as expression")
+                    exit()
+            else:
+                if(tokens.nextToken().type == slang_scanner.LEFT_PAREN):
+                    node = make_expres(tokens,symbol_list)
+                elif(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
+                    if count < 4:
+                        print("IF error")
+                        exit()
+                    return{"IF":{"Con":cond, "True":ifTrue, "False":ifFalse}}
+                else:
+                    print("IF error")
+                    exit()
+            if count == 1: cond = node
+            elif count == 2: ifTrue = node
+            elif count == 3: ifFalse = node
+            count += 1
+    #Set, define
+    elif(current.type == slang_scanner.SET or current.type == slang_scanner.DEFINE):
+        special_tok = {slang_scanner.SET:"SET", slang_scanner.DEFINE:"DEFINE"}
+        tokens.popToken()
+        if not tokens.hasNext():
+            print("Parsing error")
+            exit()
+        id = make_datnum(tokens,symbol_list)
+        if(id == None or "IDENTIFIER" not in id.keys()):
+            print("Set,define error")
+            exit()
+        symbol_list.append(id["IDENTIFIER"])
+        tokens.popToken()
+        if not tokens.hasNext():
+            print("Parsing error")
+            exit()
+        expre = make_datnum(tokens,symbol_list)
+        if(expre != None):
+                if("SYMBOL" in expre.keys()):
+                    print("Use symbol as expression")
+                    exit()
+        else: expre = make_expres(tokens,symbol_list)
+        tokens.popToken()
+        if not tokens.hasNext():
+            print("Parsing error")
+            exit()
+        if(tokens.nextToken().type != slang_scanner.RIGHT_PAREN):
+            print("Set,define error")
+            exit()
+        return {special_tok[current.type]:{"ID":id, "EXPRESSION":expre}}
+    #apply
+    else:
+        val = []
+        while(tokens.hasNext()):
+            node = make_datnum(tokens, symbol_list)
+            if(node != None):
+                if("SYMBOL" in node.keys()):
+                    print("Use symbol as expression")
+                    exit()
+                val.append(node)
+            else:
+                if(tokens.nextToken().type == slang_scanner.LEFT_PAREN):
+                    node = make_expres(tokens,symbol_list)
+                    val.append(node)
+                elif(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
+                    if(len(val) == 0):
+                        print("Application error")
+                        exit()
+                    return {"APPLY":val}
+                else:
+                    print("Application error")
+                    exit()
+            tokens.popToken()
+        print("Application error")
+        exit()
+
+
 
     
 

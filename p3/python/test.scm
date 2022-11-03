@@ -23,3 +23,51 @@
 <LParenToken line=1 col=4 />
 <QuoteToken line=1 col=4 />
 <IntToken line=1 col=1 val='32'/>
+<RParenToken line=1 col=34 />
+<LParenToken line=1 col=28 />
+<LParenToken line=1 col=28 />
+<IdentifierToken line=1 col=29 val='+' />
+<IntToken line=1 col=31 val='3' />
+<IntToken line=1 col=33 val='1' />
+<RParenToken line=1 col=34 />
+<LParenToken line=1 col=4 />
+<QuoteToken line=1 col=4 />
+<IntToken line=1 col=1 val='32'/>
+<RParenToken line=1 col=34 />
+<RParenToken line=1 col=34 />
+<LParenToken line=1 col=0 />
+<BeginToken line=1 col=1 />
+<IntToken line=1 col=1 val='312'/>
+<LParenToken line=1 col=4 />
+<IdentifierToken line=1 col=0 val='-' />
+<IntToken line=1 col=1 val='312'/>
+<IntToken line=1 col=1 val='32'/>
+<RParenToken line=1 col=4 />
+<LParenToken line=1 col=4 />
+<IdentifierToken line=1 col=0 val='-' />
+<IntToken line=1 col=1 val='312'/>
+<IntToken line=1 col=1 val='32'/>
+<RParenToken line=1 col=4 />
+<RParenToken line=1 col=4 />
+<LParenToken line=1 col=4 />
+<IfToken line=1 col=4 />
+<LParenToken line=1 col=4 />
+<IdentifierToken line=1 col=0 val='-' />
+<IntToken line=1 col=1 val='312'/>
+<IntToken line=1 col=1 val='32'/>
+<RParenToken line=1 col=4 />
+<LParenToken line=1 col=4 />
+<QuoteToken line=1 col=4 />
+<IntToken line=1 col=1 val='32'/>
+<RParenToken line=1 col=34 />
+<LParenToken line=1 col=4 />
+<QuoteToken line=1 col=4 />
+<IntToken line=1 col=1 val='32'/>
+<RParenToken line=1 col=34 />
+<RParenToken line=1 col=4 />
+<LParenToken line=1 col=14 />
+<DefineToken line=1 col=15 />
+<IdentifierToken line=1 col=22 val='y' />
+<IntToken line=1 col=24 val='40'/>
+<RParenToken line=1 col=26 />
+<IdentifierToken line=1 col=22 val='y' />
