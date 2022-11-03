@@ -87,3 +87,25 @@
 <RParenToken line=1 col=7 />
 <RParenToken line=1 col=10 />
 <RParenToken line=1 col=20 />
+<LParenToken line=1 col=0 />
+<LambdaToken line=1 col=1 />
+<LParenToken line=1 col=8 />
+<IdentifierToken line=1 col=9 val='pq' />
+<IdentifierToken line=1 col=11 val='ls' />
+<RParenToken line=1 col=12 />
+<LParenToken line=1 col=14 />
+<DefineToken line=1 col=15 />
+<IdentifierToken line=1 col=22 val='nm' />
+<IntToken line=1 col=24 val='40' />
+<RParenToken line=1 col=26 />
+<LParenToken line=1 col=14 />
+<DefineToken line=1 col=15 />
+<IdentifierToken line=1 col=22 val='sb' />
+<IntToken line=1 col=24 val='40' />
+<RParenToken line=1 col=26 />
+<LParenToken line=1 col=28 />
+<IdentifierToken line=1 col=29 val='+' />
+<IntToken line=1 col=31 val='3' />
+<IntToken line=1 col=33 val='1' />
+<RParenToken line=1 col=34 />
+<RParenToken line=1 col=35 />
