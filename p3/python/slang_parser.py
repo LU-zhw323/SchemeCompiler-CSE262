@@ -207,7 +207,7 @@ def make_expres(tokens,symbol_list):
                     print("Cond error")
                     exit()
             elif(tokens.nextToken().type == slang_scanner.RIGHT_PAREN):
-                if(res["COND"] == {}):
+                if(res["COND"] == []):
                     print("Cond error")
                     exit()
                 return res 
