@@ -35,18 +35,18 @@ def AstToXml(expr,indent):
         xml = indent + "<TICK val='" + str(expr["TICK"]) + "' />\n"
     elif "QUOTE" in expr.keys():
         xml += indent + "<QUOTE>\n"
-        xml += indent+ AstToXml(expr["QUOTE"], indent+'  ')
+        xml += AstToXml(expr["QUOTE"], indent+'  ')
         xml += indent + "<QUOTE/>\n"
     elif "IF" in expr.keys():
         xml += indent + "<IF>\n"
-        xml += indent + AstToXml(expr['IF']['Con'], indent+'  ')
-        xml += indent+ AstToXml(expr["IF"]['True'], indent + '  ')
-        xml += indent + AstToXml(expr["IF"]['False'], indent + '  ')
+        xml += AstToXml(expr['IF']['Con'], indent+'  ')
+        xml += AstToXml(expr["IF"]['True'], indent + '  ')
+        xml += AstToXml(expr["IF"]['False'], indent + '  ')
         xml += indent + "<IF/>\n"
     elif 'APPLY' in expr.keys():
         xml += indent + "<APPLY>\n"
         for e in expr["APPLY"]:
-            xml += indent + AstToXml(e, tab(indent))
+            xml +=AstToXml(e, tab(indent))
         xml += indent + "<APPLY/>\n"
     elif 'BEGIN' in expr.keys():
         xml += indent + "<BEGIN>\n"
@@ -65,24 +65,24 @@ def AstToXml(expr,indent):
         xml += indent + "<AND/>\n"
     elif 'DEFINE' in expr.keys():
         xml += indent + "<DEFINE>\n"
-        xml += indent + AstToXml(expr['DEFINE']['ID'], indent+'  ')
-        xml += indent + AstToXml(expr['DEFINE']['EXPRESSION'], indent+'  ')
+        xml += AstToXml(expr['DEFINE']['ID'], indent+'  ')
+        xml += AstToXml(expr['DEFINE']['EXPRESSION'], indent+'  ')
         xml += indent + "<DEFINE/>\n"
     elif 'SET' in expr.keys():
             xml += indent + "<SET>\n"
-            xml += indent + AstToXml(expr['SET']['ID'], indent+'  ')
-            xml += indent + AstToXml(expr['SET']['EXPRESSION'], indent+'  ')
+            xml += AstToXml(expr['SET']['ID'], indent+'  ')
+            xml += AstToXml(expr['SET']['EXPRESSION'], indent+'  ')
             xml += indent + "<SET/>\n"
     elif 'COND' in expr.keys():
             xml += indent + "<COND>\n"
             for cond in expr["COND"]:
                 xml += tab(indent) + '<Conditions>\n'
                 xml += tab(tab(indent)) + '<Test>\n'
-                xml += tab(tab(indent)) + AstToXml(cond["Test"], tab(tab(tab(indent))))
+                xml += AstToXml(cond["Test"], tab(tab(tab(indent))))
                 xml += tab(tab(indent)) + '<Test/>\n'
                 xml += tab(tab(indent)) + '<Actions>\n'
                 for action in cond['Expres']:
-                    xml += tab(tab(indent)) + AstToXml(action, tab(tab(tab(indent))))
+                    xml += AstToXml(action, tab(tab(tab(indent))))
                 xml += tab(tab(indent)) + '<Actions/>\n'
                 xml += tab(indent) + '<Conditions/>\n'
             xml += indent + "<COND/>\n"
