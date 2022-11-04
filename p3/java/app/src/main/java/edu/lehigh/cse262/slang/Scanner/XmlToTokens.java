@@ -1,4 +1,4 @@
-package edu.lehigh.cse262.jscheme.Scanner;
+package edu.lehigh.cse262.slang.Scanner;
 
 import java.util.ArrayList;
 

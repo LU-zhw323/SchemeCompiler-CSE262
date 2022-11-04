@@ -139,8 +139,11 @@ public class Parser {
 					break;
 				}
 				var temp = Data_node(next,symbol_list, tokens);
+				if(temp == null){
+					throw new Exception("Vector error");
+				}
 				if(temp instanceof Nodes.Identifier){
-					throw new Exception("vector error");
+					throw new Exception("Use Identifier as datnum error");
 				}
 				IValue x = (IValue)temp;
 				datnum.add(x);
@@ -179,6 +182,9 @@ public class Parser {
 				if(node == null){
 					throw new Exception("Cons error");
 				}
+				if(node instanceof Nodes.Identifier){
+					throw new Exception("Use Identifier as datnum error");
+				}
 				IValue temp = (IValue) node;
 				nodes.add(temp);
 			}
@@ -207,6 +213,10 @@ public class Parser {
 			if(datnum == null){
 				throw new Exception("Tick error");
 			}
+			//Identifier is not datnum
+			if(datnum instanceof Nodes.Identifier){
+				throw new Exception("Use Identifier as datnum error");
+			}
 			else{
 				IValue node = (IValue) datnum;
 				res = new Nodes.Tick(node);
@@ -234,6 +244,10 @@ public class Parser {
 				throw new Exception("Quote error");
 			}
 			var node = Data_node(next, symbol_list, tokens);
+			//Identifier is not datnum
+			if(node instanceof Nodes.Identifier){
+				throw new Exception("Use Identifier as datnum error");
+			}
 			if(tokens.hasNext()){
 				tokens.popToken();
 			}
