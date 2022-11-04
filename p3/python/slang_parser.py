@@ -33,7 +33,6 @@ class Parser:
             if(node == None):
                 node = make_expres(tokens, symbol_list)
             res.append(node)
-            print(node)
             tokens.popToken()
         return res
 
