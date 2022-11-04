@@ -61,7 +61,7 @@ def make_expres(tokens,symbol_list):
             exit()
         val = make_datnum(tokens, symbol_list)
         if val == None or "IDENTIFIER" in val.keys():
-            print("Quote error")
+            print("Requrie datnum")
             exit()
         tokens.popToken()
         if not tokens.hasNext():
@@ -141,7 +141,7 @@ def make_expres(tokens,symbol_list):
             exit()
         id = make_datnum(tokens,symbol_list)
         if(id == None or "IDENTIFIER" not in id.keys()):
-            print("Set,define error")
+            print("Require IDENTIFIER")
             exit()
         symbol_list.append(id["IDENTIFIER"])
         tokens.popToken()
@@ -237,7 +237,7 @@ def make_expres(tokens,symbol_list):
                         formals.append(node)
                         Form = True
                     else:
-                        print("Lambda error")
+                        print("Require IDENTIFIER")
                         exit()
                 else:
                     if tokens.nextToken().type == slang_scanner.RIGHT_PAREN:

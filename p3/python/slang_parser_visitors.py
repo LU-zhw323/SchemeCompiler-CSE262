@@ -5,7 +5,7 @@ def AstToXml(expr,indent):
     """Convert an AST into its XML-like representation"""
     # [CSE 262] You will need to implement this after you decide on the types
     # for your nodes
-    
+    #Just based on the structure of node(dictionary)
     xml = ""
     if "INT" in expr.keys():
         xml = indent + "<Int val='" + expr["INT"] + "' />\n"
@@ -86,6 +86,17 @@ def AstToXml(expr,indent):
                 xml += tab(tab(indent)) + '<Actions/>\n'
                 xml += tab(indent) + '<Conditions/>\n'
             xml += indent + "<COND/>\n"
+    elif 'LAMBDA' in expr.keys():
+        xml += indent + "<LAMBDA>\n"
+        xml += tab(indent) + '<Formals>\n'
+        for form in expr["LAMBDA"]["Formals"]:
+            xml += AstToXml(form, tab(tab(indent)))
+        xml += tab(indent) + '<Formals/>\n'
+        xml += tab(indent) + '<Expressions>\n'
+        for exp in expr['LAMBDA']['Body']:
+            xml += AstToXml(exp, tab(tab(indent)))
+        xml += tab(indent) + '<Expressions/>\n'
+        xml += indent + '<LAMBDA/>\n'
     return xml
 
 def checkNest(tag):
