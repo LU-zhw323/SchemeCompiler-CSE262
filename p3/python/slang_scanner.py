@@ -7,7 +7,7 @@ class Token:
     """The Token class will be used for all token types in slang, since we
     don't need to subclass it for different literal types"""
 
-    def __init__(self, tokenText, line, col, type, literal):
+    def __init__(self, tokenText, line, col, literal, type):
         """Construct a token from the text it corresponds to, the line/column
         where the text appears the token type, and an optional literal (an
         interpretation of that text as its real type)"""
