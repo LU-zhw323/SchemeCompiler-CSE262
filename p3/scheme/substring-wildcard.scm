@@ -12,36 +12,29 @@
 ;; and should not use any string comparison functions that are provided by gsi.
 
 ;; TODO: implement this function
-(define (contains-substring source pattern) 
-    ;;create local variable
-    ;;acc -> accumulate string
-    ;;query-> query string
+;;90% is exactly the same as contains-substring
+(define (contains-substring source pattern)
     (let ((acc "") (query pattern))
         (begin
-            ;;
-            ;;Inner function that do the recursion
-            ;;it includes flag which used to indicate if we are accumulating the acc or not
-            ;;
             (let f((acc acc)
                 (source source)
                 (pattern pattern)
                 (flag #f))
-                ;;
-                ;;Basecase where either one of them are "" and we check the content of acc
-                ;;
                 (if (or (equal? 0 (string-length source)) (equal? 0 (string-length pattern)))
                     (if (equal? acc query)
                         #t
-                        acc
+                        #f
                     )
                     (if (equal? (string-ref source 0) (string-ref pattern 0))
                         (f (string-append acc (substring source 0 1)) (substring source 1 (string-length source)) (substring pattern 1 (string-length pattern)) #t)
-                        (if (equal? flag #t)
-                            (if (equal? #\? (string-ref pattern 0))
-                                (f (string-append acc (substring pattern 0 1)) (substring source 1 (string-length source)) (substring pattern 1 (string-length pattern)) #t)
+                        ;;The only change is to determine if we have a wildcard character in pattern
+                        ;;if so just accumulate to acc and keep going
+                        (if (equal? #\? (string-ref pattern 0))
+                            (f (string-append acc (substring pattern 0 1)) (substring source 1 (string-length source)) (substring pattern 1 (string-length pattern)) #t)
+                            (if (equal? flag #t)
                                 (f "" (substring source 1 (string-length source)) (string-append acc pattern) #f)
+                                (f acc (substring source 1 (string-length source)) pattern #f)
                             )
-                            (f acc (substring source 1 (string-length source)) pattern #f)
                         )
                     )
                 )     
