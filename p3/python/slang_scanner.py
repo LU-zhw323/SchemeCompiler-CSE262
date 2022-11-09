@@ -7,7 +7,7 @@ class Token:
     """The Token class will be used for all token types in slang, since we
     don't need to subclass it for different literal types"""
 
-    def __init__(self, tokenText, line, col, literal, type):
+    def __init__(self, tokenText, line, col, type, literal):
         """Construct a token from the text it corresponds to, the line/column
         where the text appears the token type, and an optional literal (an
         interpretation of that text as its real type)"""
@@ -19,7 +19,7 @@ class Token:
 
 
 class TokenStream:
-    """TokenStream is a transliteration of the JScheme TokenStream.  It's just a
+    """TokenStream is a transliteration of the Java TokenStream.  It's just a
     sort of iterator-with-lookahead wrapper around a list of tokens"""
 
     def __init__(self, tokens):
@@ -65,7 +65,7 @@ def XmlToTokens(xml: str):
     """
     def unescape(s):
         """un-escape backslash, newline, tab, and apostrophe"""
-        return s.replace("'", "\\'").replace("\n", "\\n").replace("\t", "\\t").replace("\\", "\\\\")
+        return s.replace("\\'", "'").replace("\\n", "\n").replace("\\t", "\t").replace("\\\\", "\\")
 
     # we're just going to split the string into its lines, then look for
     # attributes and closing tags and use them to get all the parts
@@ -76,7 +76,7 @@ def XmlToTokens(xml: str):
         firstSpace = int(token.find(" "))
         type = token[1: firstSpace]
         if type == "EofToken":
-            res.append(Token("", 0, 0, None, EOFTOKEN))
+            res.append(Token("", 0, 0, EOFTOKEN, None))
             continue
 
         lineStart = token.find("line=")
@@ -95,13 +95,13 @@ def XmlToTokens(xml: str):
             "lambda", LAMBDA), "LParenToken": ("(", LEFT_PAREN), "OrToken": ("or", OR), "QuoteToken": ("quote", QUOTE), "RParenToken": (")", RIGHT_PAREN), "SetToken": ("set!", SET), "VectorToken": ("#(", VECTOR)}
         if type in basicTokens.keys():
             val = basicTokens[type]
-            res.append(Token(val[0], line, col, None, val[1]))
+            res.append(Token(val[0], line, col, val[1], None))
         # All that remain are identifiers and datum tokens:
         elif type == "BoolToken":
             if token[valStart + 5: valEnd - 1] == "true":
-                res.append(Token("#t", line, col, True, BOOL))
+                res.append(Token("#t", line, col, BOOL, True))
             else:
-                res.append(Token("#f", line, col, False, BOOL))
+                res.append(Token("#f", line, col, BOOL, False))
         elif type == "CharToken":
             val = unescape(token[valStart + 5: valEnd - 1])
             literal = val[0]
@@ -117,19 +117,19 @@ def XmlToTokens(xml: str):
                 val = "#\\space"
             else:
                 val = "#\\" + val
-            res.append(Token(val, line, col, literal, CHAR))
+            res.append(Token(val, line, col, CHAR, literal))
         elif type == "DblToken":
             val = token[valStart + 5: valEnd - 1]
-            res.append(Token(val, line, col, float(val), DBL))
+            res.append(Token(val, line, col, DBL, float(val)))
         elif type == "IdentifierToken":
             res.append(
-                Token(unescape(token[valStart + 5: valEnd - 1]), line, col, None, IDENTIFIER))
+                Token(unescape(token[valStart + 5: valEnd - 1]), line, col, IDENTIFIER, None))
         elif type == "IntToken":
             val = token[valStart + 5: valEnd - 1]
-            res.append(Token(val, line, col, int(val), INT))
+            res.append(Token(val, line, col, INT, int(val)))
         elif type == "StrToken":
             val = unescape(token[valStart + 5: valEnd - 1])
-            res.append(Token(val, line, col, val, STR))
+            res.append(Token(val, line, col, STR, val))
         else:
             raise Exception("Unrecognized type: " + type)
     return TokenStream(res)
