@@ -21,7 +21,7 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret an Identifier */
     @Override
     public IValue visitIdentifier(Nodes.Identifier expr) throws Exception {
-        throw new Exception("visitIdentifier is not yet implemented");
+        return env.get(expr.name);
     }
 
     /**
@@ -38,25 +38,29 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret a Bool value */
     @Override
     public IValue visitBool(Nodes.Bool expr) throws Exception {
-        throw new Exception("visitBool is not yet implemented");
+        return expr;
+        //throw new Exception("visitBool is not yet implemented");
     }
 
     /** Interpret an Int value */
     @Override
     public IValue visitInt(Nodes.Int expr) throws Exception {
-        throw new Exception("visitInt is not yet implemented");
+        return expr;
+        //throw new Exception("visitInt is not yet implemented");
     }
 
     /** Interpret a Dbl value */
     @Override
     public IValue visitDbl(Nodes.Dbl expr) throws Exception {
-        throw new Exception("visitDbl is not yet implemented");
+        return expr;
+        //throw new Exception("visitDbl is not yet implemented");
     }
 
     /** Interpret a Lambda value */
     @Override
     public IValue visitLambdaVal(Nodes.LambdaVal expr) throws Exception {
-        throw new Exception("visitLambdaVal is not yet implemented");
+        //throw new Exception("visitLambdaVal is not yet implemented");
+        return expr;
     }
 
     /**
@@ -71,7 +75,14 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret an If expression */
     @Override
     public IValue visitIf(Nodes.If expr) throws Exception {
-        throw new Exception("visitIf is not yet implemented");
+        //visit value of condition 
+        IValue condition = expr.cond.visitValue(this);
+        if(((Nodes.Bool)condition).val){
+            return expr.ifTrue.visitValue(this);
+        }
+        else{
+            return expr.ifFalse.visitValue(this);
+        }
     }
 
     /**
@@ -110,19 +121,22 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret a Cons value */
     @Override
     public IValue visitCons(Nodes.Cons expr) throws Exception {
-        throw new Exception("visitCons is not yet implemented");
+        return expr;
+        //throw new Exception("visitCons is not yet implemented");
     }
 
     /** Interpret a Vec value */
     @Override
     public IValue visitVec(Nodes.Vec expr) throws Exception {
-        throw new Exception("visitVec is not yet implemented");
+        return expr;
+        //throw new Exception("visitVec is not yet implemented");
     }
 
     /** Interpret a Symbol value */
     @Override
     public IValue visitSymbol(Nodes.Symbol expr) throws Exception {
-        throw new Exception("visitSymbol is not yet implemented");
+        return expr;
+        //throw new Exception("visitSymbol is not yet implemented");
     }
 
     /** Interpret a Quote expression */
@@ -140,19 +154,22 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret a Char value */
     @Override
     public IValue visitChar(Nodes.Char expr) throws Exception {
-        throw new Exception("visitChar is not yet implemented");
+        return expr;
+        //throw new Exception("visitChar is not yet implemented");
     }
 
     /** Interpret a Str value */
     @Override
     public IValue visitStr(Nodes.Str expr) throws Exception {
-        throw new Exception("visitStr is not yet implemented");
+        return expr;
+        //throw new Exception("visitStr is not yet implemented");
     }
 
     /** Interpret a Built-In Function value */
     @Override
     public IValue visitBuiltInFunc(Nodes.BuiltInFunc expr) throws Exception {
-        throw new Exception("visitBuiltInFunc is not yet implemented");
+        return expr;
+        //throw new Exception("visitBuiltInFunc is not yet implemented");
     }
 
     /** Interpret a Cons expression */
