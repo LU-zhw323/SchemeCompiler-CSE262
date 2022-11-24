@@ -25,3 +25,32 @@
 <Bool val='true'/>
 <Bool val='true'/>
 </And>
+<Or>
+<Bool val='false'/>
+<Bool val='false'/>
+<Int val='2'/>
+<Bool val='true'/>
+<Bool val='true'/>
+</Or>
+<Quote>
+  <Int val='32'/>
+</Quote>
+<Cond>
+ <Condition>
+  <Test>
+   <Bool val='true'/>
+  </Test>
+  <Actions>
+   <Int val='31221'/>
+  </Actions>
+ </Condition>
+ <Condition>
+  <Test>
+   <Bool val='false'/>
+  </Test>
+  <Actions>
+   <Int val='312'/>
+   <Int val='3122'/>
+  </Actions>
+ </Condition>
+</Cond>

@@ -140,11 +140,13 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
        for(int i = 0; i < expr.expressions.size(); i++){
             Nodes.BaseNode node = expr.expressions.get(i);
             IValue res = node.visitValue(this);
+            //if any of it is false, return false
             if(res instanceof Nodes.Bool){
                 if(((Nodes.Bool) res).val == false){
                     return res;
                 }
             }
+            //return last element
             if(i == expr.expressions.size() - 1){
                 return res;
             }
@@ -155,13 +157,37 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret an Or expression */
     @Override
     public IValue visitOr(Nodes.Or expr) throws Exception {
-        throw new Exception("visitOr is not yet implemented");
+        for(int i = 0; i < expr.expressions.size(); i++){
+            Nodes.BaseNode node = expr.expressions.get(i);
+            IValue res = node.visitValue(this);
+            //if any of it is not false, return it
+            if(res instanceof Nodes.Bool){
+                if(((Nodes.Bool) res).val == true){
+                    return res;
+                }
+            }
+            else{
+                return res;
+            }
+       }
+       //if all elements are false, return false
+       return env.poundF.visitValue(this);
     }
 
     /** Interpret a Begin expression */
     @Override
     public IValue visitBegin(Nodes.Begin expr) throws Exception {
-        throw new Exception("visitBegin is not yet implemented");
+        IValue last = null;
+        for(int i = 0 ; i < expr.expressions.size(); i++){
+            //visit every expression
+            Nodes.BaseNode node = expr.expressions.get(i);
+            IValue res = node.visitValue(this);
+            //return the last one
+            if(i == expr.expressions.size()-1){
+                last = res;
+            }
+        }
+        return last;
     }
 
     /** Interpret a "not special form" expression */
@@ -178,7 +204,7 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
         //get bult-in func from environment
         IValue built_in = fun.visitValue(this);
         if(built_in == null){
-            throw new Exception("Not built in function");
+            throw new Exception("Not a built in function");
         }
         return ((Nodes.BuiltInFunc) built_in).func.execute(args);
     }
@@ -207,13 +233,13 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret a Quote expression */
     @Override
     public IValue visitQuote(Nodes.Quote expr) throws Exception {
-        throw new Exception("visitQuote is not yet implemented");
+        return expr.datum;
     }
 
     /** Interpret a quoted datum expression */
     @Override
     public IValue visitTick(Nodes.Tick expr) throws Exception {
-        throw new Exception("visitTick is not yet implemented");
+        return expr.datum;
     }
 
     /** Interpret a Char value */
@@ -240,6 +266,23 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret a Cons expression */
     @Override
     public IValue visitCond(Nodes.Cond expr) throws Exception {
-        throw new Exception("visitCond is not yet implemented");
+        for(int i = 0 ; i < expr.conditions.size(); i++){
+            var task = expr.conditions.get(i);
+            var test = task.test;
+            IValue test_res = test.visitValue(this);
+            if(test_res instanceof Nodes.Bool == false){
+                throw new Exception("Not a testable condition");
+            }
+            if(((Nodes.Bool)test_res).val == true || i == expr.conditions.size()-1){
+                var actions = task.expressions;
+                for(int j = 0; j < actions.size(); j ++){
+                    IValue action = actions.get(j).visitValue(this);
+                    if(j == actions.size()-1){
+                        return action;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
