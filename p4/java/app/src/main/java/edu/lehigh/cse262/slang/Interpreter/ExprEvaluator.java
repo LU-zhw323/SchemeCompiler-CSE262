@@ -5,6 +5,9 @@ import edu.lehigh.cse262.slang.Parser.IAstVisitor;
 import edu.lehigh.cse262.slang.Parser.IValue;
 import edu.lehigh.cse262.slang.Parser.Nodes;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * ExprEvaluator evaluates an AST node. It is the heart of the evaluation
  * portion of our interpreter.
@@ -32,7 +35,30 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
      */
     @Override
     public IValue visitDefine(Nodes.Define expr) throws Exception {
-        throw new Exception("visitDefine is not yet implemented");
+        //get the name of identifier to be defined & expression
+        String name = expr.identifier.name;
+        IValue express = expr.expression.visitValue(this);
+        //set binding in env
+        env.put(name,express);
+        //I tried to avoid re-define a builtin func, but didn't work out
+        /* 
+        //see if it is a built-in func in env
+        IValue in_env = env.get(name);
+        //Visit expression
+        IValue express = expr.expression.visitValue(this);
+        if(in_env != null){
+            if(in_env instanceof Nodes.BuiltInFunc){
+                throw new Exception("Can't define a built-in func");
+            }
+            else{
+                env.update(name,express);
+            }
+        }
+        else{
+            env.put(name,express);
+        }
+        */
+        return null;
     }
 
     /** Interpret a Bool value */
@@ -77,6 +103,7 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     public IValue visitIf(Nodes.If expr) throws Exception {
         //visit value of condition 
         IValue condition = expr.cond.visitValue(this);
+        //evaluate condition
         if(((Nodes.Bool)condition).val){
             return expr.ifTrue.visitValue(this);
         }
@@ -115,7 +142,17 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret a "not special form" expression */
     @Override
     public IValue visitApply(Nodes.Apply expr) throws Exception {
-        throw new Exception("visitApply is not yet implemented");
+        //take out the name of function
+        Nodes.BaseNode fun = expr.expressions.get(0);
+        expr.expressions.remove(0);
+        //make a list of IValue
+        List<IValue> args = new ArrayList<>();
+        for(int i = 0; i < expr.expressions.size(); i ++){
+            args.add(expr.expressions.get(i).visitValue(this));
+        }
+        //get bult-in func from environment
+        IValue built_in = fun.visitValue(this);
+        return ((Nodes.BuiltInFunc) built_in).func.execute(args);
     }
 
     /** Interpret a Cons value */
