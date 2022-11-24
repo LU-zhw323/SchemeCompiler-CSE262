@@ -24,7 +24,11 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret an Identifier */
     @Override
     public IValue visitIdentifier(Nodes.Identifier expr) throws Exception {
-        return env.get(expr.name);
+        IValue value = env.get(expr.name);
+        if(value == null){
+            throw new Exception("Identifier not found");
+        }
+        return value;
     }
 
     /**
@@ -104,6 +108,9 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
         //visit value of condition 
         IValue condition = expr.cond.visitValue(this);
         //evaluate condition
+        if(condition instanceof Nodes.Bool == false){
+            throw new Exception("reult of Condition is not a boolean");
+        }
         if(((Nodes.Bool)condition).val){
             return expr.ifTrue.visitValue(this);
         }
@@ -118,13 +125,31 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
      */
     @Override
     public IValue visitSet(Nodes.Set expr) throws Exception {
-        throw new Exception("visitSet is not yet implemented");
+        //same to define but use update instead
+        String name = expr.identifier.name;
+        IValue express = expr.expression.visitValue(this);
+        //this can easily goes wrong, if identifier is not defined and outer scope is null.
+        //I add a few line in Env to throw an error message
+        env.update(name, express);
+        return null;
     }
 
     /** Interpret an And expression */
     @Override
     public IValue visitAnd(Nodes.And expr) throws Exception {
-        throw new Exception("visitAnd is not yet implemented");
+       for(int i = 0; i < expr.expressions.size(); i++){
+            Nodes.BaseNode node = expr.expressions.get(i);
+            IValue res = node.visitValue(this);
+            if(res instanceof Nodes.Bool){
+                if(((Nodes.Bool) res).val == false){
+                    return res;
+                }
+            }
+            if(i == expr.expressions.size() - 1){
+                return res;
+            }
+       }
+       return null;
     }
 
     /** Interpret an Or expression */
@@ -152,6 +177,9 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
         }
         //get bult-in func from environment
         IValue built_in = fun.visitValue(this);
+        if(built_in == null){
+            throw new Exception("Not built in function");
+        }
         return ((Nodes.BuiltInFunc) built_in).func.execute(args);
     }
 

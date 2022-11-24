@@ -87,11 +87,14 @@ public class Env {
      * @param key  The key to update
      * @param expr The new value for the key
      */
-    public void update(String key, IValue expr) {
+    public void update(String key, IValue expr) throws Exception {
         if (map.get(key) != null)
             map.put(key, expr);
-        else
+        else{
+            if (outer == null)
+                throw new Exception(key + " not defined in any scope");
             outer.update(key, expr);
+        }
     }
 
     /**

@@ -13,3 +13,15 @@
  <Int val='312'/>
 </Define>
 <Identifier val='a'/>
+<Set>
+ <Identifier val='a'/>
+ <Int val='31'/>
+</Set>
+<Identifier val='a'/>
+<And>
+<Bool val='true'/>
+<Bool val='false'/>
+<Int val='2'/>
+<Bool val='true'/>
+<Bool val='true'/>
+</And>
