@@ -25,6 +25,10 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     @Override
     public IValue visitIdentifier(Nodes.Identifier expr) throws Exception {
         IValue value = env.get(expr.name);
+		/*
+		 * The null checking will probably make 'null?' meaningless since it will
+		 * just throw an exception if some identifier is null
+		 */
         if(value == null){
             throw new Exception("Identifier not found");
         }

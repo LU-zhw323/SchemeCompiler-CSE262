@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.lehigh.cse262.slang.Parser.IValue;
 import edu.lehigh.cse262.slang.Parser.Nodes;
+import java.lang.Math;
 
 /**
  * The purpose of LibMath is to implement all of the standard library functions
@@ -59,5 +60,540 @@ public class LibMath {
 
         map.put(add.name, add);
 
+        var minus = new Nodes.BuiltInFunc("-", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception("- expects at least one argument");
+            int type = type_check(args);
+            //case for not purely int and double
+            if(type == -1){
+                throw new Exception("- can only handle int and double");
+            }
+            //case for return double
+            else if(type == 1){
+                double res = 0;
+                if(args.get(0) instanceof Nodes.Int)
+                    res = (double)(((Nodes.Int) args.get(0)).val);
+                else
+                    res = ((Nodes.Dbl) args.get(0)).val;
+                args.remove(0);
+                for(var arg:args){
+                    if (arg instanceof Nodes.Int)
+                        res -= ((Nodes.Int) arg).val;
+                    else
+                        res -= ((Nodes.Dbl) arg).val;
+                }
+                return new Nodes.Dbl(res);
+            }
+            //case for return int
+            else{
+                int res = ((Nodes.Int) args.get(0)).val;
+                args.remove(0);
+                for(var arg:args){
+                    res -= ((Nodes.Int) arg).val;
+                }
+                return new Nodes.Int(res);
+            }
+        });
+        map.put(minus.name, minus);
+
+        var multiply = new Nodes.BuiltInFunc("*", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception("* expects at least one argument");
+            int type = type_check(args);
+            //case for not purely int and double
+            if(type == -1){
+                throw new Exception("* can only handle int and double");
+            }
+            //case for return double
+            else if(type == 1){
+                double res = 0;
+                if(args.get(0) instanceof Nodes.Int)
+                    res = (double)(((Nodes.Int) args.get(0)).val);
+                else
+                    res = ((Nodes.Dbl) args.get(0)).val;
+                args.remove(0);
+                for(var arg:args){
+                    if (arg instanceof Nodes.Int)
+                        res *= ((Nodes.Int) arg).val;
+                    else
+                        res *= ((Nodes.Dbl) arg).val;
+                }
+                return new Nodes.Dbl(res);
+            }
+            //case for return int
+            else{
+                int res = ((Nodes.Int) args.get(0)).val;
+                args.remove(0);
+                for(var arg:args){
+                    res *= ((Nodes.Int) arg).val;
+                }
+                return new Nodes.Int(res);
+            }
+        });
+        map.put(multiply.name, multiply);
+
+        var devide = new Nodes.BuiltInFunc("/", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception("/ expects at least one argument");
+            int type = type_check(args);
+            //case for not purely int and double
+            if(type == -1){
+                throw new Exception("/ can only handle int and double");
+            }
+            //case for return double(devide should return double)
+            else{
+                double res = 0;
+                if(args.get(0) instanceof Nodes.Int)
+                    res = (double)(((Nodes.Int) args.get(0)).val);
+                else
+                    res = ((Nodes.Dbl) args.get(0)).val;
+                args.remove(0);
+                for(var arg:args){
+                    if (arg instanceof Nodes.Int)
+                        res /= ((Nodes.Int) arg).val;
+                    else
+                        res /= ((Nodes.Dbl) arg).val;
+                }
+                return new Nodes.Dbl(res);
+            }
+        });
+        map.put(devide.name, devide);
+
+        var modulo = new Nodes.BuiltInFunc("%", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception("% expects at least one argument");
+            else if(args.size() > 2)
+                throw new Exception("% only handle 2 arguments");
+            int type = type_check(args);
+            //case for not int (I restrick the parameter to be int only(mentioned on piazza))
+            if(type == -1 || type == 1){
+                throw new Exception("% can only handle int");
+            }
+            //case for return int
+            else{
+                int res = ((Nodes.Int) args.get(0)).val % ((Nodes.Int) args.get(1)).val;
+                return new Nodes.Int(res);
+            }
+        });
+        map.put(modulo.name, modulo);
+
+        var equal = new Nodes.BuiltInFunc("==", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception("== expects at least one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("== can only handle int or double");
+            }
+            //case for return int
+            else{
+                return test_list("==", args);
+            }
+        });
+        map.put(equal.name, equal);
+
+        var less = new Nodes.BuiltInFunc("<", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception("< expects at least one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("< can only handle int or double");
+            }
+            //case for return int
+            else{
+                return test_list("<", args);
+            }
+        });
+        map.put(less.name, less);
+
+        var greater = new Nodes.BuiltInFunc(">", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception("> expects at least one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("> can only handle int or double");
+            }
+            //case for return int
+            else{
+                return test_list(">", args);
+            }
+        });
+        map.put(greater.name, greater);
+
+        var greater_equal = new Nodes.BuiltInFunc(">=", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception(">= expects at least one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception(">= can only handle int or double");
+            }
+            //case for return int
+            else{
+                return test_list(">=", args);
+            }
+        });
+        map.put(greater_equal.name, greater_equal);
+
+        var less_equal = new Nodes.BuiltInFunc("<=", (List<IValue> args)->{
+            if (args.size() == 0)
+                throw new Exception("<= expects at least one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("<= can only handle int or double");
+            }
+            //case for return int
+            else{
+                return test_list("<=", args);
+            }
+        });
+        map.put(less_equal.name, less_equal);
+
+        var abs = new Nodes.BuiltInFunc("abs", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("abs expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("abs can only handle int or double");
+            }
+            //case for return int or double
+            else{
+                if(type == 0){
+                    return new Nodes.Int((int)perform_math("abs",args));
+                }
+                else{
+                    return new Nodes.Dbl(perform_math("abs",args));
+                }
+            }
+        });
+        map.put(abs.name, abs);
+
+        var sqrt = new Nodes.BuiltInFunc("sqrt", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("sqrt expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("sqrt can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("sqrt",args));
+            }
+        });
+        map.put(sqrt.name, sqrt);
+
+        var acos = new Nodes.BuiltInFunc("acos", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("acos expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("acos can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("acos",args));
+            }
+        });
+        map.put(acos.name, acos);
+
+        var asin = new Nodes.BuiltInFunc("asin", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("asin expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("asin can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("asin",args));
+            }
+        });
+        map.put(asin.name, asin);
+
+        var atan = new Nodes.BuiltInFunc("atan", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("atan expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("atan can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("atan",args));
+            }
+        });
+        map.put(atan.name, atan);
+
+        var cos = new Nodes.BuiltInFunc("cos", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("cos expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("cos can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("cos",args));
+            }
+        });
+        map.put(cos.name, cos);
+
+        var cosh = new Nodes.BuiltInFunc("cosh", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("cosh expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("cosh can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("cosh",args));
+            }
+        });
+        map.put(cosh.name, cosh);
+
+        var sin = new Nodes.BuiltInFunc("sin", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("sin expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("sin can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("sin",args));
+            }
+        });
+        map.put(sin.name, sin);
+
+        var sinh = new Nodes.BuiltInFunc("sinh", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("sinh expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("sinh can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("sinh",args));
+            }
+        });
+        map.put(sinh.name, sinh);
+
+        var tan = new Nodes.BuiltInFunc("tan", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("tan expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("tan can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("tan",args));
+            }
+        });
+        map.put(tan.name, tan);
+
+        var tanh = new Nodes.BuiltInFunc("tanh", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("tanh expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("tanh can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("tanh",args));
+            }
+        });
+        map.put(tanh.name, tanh);
+
+        var is_int = new Nodes.BuiltInFunc("integer?", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("integer? expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type != 0){
+                return new Nodes.Bool(false);
+            }
+            return new Nodes.Bool(true);
+        });
+        map.put(is_int.name, is_int);
+
+        var is_dbl = new Nodes.BuiltInFunc("double?", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("double? expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type != 1){
+                return new Nodes.Bool(false);
+            }
+            return new Nodes.Bool(true);
+        });
+        map.put(is_dbl.name, is_dbl);
+
+        var is_number = new Nodes.BuiltInFunc("number?", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("number? expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                return new Nodes.Bool(false);
+            }
+            return new Nodes.Bool(true);
+        });
+        map.put(is_number.name, is_number);
+
+        var is_symbol = new Nodes.BuiltInFunc("symbol?", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("symbol? expects one argument");
+            if(args.get(0) instanceof Nodes.Symbol == false){
+                return new Nodes.Bool(false);
+            }
+            return new Nodes.Bool(true);
+        });
+        map.put(is_symbol.name, is_symbol);
+
+
+
+
+
+
     }
+    /**
+     * Helper function for type checking
+     * @param args the list of argument
+     * 
+     * @return integer to suggest the typing situation(0 for all int; 1 for has double; -1 for has something else)
+     */
+    public static int type_check(List<IValue> args){
+        for(var arg:args){
+            if(arg instanceof Nodes.Int){
+                continue;
+            }
+            else if(arg instanceof Nodes.Dbl){
+                return 1;
+            }
+            else{
+                return -1;
+            }
+        }
+        return 0;
+    }
+    /**
+     * Helper function for <, >, <= , >= , ==
+     * @param operation the operation to perform
+     * @param args the list of argument
+     * 
+     * @return a Nodes.Bool which sould be either true or false
+     */
+    public static Nodes.Bool test_list(String operation, List<IValue> args){
+        double res = 0;
+        if(args.get(0) instanceof Nodes.Int)
+            res = (double)(((Nodes.Int) args.get(0)).val);
+        else
+            res = ((Nodes.Dbl) args.get(0)).val;
+        args.remove(0);
+        for(int i = 0; i < args.size(); i++){
+            double temp = 0;
+            if(args.get(i) instanceof Nodes.Int)
+                temp = (double)(((Nodes.Int) args.get(i)).val);
+            else
+                temp = ((Nodes.Dbl) args.get(i)).val;
+            if(operation.equals("<")){
+                if(!(res < temp))
+                    return new Nodes.Bool(false);
+            }
+            else if(operation.equals(">")){
+                if(!(res > temp))
+                    return new Nodes.Bool(false);
+            }
+            else if(operation.equals(">=")){
+                if(!(res >= temp))
+                    return new Nodes.Bool(false);
+            }
+            else if(operation.equals("<=")){
+                if(!(res <= temp))
+                    return new Nodes.Bool(false);
+            }
+            else{
+                if(res != temp)
+                    return new Nodes.Bool(false);
+            }
+        }
+        return new Nodes.Bool(true);
+    }
+    /**
+     * Helper function for math operation
+     * @param operation the operation to perform
+     * @param args the list of argument
+     * 
+     * @return a double after performing operation
+     */
+    public static double perform_math(String operation, List<IValue> args) throws Exception{
+        double temp = 0;
+        if(args.get(0) instanceof Nodes.Int)
+            temp = (double)(((Nodes.Int) args.get(0)).val);
+        else
+            temp = ((Nodes.Dbl) args.get(0)).val;
+        if(operation.equals("abs")){
+            return Math.abs(temp);
+        }
+        else if(operation.equals("sqrt")){
+            return Math.sqrt(temp);
+        }
+        else if(operation.equals("acos")){
+            //I didn't handle the situation where number is not in the range of -1 <= temp <= 1
+            //but just throw the exception
+            if(temp > 1 || temp < -1){
+                throw new Exception("Number out of range(-1 to 1)");
+            }
+            return Math.acos(temp);
+        }
+        else if(operation.equals("asin")){
+            //I didn't handle the situation where number is not in the range of -1 <= temp <= 1
+            //but just throw the exception
+            if(temp > 1 || temp < -1){
+                throw new Exception("Number out of range(-1 to 1)");
+            }
+            return Math.asin(temp);
+        }
+        else if(operation.equals("atan")){
+            return Math.atan(temp);
+        }
+        else if(operation.equals("cos")){
+            return Math.cos(temp);
+        }
+        else if(operation.equals("cosh")){
+            return Math.cosh(temp);
+        }
+        else if(operation.equals("sin")){
+            return Math.sin(temp);
+        }
+        else if(operation.equals("sinh")){
+            return Math.sinh(temp);
+        }
+        else if(operation.equals("tan")){
+            return Math.tan(temp);
+        }
+        else if(operation.equals("tanh")){
+            return Math.tanh(temp);
+        }
+        return temp;
+    }
+
 }

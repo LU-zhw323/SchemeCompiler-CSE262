@@ -4,9 +4,15 @@
  <Int val='2'/>
 </Apply>
 <Apply>
- <Identifier val='+'/>
- <Dbl val='1.100000'/>
- <Int val='2'/>
+ <Identifier val='>='/>
+ <Dbl val='6.9'/>
+ <Dbl val='6.3'/>
+</Apply>
+<Apply>
+ <Identifier val='symbol?'/>
+ <Quote>
+    <Symbol val='312'/>
+  </Quote>
 </Apply>
 <Define>
  <Identifier val='a'/>
