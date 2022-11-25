@@ -89,8 +89,21 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     /** Interpret a Lambda value */
     @Override
     public IValue visitLambdaVal(Nodes.LambdaVal expr) throws Exception {
-        //throw new Exception("visitLambdaVal is not yet implemented");
-        return expr;
+       //Get the definition
+       Nodes.LambdaDef def = expr.lambda;
+       //check parameter
+       for(int i = 0; i < def.formals.size(); i++){
+        //visitIdentifer() will check the existence of parameter for us
+        IValue check = def.formals.get(i).visitValue(this);
+       }
+       //Perform actions
+	   for(int i = 0; i < def.body.size(); i++){
+		IValue res = def.body.get(i).visitValue(this);
+		if(i == def.body.size()-1){
+			return res;
+		}
+	   }
+	   return null;
     }
 
     /**
@@ -99,7 +112,22 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
      */
     @Override
     public IValue visitLambdaDef(Nodes.LambdaDef expr) throws Exception {
-        throw new Exception("visitLambdaDef is not yet implemented");
+        /**
+         * make a inner encironment for the lambdaVal
+         * makeInner() will make current 'env' as the outer of 'inner'
+         * Then once we need to get any value in the enviornment we can just
+         * call inner.get() in visitLambdaVal() since it will check the outer
+         * environment for us as well. So we do not need to explictily pass
+         * every value in the 'env' to inner, which including everything(built-in
+         * func and defined identifier)
+         */
+        Env inner = env.makeInner(env);
+        //Then create a new LambdaVal node
+        var res = new Nodes.LambdaVal(inner, expr);
+		//Create a new evaluator with inner environment
+		ExprEvaluator evaluator = new ExprEvaluator(inner);
+        //Call visit LambdaVal to get result
+        return res.visitValue(evaluator);
     }
 
     /** Interpret an If expression */

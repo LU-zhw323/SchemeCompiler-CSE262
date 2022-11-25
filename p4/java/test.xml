@@ -54,3 +54,15 @@
   </Actions>
  </Condition>
 </Cond>
+<Lambda>
+ <Formals>
+  <Identifier val='a'/>
+ </Formals>
+ <Expressions>
+  <Apply>
+   <Identifier val='+'/>
+   <Identifier val='a'/>
+   <Int val='1'/>
+  </Apply>
+ </Expressions>
+</Lambda>
