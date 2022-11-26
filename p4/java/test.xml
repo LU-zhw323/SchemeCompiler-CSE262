@@ -1,11 +1,11 @@
 <Apply>
- <Identifier val='+'/>
- <Int val='1'/>
+ <Identifier val='pow'/>
+ <Int val='3'/>
  <Int val='2'/>
 </Apply>
+<Identifier val='inf-'/>
 <Apply>
- <Identifier val='>='/>
- <Dbl val='6.9'/>
+ <Identifier val='double->integer'/>
  <Dbl val='6.3'/>
 </Apply>
 <Apply>

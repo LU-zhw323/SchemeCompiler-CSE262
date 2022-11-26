@@ -468,6 +468,121 @@ public class LibMath {
         });
         map.put(is_symbol.name, is_symbol);
 
+        var is_procedure = new Nodes.BuiltInFunc("procedure?", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("procedure? expects one argument");
+            //I use gsi to test all the expresions, and it only return true with lambda
+            if(args.get(0) instanceof Nodes.LambdaDef == false){
+                return new Nodes.Bool(false);
+            }
+            return new Nodes.Bool(true);
+        });
+        map.put(is_procedure.name, is_procedure);
+
+        var log10 = new Nodes.BuiltInFunc("log10", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("log10 expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("log10 can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("log10",args));
+            }
+        });
+        map.put(log10.name, log10);
+
+        var loge = new Nodes.BuiltInFunc("loge", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("loge expects one argument");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("loge can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("loge",args));
+            }
+        });
+        map.put(loge.name, loge);
+
+        var pow = new Nodes.BuiltInFunc("pow", (List<IValue> args)->{
+            if (args.size() != 2)
+                throw new Exception("pow expects two arguments");
+            int type = type_check(args);
+            //case for not int or double
+            if(type == -1){
+                throw new Exception("pow can only handle int or double");
+            }
+            //case for return double
+            else{
+                return new Nodes.Dbl(perform_math("pow",args));
+            }
+        });
+        map.put(pow.name, pow);
+
+        var not = new Nodes.BuiltInFunc("not", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("not expects one arguments");
+            var temp = args.get(0);
+            if(temp instanceof Nodes.Bool){
+                if(((Nodes.Bool)temp).val == false){
+                    return new Nodes.Bool(true);
+                }
+            }
+            return new Nodes.Bool(false);
+        });
+        map.put(not.name, not);
+
+        var int_double = new Nodes.BuiltInFunc("integer->double", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("integer->double expects one arguments");
+            int type = type_check(args);
+            //case for not int or double
+            if(type != 0){
+                throw new Exception("integer->double can only handle int");
+            }
+            int val = ((Nodes.Int)args.get(0)).val;
+            return new Nodes.Dbl((double)val);
+        });
+        map.put(int_double.name, int_double);
+
+        var double_int = new Nodes.BuiltInFunc("double->integer", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("double->integer expects one arguments");
+            int type = type_check(args);
+            //case for not int or double
+            if(type != 1){
+                throw new Exception("double->integer can only handle int");
+            }
+            double val = ((Nodes.Dbl)args.get(0)).val;
+            return new Nodes.Int((int)val);
+        });
+        map.put(double_int.name, double_int);
+        
+        var Null = new Nodes.BuiltInFunc("null?", (List<IValue> args)->{
+            if (args.size() != 1)
+                throw new Exception("null? expects one arguments");
+            var temp = args.get(0);
+            //I just followed the explaination on piazza that return true if it is an empty list
+            if(temp instanceof Nodes.Cons){
+                if(((Nodes.Cons)temp).car == null && ((Nodes.Cons)temp).cdr == null){
+                    return new Nodes.Bool(true);
+                }
+            }
+            return new Nodes.Bool(false);
+        });
+        map.put(Null.name, Null);
+
+        map.put("pi", new Nodes.Dbl(Math.PI));
+        map.put("e", new Nodes.Dbl(Math.E));
+        map.put("tau", new Nodes.Dbl(2*Math.PI));
+        map.put("inf+", new Nodes.Dbl(Double.POSITIVE_INFINITY));
+        map.put("inf-", new Nodes.Dbl(Double.NEGATIVE_INFINITY));
+        map.put("nan", new Nodes.Dbl(Float.NaN));
 
 
 
@@ -592,6 +707,26 @@ public class LibMath {
         }
         else if(operation.equals("tanh")){
             return Math.tanh(temp);
+        }
+        else if(operation.equals("log10")){
+            if(temp < 0){
+                throw new Exception("log10 only handle positive number");
+            }
+            return Math.log10(temp);
+        }
+        else if (operation.equals("loge")){
+            if(temp < 0){
+                throw new Exception("loge only handle positive number");
+            }
+            return Math.log(temp);
+        }
+        else if(operation.equals("pow")){
+            double Temp = 0;
+            if(args.get(1) instanceof Nodes.Int)
+                Temp = (double)(((Nodes.Int) args.get(1)).val);
+            else
+                Temp = ((Nodes.Dbl) args.get(1)).val;
+            return Math.pow(temp, Temp);
         }
         return temp;
     }
