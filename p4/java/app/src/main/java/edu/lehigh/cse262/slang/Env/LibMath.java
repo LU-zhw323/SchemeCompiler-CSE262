@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.lehigh.cse262.slang.Parser.IValue;
 import edu.lehigh.cse262.slang.Parser.Nodes;
+import java.util.ArrayList;
 import java.lang.Math;
 
 /**
@@ -287,6 +288,12 @@ public class LibMath {
         });
         map.put(sqrt.name, sqrt);
 
+        /*
+         * For some of the math opertaion, it will return NaN, infinity, -infinity.
+         * Initially, I add several handle process(throw expception)
+         * Since those are math constants included in our lib, so I deleted the handle process
+         * just return the result.
+         */
         var acos = new Nodes.BuiltInFunc("acos", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("acos expects one argument");
@@ -672,19 +679,9 @@ public class LibMath {
             return Math.sqrt(temp);
         }
         else if(operation.equals("acos")){
-            //I didn't handle the situation where number is not in the range of -1 <= temp <= 1
-            //but just throw the exception
-            if(temp > 1 || temp < -1){
-                throw new Exception("Number out of range(-1 to 1)");
-            }
             return Math.acos(temp);
         }
         else if(operation.equals("asin")){
-            //I didn't handle the situation where number is not in the range of -1 <= temp <= 1
-            //but just throw the exception
-            if(temp > 1 || temp < -1){
-                throw new Exception("Number out of range(-1 to 1)");
-            }
             return Math.asin(temp);
         }
         else if(operation.equals("atan")){
@@ -709,15 +706,9 @@ public class LibMath {
             return Math.tanh(temp);
         }
         else if(operation.equals("log10")){
-            if(temp < 0){
-                throw new Exception("log10 only handle positive number");
-            }
             return Math.log10(temp);
         }
         else if (operation.equals("loge")){
-            if(temp < 0){
-                throw new Exception("loge only handle positive number");
-            }
             return Math.log(temp);
         }
         else if(operation.equals("pow")){
