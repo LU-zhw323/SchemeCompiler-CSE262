@@ -4,8 +4,9 @@
 <Int val='31313'/>
 </Apply>
 <Apply>
- <Identifier val='double->integer'/>
- <Dbl val='6.3'/>
+ <Identifier val='string-ref'/>
+ <Str val='nmsl'/>
+ <Int val='1'/>
 </Apply>
 <Apply>
  <Identifier val='symbol?'/>

@@ -46,26 +46,11 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
         //get the name of identifier to be defined & expression
         String name = expr.identifier.name;
         IValue express = expr.expression.visitValue(this);
+        //I tried to do checking before putting to aviod redefining of builtin func
+        //but it will throw exception in outerGet() if we are trying to define new val
+        // so it didn't work out
         //set binding in env
         env.put(name,express);
-        //I tried to avoid re-define a builtin func, but didn't work out
-        /* 
-        //see if it is a built-in func in env
-        IValue in_env = env.get(name);
-        //Visit expression
-        IValue express = expr.expression.visitValue(this);
-        if(in_env != null){
-            if(in_env instanceof Nodes.BuiltInFunc){
-                throw new Exception("Can't define a built-in func");
-            }
-            else{
-                env.update(name,express);
-            }
-        }
-        else{
-            env.put(name,express);
-        }
-        */
         return null;
     }
 
