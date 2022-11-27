@@ -61,6 +61,9 @@ public class LibMath {
 
         map.put(add.name, add);
 
+        /**
+         * -
+         */ 
         var minus = new Nodes.BuiltInFunc("-", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("- expects at least one argument");
@@ -76,6 +79,10 @@ public class LibMath {
                     res = (double)(((Nodes.Int) args.get(0)).val);
                 else
                     res = ((Nodes.Dbl) args.get(0)).val;
+                if(args.size() == 1){
+                    double Res = 0 - res;
+                    return new Nodes.Dbl(Res);
+                }
                 args.remove(0);
                 for(var arg:args){
                     if (arg instanceof Nodes.Int)
@@ -88,6 +95,10 @@ public class LibMath {
             //case for return int
             else{
                 int res = ((Nodes.Int) args.get(0)).val;
+                if(args.size() == 1){
+                    int Res = 0 - res;
+                    return new Nodes.Int(Res);
+                }
                 args.remove(0);
                 for(var arg:args){
                     res -= ((Nodes.Int) arg).val;
@@ -97,6 +108,9 @@ public class LibMath {
         });
         map.put(minus.name, minus);
 
+        /**
+         * *
+         */
         var multiply = new Nodes.BuiltInFunc("*", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("* expects at least one argument");
@@ -133,6 +147,9 @@ public class LibMath {
         });
         map.put(multiply.name, multiply);
 
+        /*
+         * /
+         */
         var devide = new Nodes.BuiltInFunc("/", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("/ expects at least one argument");
@@ -148,6 +165,10 @@ public class LibMath {
                     res = (double)(((Nodes.Int) args.get(0)).val);
                 else
                     res = ((Nodes.Dbl) args.get(0)).val;
+                if(args.size() == 1){
+                    double Res = 1 / res;
+                    return new Nodes.Dbl(Res);
+                }
                 args.remove(0);
                 for(var arg:args){
                     if (arg instanceof Nodes.Int)
@@ -160,6 +181,10 @@ public class LibMath {
         });
         map.put(devide.name, devide);
 
+
+        /*
+         * %
+         */
         var modulo = new Nodes.BuiltInFunc("%", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("% expects at least one argument");
@@ -178,6 +203,10 @@ public class LibMath {
         });
         map.put(modulo.name, modulo);
 
+
+        /*
+         * ==
+         */
         var equal = new Nodes.BuiltInFunc("==", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("== expects at least one argument");
@@ -193,6 +222,9 @@ public class LibMath {
         });
         map.put(equal.name, equal);
 
+        /*
+         * <
+         */
         var less = new Nodes.BuiltInFunc("<", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("< expects at least one argument");
@@ -208,6 +240,10 @@ public class LibMath {
         });
         map.put(less.name, less);
 
+
+        /*
+         * >
+         */
         var greater = new Nodes.BuiltInFunc(">", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("> expects at least one argument");
@@ -223,6 +259,10 @@ public class LibMath {
         });
         map.put(greater.name, greater);
 
+
+        /*
+         * >=
+         */
         var greater_equal = new Nodes.BuiltInFunc(">=", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception(">= expects at least one argument");
@@ -238,6 +278,9 @@ public class LibMath {
         });
         map.put(greater_equal.name, greater_equal);
 
+        /*
+         * <=
+         */
         var less_equal = new Nodes.BuiltInFunc("<=", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("<= expects at least one argument");
@@ -252,7 +295,11 @@ public class LibMath {
             }
         });
         map.put(less_equal.name, less_equal);
+        
 
+        /*
+         * abs
+         */
         var abs = new Nodes.BuiltInFunc("abs", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("abs expects one argument");
@@ -273,6 +320,10 @@ public class LibMath {
         });
         map.put(abs.name, abs);
 
+
+        /*
+         * sqrt
+         */
         var sqrt = new Nodes.BuiltInFunc("sqrt", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("sqrt expects one argument");
@@ -289,6 +340,7 @@ public class LibMath {
         map.put(sqrt.name, sqrt);
 
         /*
+         * acos
          * For some of the math opertaion, it will return NaN, infinity, -infinity.
          * Initially, I add several handle process(throw expception)
          * Since those are math constants included in our lib, so I deleted the handle process
@@ -309,6 +361,10 @@ public class LibMath {
         });
         map.put(acos.name, acos);
 
+
+        /*
+         * asin
+         */
         var asin = new Nodes.BuiltInFunc("asin", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("asin expects one argument");
@@ -324,6 +380,10 @@ public class LibMath {
         });
         map.put(asin.name, asin);
 
+
+        /*
+         * atan
+         */
         var atan = new Nodes.BuiltInFunc("atan", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("atan expects one argument");
@@ -339,6 +399,10 @@ public class LibMath {
         });
         map.put(atan.name, atan);
 
+
+        /*
+         * cos
+         */
         var cos = new Nodes.BuiltInFunc("cos", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("cos expects one argument");
@@ -354,6 +418,10 @@ public class LibMath {
         });
         map.put(cos.name, cos);
 
+
+        /*
+         * cosh
+         */
         var cosh = new Nodes.BuiltInFunc("cosh", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("cosh expects one argument");
@@ -369,6 +437,10 @@ public class LibMath {
         });
         map.put(cosh.name, cosh);
 
+
+        /*
+         * sin
+         */
         var sin = new Nodes.BuiltInFunc("sin", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("sin expects one argument");
@@ -384,6 +456,10 @@ public class LibMath {
         });
         map.put(sin.name, sin);
 
+
+        /*
+         * sinh
+         */
         var sinh = new Nodes.BuiltInFunc("sinh", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("sinh expects one argument");
@@ -399,6 +475,10 @@ public class LibMath {
         });
         map.put(sinh.name, sinh);
 
+
+        /*
+         * tan
+         */
         var tan = new Nodes.BuiltInFunc("tan", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("tan expects one argument");
@@ -414,6 +494,9 @@ public class LibMath {
         });
         map.put(tan.name, tan);
 
+        /*
+         * tanh
+         */
         var tanh = new Nodes.BuiltInFunc("tanh", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("tanh expects one argument");
@@ -429,6 +512,10 @@ public class LibMath {
         });
         map.put(tanh.name, tanh);
 
+
+        /*
+         * integer?
+         */
         var is_int = new Nodes.BuiltInFunc("integer?", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("integer? expects one argument");
@@ -441,6 +528,10 @@ public class LibMath {
         });
         map.put(is_int.name, is_int);
 
+
+        /*
+         * double?
+         */
         var is_dbl = new Nodes.BuiltInFunc("double?", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("double? expects one argument");
@@ -453,6 +544,10 @@ public class LibMath {
         });
         map.put(is_dbl.name, is_dbl);
 
+
+        /*
+         * number?
+         */
         var is_number = new Nodes.BuiltInFunc("number?", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("number? expects one argument");
@@ -465,6 +560,10 @@ public class LibMath {
         });
         map.put(is_number.name, is_number);
 
+
+        /*
+         * symbol?
+         */
         var is_symbol = new Nodes.BuiltInFunc("symbol?", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("symbol? expects one argument");
@@ -475,6 +574,9 @@ public class LibMath {
         });
         map.put(is_symbol.name, is_symbol);
 
+        /*
+         * procedure?
+         */
         var is_procedure = new Nodes.BuiltInFunc("procedure?", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("procedure? expects one argument");
@@ -486,6 +588,10 @@ public class LibMath {
         });
         map.put(is_procedure.name, is_procedure);
 
+
+        /*
+         * log10
+         */
         var log10 = new Nodes.BuiltInFunc("log10", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("log10 expects one argument");
@@ -501,6 +607,10 @@ public class LibMath {
         });
         map.put(log10.name, log10);
 
+
+        /*
+         * loge
+         */
         var loge = new Nodes.BuiltInFunc("loge", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("loge expects one argument");
@@ -516,6 +626,10 @@ public class LibMath {
         });
         map.put(loge.name, loge);
 
+
+        /*
+         * pow
+         */
         var pow = new Nodes.BuiltInFunc("pow", (List<IValue> args)->{
             if (args.size() != 2)
                 throw new Exception("pow expects two arguments");
@@ -531,6 +645,10 @@ public class LibMath {
         });
         map.put(pow.name, pow);
 
+
+        /*
+         * not
+         */
         var not = new Nodes.BuiltInFunc("not", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("not expects one arguments");
@@ -544,6 +662,10 @@ public class LibMath {
         });
         map.put(not.name, not);
 
+
+        /*
+         * integer->double
+         */
         var int_double = new Nodes.BuiltInFunc("integer->double", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("integer->double expects one arguments");
@@ -557,6 +679,10 @@ public class LibMath {
         });
         map.put(int_double.name, int_double);
 
+
+        /*
+         * double->integer
+         */
         var double_int = new Nodes.BuiltInFunc("double->integer", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("double->integer expects one arguments");
@@ -570,6 +696,10 @@ public class LibMath {
         });
         map.put(double_int.name, double_int);
         
+
+        /*
+         * null?
+         */
         var Null = new Nodes.BuiltInFunc("null?", (List<IValue> args)->{
             if (args.size() != 1)
                 throw new Exception("null? expects one arguments");

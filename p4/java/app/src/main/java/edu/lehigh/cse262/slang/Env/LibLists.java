@@ -16,6 +16,9 @@ public class LibLists {
      * Populate the provided `map` with a standard set of list functions
      */
     public static void populate(HashMap<String, IValue> map, Nodes.Bool poundT, Nodes.Bool poundF, Nodes.Cons empty) {
+        /**
+         * car
+         */
         var list_car = new Nodes.BuiltInFunc("car", (List<IValue> args)->{
             if(args.size() != 1)
                 throw new Exception("car expects one argument");
@@ -26,6 +29,9 @@ public class LibLists {
         });
         map.put(list_car.name, list_car);
 
+        /**
+         * cdr
+         */
         var list_cdr = new Nodes.BuiltInFunc("cdr", (List<IValue> args)->{
             if(args.size() != 1)
                 throw new Exception("cdr expects one argument");
@@ -36,6 +42,9 @@ public class LibLists {
         });
         map.put(list_cdr.name, list_cdr);
 
+        /**
+         * cons
+         */
         var list_cons = new Nodes.BuiltInFunc("cons", (List<IValue> args)->{
             if(args.size() != 2)
                 throw new Exception("cons expects two argument");
@@ -43,6 +52,9 @@ public class LibLists {
         });
         map.put(list_cons.name, list_cons);
 
+        /**
+         * list
+         */
         var list_make = new Nodes.BuiltInFunc("list", (List<IValue> args)->{
             if(args.size() < 1)
                 throw new Exception("list expects at least one argument");
@@ -50,6 +62,9 @@ public class LibLists {
         });
         map.put(list_make.name, list_make);
 
+        /**
+         * list?
+         */
         var list_check = new Nodes.BuiltInFunc("list?", (List<IValue> args)->{
             if(args.size() != 1)
                 throw new Exception("list? expects one argument");
@@ -60,6 +75,9 @@ public class LibLists {
         });
         map.put(list_check.name, list_check);
 
+        /**
+         * set-car!
+         */
         var list_set_car = new Nodes.BuiltInFunc("set-car!", (List<IValue> args)->{
             if(args.size() != 2)
                 throw new Exception("set-car expects two argument");
@@ -72,6 +90,9 @@ public class LibLists {
         });
         map.put(list_set_car.name, list_set_car);
 
+        /**
+         * set-cdr!
+         */
         var list_set_cdr = new Nodes.BuiltInFunc("set-cdr!", (List<IValue> args)->{
             if(args.size() != 2)
                 throw new Exception("set-cdr expects two argument");

@@ -19,6 +19,10 @@ public class LibString {
         /*
          * String lib is also simple, basically just 1.check argument 2.perform string operation
          */
+
+        /*
+         * string-append
+         */
         var string_append = new Nodes.BuiltInFunc("string-append", (List<IValue> args)->{
             if(args.size() != 2){
                 throw new Exception("string-append expects two argument");
@@ -31,6 +35,9 @@ public class LibString {
         });
         map.put(string_append.name, string_append);
 
+        /**
+         * string-length
+         */
         var string_length = new Nodes.BuiltInFunc("string-length", (List<IValue> args)->{
             if(args.size() != 1){
                 throw new Exception("string-length expects one argument");
@@ -43,6 +50,10 @@ public class LibString {
         });
         map.put(string_length.name, string_length);
 
+
+        /*
+         * string-check
+         */
         var string_check = new Nodes.BuiltInFunc("string?", (List<IValue> args)->{
             if(args.size() != 1){
                 throw new Exception("string? expects one argument");
@@ -54,6 +65,10 @@ public class LibString {
         });
         map.put(string_check.name, string_check);
 
+
+        /*
+         * string-ref
+         */
         var string_ref = new Nodes.BuiltInFunc("string-ref", (List<IValue> args)->{
             if(args.size() != 2){
                 throw new Exception("string-ref expects one argument");
@@ -73,6 +88,9 @@ public class LibString {
         });
         map.put(string_ref.name, string_ref);
 
+        /**
+         * string-equal?
+         */
         var string_equal = new Nodes.BuiltInFunc("string-equal?", (List<IValue> args)->{
             if(args.size() != 2){
                 throw new Exception("string-equal? expects one argument");
@@ -92,7 +110,10 @@ public class LibString {
         });
         map.put(string_equal.name, string_equal);
 
-        var string_substring = new Nodes.BuiltInFunc("string-substring", (List<IValue> args)->{
+        /**
+         * string-substring
+         */
+        var string_substring = new Nodes.BuiltInFunc("substring", (List<IValue> args)->{
             if(args.size() != 3){
                 throw new Exception("string-substring expects three argument");
             }
@@ -118,6 +139,10 @@ public class LibString {
             
         });
 
+
+        /*
+         * string
+         */
         var string_make = new Nodes.BuiltInFunc("string", (List<IValue> args)->{
             if(args.size() < 1)
                 throw new Exception("string expects at least one argument");

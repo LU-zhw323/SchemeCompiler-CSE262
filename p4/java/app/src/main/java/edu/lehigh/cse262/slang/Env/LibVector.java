@@ -19,6 +19,10 @@ public class LibVector {
         /*
          * All the codes are easy, so I will not comment too much on them
          */
+
+         /*
+          * vector-length
+          */
         var vector_length = new Nodes.BuiltInFunc("vector-length", (List<IValue> args)->{
             if(args.size() != 1){
                 throw new Exception("vector-length expect one argument");
@@ -30,6 +34,10 @@ public class LibVector {
         });
         map.put(vector_length.name, vector_length);
 
+
+        /*
+         * vector-get
+         */
         var vector_get = new Nodes.BuiltInFunc("vector-get", (List<IValue> args)->{
             if(args.size() != 2){
                 throw new Exception("vector-get expect two argument");
@@ -46,6 +54,10 @@ public class LibVector {
         });
         map.put(vector_get.name, vector_get);
 
+
+        /*
+         * vector-set
+         */
         var vector_set = new Nodes.BuiltInFunc("vector-set!", (List<IValue> args)->{
             if(args.size() != 3){
                 throw new Exception("vector-set! expect three argument");
@@ -64,6 +76,10 @@ public class LibVector {
         });
         map.put(vector_set.name, vector_set);
 
+
+        /*
+         * vector
+         */
         var vector_make = new Nodes.BuiltInFunc("vector", (List<IValue> args)->{
             if(args.size() < 1){
                 throw new Exception("vector expect at least one argument");
@@ -76,7 +92,11 @@ public class LibVector {
         });
         map.put(vector_make.name, vector_make);
 
-        var vector_check = new Nodes.BuiltInFunc("set!-car", (List<IValue> args)->{
+
+        /*
+         * vector?
+         */
+        var vector_check = new Nodes.BuiltInFunc("vector?", (List<IValue> args)->{
             if(args.size() != 1){
                 throw new Exception("vector? expects one argument");
             }

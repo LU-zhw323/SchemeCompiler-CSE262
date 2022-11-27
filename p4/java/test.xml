@@ -9,9 +9,8 @@
 <Int val='312'/>
 </Apply>
 <Apply>
- <Identifier val='vector'/>
-<Int val='1'/>
-<Int val='31313'/>
+ <Identifier val='*'/>
+<Int val='10'/>
 </Apply>
 <Apply>
  <Identifier val='string'/>
