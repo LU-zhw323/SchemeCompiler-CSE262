@@ -1,7 +1,7 @@
 <Apply>
- <Identifier val='+'/>
- <Identifier val='nan'/>
- <Int val='2'/>
+ <Identifier val='vector'/>
+<Int val='1'/>
+<Int val='31313'/>
 </Apply>
 <Apply>
  <Identifier val='double->integer'/>
