@@ -40,6 +40,8 @@ public class LibVector {
             if(args.get(1) instanceof Nodes.Int == false){
                 throw new Exception("vector-get expect integer as index");
             }
+            if(((Nodes.Int)args.get(1)).val > ((Nodes.Vec)args.get(0)).items.length-1 || ((Nodes.Int)args.get(1)).val < 0)
+                throw new Exception("vector-get Index out of bound");
             return ((Nodes.Vec)args.get(0)).items[((Nodes.Int)args.get(1)).val];
         });
         map.put(vector_get.name, vector_get);
@@ -54,6 +56,8 @@ public class LibVector {
             if(args.get(1) instanceof Nodes.Int == false){
                 throw new Exception("vector-set! expect integer as index");
             }
+            if(((Nodes.Int)args.get(1)).val > ((Nodes.Vec)args.get(0)).items.length-1 || ((Nodes.Int)args.get(1)).val < 0)
+                throw new Exception("vector-get Index out of bound");
             ((Nodes.Vec)args.get(0)).items[((Nodes.Int)args.get(1)).val] = args.get(2);
             //just like set!, it should return null
             return null;

@@ -4,9 +4,10 @@
 <Int val='31313'/>
 </Apply>
 <Apply>
- <Identifier val='string-ref'/>
- <Str val='nmsl'/>
- <Int val='1'/>
+ <Identifier val='string'/>
+ <Char val='n' />
+ <Char val='m'/>
+ <Char val='s'/>
 </Apply>
 <Apply>
  <Identifier val='symbol?'/>

@@ -63,6 +63,9 @@ public class LibString {
             }
             String val = ((Nodes.Str)args.get(0)).val;
             int index = ((Nodes.Int)args.get(1)).val;
+            if(index < 0 || index > val.length()-1){
+                throw new Exception("string-ref Index out of bound");
+            }
             return new Nodes.Char(val.charAt(index));
         });
         map.put(string_ref.name, string_ref);
@@ -85,5 +88,44 @@ public class LibString {
             return poundF;
         });
         map.put(string_equal.name, string_equal);
+
+        var string_substring = new Nodes.BuiltInFunc("string-substring", (List<IValue> args)->{
+            if(args.size() != 3){
+                throw new Exception("string-substring expects three argument");
+            }
+            if(args.get(0) instanceof Nodes.Str == false){
+                throw new Exception("string-substring expect string");
+            }
+            if(args.get(1) instanceof Nodes.Int == false){
+                throw new Exception("string-substring expects int as index");
+            }
+            if(args.get(2) instanceof Nodes.Int == false){
+                throw new Exception("string-substring expects int as index");
+            }
+            String temp = ((Nodes.Str)args.get(0)).val;
+            int start = ((Nodes.Int)args.get(1)).val;
+            if(start < 0 || start > temp.length()-1){
+                throw new Exception("string-substring Index out of bound");
+            }
+            int end = ((Nodes.Int)args.get(2)).val;
+            if(end < 0 || end > temp.length()-1){
+                throw new Exception("string-substring Index out of bound");
+            }
+            return new Nodes.Str(temp.substring(start,end));
+            
+        });
+
+        var string_make = new Nodes.BuiltInFunc("string", (List<IValue> args)->{
+            String res = "";
+            for(var arg:args){
+                if(arg instanceof Nodes.Char == false)
+                    throw new Exception("string expects character");
+                char temp = ((Nodes.Char)arg).val;
+                res += temp;
+            }
+            return new Nodes.Str(res);
+            
+        });
+        map.put(string_make.name, string_make);
     }
 }
