@@ -1,4 +1,14 @@
 <Apply>
+ <Identifier val='set-car!'/>
+ <Apply>
+ <Identifier val='list'/>
+ <Char val='n' />
+ <Char val='m'/>
+ <Char val='s'/>
+</Apply>
+<Int val='312'/>
+</Apply>
+<Apply>
  <Identifier val='vector'/>
 <Int val='1'/>
 <Int val='31313'/>

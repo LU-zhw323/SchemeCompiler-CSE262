@@ -16,6 +16,9 @@ public class LibString {
      * Populate the provided `map` with a standard set of string functions
      */
     public static void populate(HashMap<String, IValue> map, Nodes.Bool poundT, Nodes.Bool poundF) {
+        /*
+         * String lib is also simple, basically just 1.check argument 2.perform string operation
+         */
         var string_append = new Nodes.BuiltInFunc("string-append", (List<IValue> args)->{
             if(args.size() != 2){
                 throw new Exception("string-append expects two argument");
@@ -116,6 +119,8 @@ public class LibString {
         });
 
         var string_make = new Nodes.BuiltInFunc("string", (List<IValue> args)->{
+            if(args.size() < 1)
+                throw new Exception("string expects at least one argument");
             String res = "";
             for(var arg:args){
                 if(arg instanceof Nodes.Char == false)

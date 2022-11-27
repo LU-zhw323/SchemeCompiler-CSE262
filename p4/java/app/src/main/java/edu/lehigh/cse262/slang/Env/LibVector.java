@@ -65,7 +65,7 @@ public class LibVector {
         map.put(vector_set.name, vector_set);
 
         var vector_make = new Nodes.BuiltInFunc("vector", (List<IValue> args)->{
-            if(args.size() == 0){
+            if(args.size() < 1){
                 throw new Exception("vector expect at least one argument");
             }
             List<IValue> body = new ArrayList<>();
@@ -76,7 +76,7 @@ public class LibVector {
         });
         map.put(vector_make.name, vector_make);
 
-        var vector_check = new Nodes.BuiltInFunc("vector?", (List<IValue> args)->{
+        var vector_check = new Nodes.BuiltInFunc("set!-car", (List<IValue> args)->{
             if(args.size() != 1){
                 throw new Exception("vector? expects one argument");
             }
