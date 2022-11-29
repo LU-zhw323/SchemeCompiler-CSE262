@@ -86,7 +86,7 @@ def main(args):
                 for expr in expressions:
                     result = slang_evaluator.evaluate(expr, defaultEnv)
                     if result != None:
-                        print(";" + slang_evaluator.AstToScheme(result,
+                        print(";" + slang_parser.AstToScheme(result,
                               0, False, defaultEnv.empty))
 
             # FULL mode

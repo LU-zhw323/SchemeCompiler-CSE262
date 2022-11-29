@@ -1,0 +1,68 @@
+<Int val='2' />
+<Quote>
+  <Int val='32' />
+</Quote>
+<And>
+<Bool val='true' />
+<Bool val='true' />
+<Int val='2' />
+<Bool val='true' />
+<Int val='3' />
+</And>
+<Begin>
+ <Char val='n' />
+ <Char val='m' />
+ <Char val='\\' />
+</Begin>
+<Cond>
+ <Condition>
+  <Test>
+   <Bool val='true'/>
+  </Test>
+  <Actions>
+   <Int val='31221'/>
+  </Actions>
+ </Condition>
+ <Condition>
+  <Test>
+   <Bool val='false'/>
+  </Test>
+  <Actions>
+   <Int val='312'/>
+   <Int val='3122'/>
+  </Actions>
+ </Condition>
+</Cond>
+<Define>
+ <Identifier val='a' />
+ <Int val='312' />
+</Define>
+<Identifier val='a' />
+<Set>
+ <Identifier val='a' />
+ <Int val='31' />
+</Set>
+<If>
+<Bool val='false' />
+<Int val='3' />
+<Int val='4' />
+<If />
+<Or>
+<Bool val='false' />
+<Int val='2' />
+<Bool val='true' />
+<Int val='2' />
+<Bool val='true' />
+<Bool val='true' />
+</Or>
+<Lambda>
+ <Formals>
+  <Identifier val='a' />
+ </Formals>
+ <Expressions>
+  <Apply>
+   <Identifier val='+' />
+   <Int val='1' />
+  </Apply>
+ </Expressions>
+</Lambda>

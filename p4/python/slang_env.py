@@ -22,13 +22,21 @@ class Env:
     def get(self, key):
         """Look up the value for a given key; recurse to outer environments as
         needed.  Throw an exception on failure."""
-        return self.map[key] if key in self.map.keys() else self.outer.get(key)
+        if key in self.map.keys():
+            return self.map[key]
+        else:
+            if self.outer == None:
+                raise Exception("Identifier not found in scope")
+            else:
+                return self.outer.get(key)
 
     def update(self, key, val):
         """Update a key's value **in the scope where it is defined**"""
         if self.map.get(key) != None:
             self.map[key] = val
         else:
+            if self.outer == None:
+                raise Exception("Identifier not found in scope")
             self.outer.update(key, val)
 
 

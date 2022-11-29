@@ -174,14 +174,14 @@ def XmlToAst(xml):
         if lines[next].find("<Char") > -1:
             val = __unescape(lines[next][valStart + 5: valEnd - 1])
             next += 1
-            literal = val.charAt(0)
-            if val.equals("\\"):
+            literal = val[0]
+            if val == "\\":
                 literal = '\\'
-            elif val.equals("\\t"):
+            elif val == "\\t":
                 literal = '\t'
-            elif val.equals("\\n"):
+            elif val == "\\n":
                 literal = '\n'
-            elif val.equals("\\'"):
+            elif val == "\\'":
                 literal = '\''
             return CharNode(literal)
         if lines[next].find("<Str") > -1:

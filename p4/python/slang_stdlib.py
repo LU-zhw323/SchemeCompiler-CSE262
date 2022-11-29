@@ -4,8 +4,10 @@ import math
 
 
 def addMathFuncs(env):
-    """Add standard math functions to the given environment"""
-    pass
+    def add(list):
+        return list[0]
+    env.put('+', add)
+
 
 
 def addListFuncs(env):

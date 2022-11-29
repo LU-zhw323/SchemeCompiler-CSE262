@@ -150,7 +150,10 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
         env.update(name, express);
         return null;
     }
-
+    /**
+     * And and Or are based on the result of gsi. AND will return false only if one of the expressions is false
+     * Or will return the result of any other expressions before bool and ignore the rest of expression after true
+     */
     /** Interpret an And expression */
     @Override
     public IValue visitAnd(Nodes.And expr) throws Exception {
@@ -290,6 +293,7 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
             if(test_res instanceof Nodes.Bool == false){
                 throw new Exception("Not a testable condition");
             }
+            //test true or the last expression
             if(((Nodes.Bool)test_res).val == true || i == expr.conditions.size()-1){
                 var actions = task.expressions;
                 for(int j = 0; j < actions.size(); j ++){
