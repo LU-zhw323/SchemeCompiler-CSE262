@@ -339,7 +339,7 @@ def addStringFuncs(env):
             raise Exception(operation + "expects one argument")
         if(args[0]["type"] != STR):
             raise Exception(operation+ "expects STR")
-        return {"type": INT, 'val': len(args[0])}
+        return {"type": INT, 'val': len(args[0]['val'])}
     env.put('string-length',{"type":BUILTIN, 'func':str_length})
     
     #str-substring
@@ -404,5 +404,56 @@ def addStringFuncs(env):
 
 
 def addVectorFuncs(env):
-    """Add standard vector functions to the given environment"""
-    pass
+   #vector-length
+    def vec_length(operation, args):
+        if(len(args) != 1):
+            raise Exception(operation + "expects one argument")
+        if(args[0]["type"] != VEC):
+            raise Exception(operation+ "expects VEC")
+        return {"type": INT, 'val': len(args[0]['items'])}
+    env.put('vector-length',{"type":BUILTIN, 'func':vec_length})
+
+    #vector-get
+    def vec_get(operation, args):
+        if(len(args) != 2):
+            raise Exception(operation + "expects two argument")
+        if(args[0]["type"] != VEC):
+            raise Exception(operation+ "expects VEC")
+        if(args[1]['type'] != INT):
+            raise Exception(operation + 'expects INT')
+        if(args[1]['val'] < 0 or args[1]['val'] >= len(args[0]['items'])):
+            raise Exception('Index out of bound')
+        return args[0]['items'][args[1]['val']]
+    env.put('vector-get',{"type":BUILTIN, 'func':vec_get})
+
+    #vector-get
+    def vec_set(operation, args):
+        if(len(args) != 3):
+            raise Exception(operation + "expects three argument")
+        if(args[0]["type"] != VEC):
+            raise Exception(operation+ "expects VEC")
+        if(args[1]['type'] != INT):
+            raise Exception(operation + 'expects INT')
+        if(args[1]['val'] < 0 or args[1]['val'] >= len(args[0]['items'])):
+            raise Exception('Index out of bound')
+        args[0]['items'][args[1]['val']] = args[2]
+        return args[0]
+    env.put('vector-set!',{"type":BUILTIN, 'func':vec_set})
+
+    #vector
+    def vec_make(operation, args):
+        if(len(args) < 1):
+            raise Exception(operation + "expects at least one argument")
+        items = []
+        for arg in args:
+            items.append(arg)
+        return {'type':VEC, 'items':items}
+    env.put('vector',{"type":BUILTIN, 'func':vec_make})
+
+    #vector?
+    def vec_check(operation, args):
+        if(len(args) != 1):
+            raise Exception(operation + "expects one argument")
+        if(args[0]['type'] != VEC):return env.poundF
+        else:return env.poundT
+    env.put('vector?',{"type":BUILTIN, 'func':vec_check})

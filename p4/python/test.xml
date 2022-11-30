@@ -87,14 +87,27 @@
    <Int val='1' />
   </Apply>
   <Apply>
-   <Identifier val='string-ref' />
+   <Identifier val='string-length' />
    <Str val='nmsl' />
-   <Int val='3' />
   </Apply>
   <Apply>
-   <Identifier val='string' />
+   <Identifier val='vector-set!' />
+   <Vector>
    <Char val='n' />
    <Char val='n' />
    <Char val='n' />
+   <Char val='s' />
+   </Vector>
+   <Int val='3' />
+   <Char val='l' />
+  </Apply>
+  <Apply>
+   <Identifier val='vector?' />
+   <Apply>
+   <Identifier val='vector' />
    <Char val='n' />
+   <Char val='n' />
+   <Char val='n' />
+   <Char val='s' />
+  </Apply>
   </Apply>
