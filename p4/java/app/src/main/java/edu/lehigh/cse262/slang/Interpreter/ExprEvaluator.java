@@ -113,10 +113,8 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
         Env inner = env.makeInner(env);
         //Then create a new LambdaVal node
         var res = new Nodes.LambdaVal(inner, expr);
-		//Create a new evaluator with inner environment
-		ExprEvaluator evaluator = new ExprEvaluator(inner);
         //Call visit LambdaVal to get result
-        return res.visitValue(evaluator);
+        return res;
     }
 
     /** Interpret an If expression */
@@ -223,10 +221,35 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
         }
         //get bult-in func from environment
         IValue built_in = fun.visitValue(this);
-        if(built_in == null){
-            throw new Exception("Not a built in function");
+        //for built-in func
+        if(built_in instanceof Nodes.BuiltInFunc){
+            if(built_in == null){
+                throw new Exception("Not a built in function");
+            }
+            return ((Nodes.BuiltInFunc) built_in).func.execute(args);
         }
-        return ((Nodes.BuiltInFunc) built_in).func.execute(args);
+        //for lambdaVal
+        else if(built_in instanceof Nodes.LambdaVal){
+            //get the indentifers of the lambdaVal
+            Nodes.LambdaDef def = ((Nodes.LambdaVal)built_in).lambda;
+            //get the environment of lambdaval
+            Env lambda_env = ((Nodes.LambdaVal)built_in).env;
+            if(def.formals.size() != args.size()){
+                throw new Exception("Incorrect number of arguments");
+            }
+            for(int i = 0; i < def.formals.size(); i++){
+                Nodes.Identifier temp = def.formals.get(i);
+                String argument_name = temp.name;
+                IValue argument_val = args.get(i);
+                lambda_env.put(argument_name,argument_val);
+            }
+            //Create a new evaluator with inner environment
+		    ExprEvaluator evaluator = new ExprEvaluator(lambda_env);
+            return ((Nodes.LambdaVal)built_in).visitValue(evaluator);
+        }
+        else {
+            throw new Exception("No such buily-in func or lambda")
+        }
     }
 
     /** Interpret a Cons value */

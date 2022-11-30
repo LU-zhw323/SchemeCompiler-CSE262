@@ -66,15 +66,51 @@
   </Actions>
  </Condition>
 </Cond>
-<Lambda>
+<Define>
+ <Identifier val='capture'/>
+ <Lambda>
  <Formals>
-  <Identifier val='a'/>
+  <Identifier val='x'/>
+ </Formals>
+ <Expressions>
+  <Lambda>
+ <Formals>
+  <Identifier val='y'/>
  </Formals>
  <Expressions>
   <Apply>
    <Identifier val='+'/>
-   <Identifier val='a'/>
-   <Int val='1'/>
+   <Identifier val='x'/>
+   <Identifier val='y'/>
   </Apply>
  </Expressions>
 </Lambda>
+ </Expressions>
+</Lambda>
+</Define>
+<Define>
+ <Identifier val='passing'/>
+  <Apply>
+   <Identifier val='capture'/>
+   <Int val='30'/>
+  </Apply>
+</Define>
+<Apply>
+   <Identifier val='passing'/>
+   <Int val='31'/>
+  </Apply>
+<Apply>
+   <Lambda>
+ <Formals>
+  <Identifier val='y'/>
+ </Formals>
+ <Expressions>
+  <Apply>
+   <Identifier val='+'/>
+   <Int val='31'/>
+   <Identifier val='y'/>
+  </Apply>
+ </Expressions>
+</Lambda>
+   <Int val='31'/>
+  </Apply>
