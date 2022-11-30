@@ -1,4 +1,14 @@
-<Int val='2' />
+<Apply>
+ <Identifier val='double->integer' />
+<Dbl val='0.5' />
+</Apply>
+<Apply>
+ <Identifier val='<' />
+ <Int val='3' />
+ <Int val='5' />
+ <Int val='6' />
+ <Int val='7' />
+</Apply>
 <Quote>
   <Int val='32' />
 </Quote>

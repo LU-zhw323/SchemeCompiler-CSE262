@@ -34,13 +34,14 @@ def evaluate(expr, env):
     if expr["type"] == APPLY:
         #evaluate identifier to get the built-in func back
         func = evaluate(expr["exprs"][0], env)
+        operation = expr["exprs"][0]['name']
         expr["exprs"].pop(0)
         list = []
         #evaluate the rest of the list
         for node in expr["exprs"]:
             list.append(evaluate(node, env))
         #perform built-in func
-        return func(list)
+        return func(operation, list)
 
     #BEGIN
     if expr["type"] == BEGIN:
@@ -95,6 +96,7 @@ def evaluate(expr, env):
                 if(res["val"] == True):
                     return env.poundT
             else:return res
+        return env.poundF
     
     #LambdaDef
     if expr["type"] == LAMBDADEF:

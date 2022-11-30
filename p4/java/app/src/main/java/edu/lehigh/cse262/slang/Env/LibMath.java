@@ -188,7 +188,7 @@ public class LibMath {
         var modulo = new Nodes.BuiltInFunc("%", (List<IValue> args)->{
             if (args.size() == 0)
                 throw new Exception("% expects at least one argument");
-            else if(args.size() > 2)
+            else if(args.size() != 2)
                 throw new Exception("% only handle 2 arguments");
             int type = type_check(args);
             //case for not int (I restrick the parameter to be int only(mentioned on piazza))
@@ -581,7 +581,7 @@ public class LibMath {
             if (args.size() != 1)
                 throw new Exception("procedure? expects one argument");
             //I use gsi to test all the expresions, and it only return true with lambda
-            if(args.get(0) instanceof Nodes.LambdaDef == false){
+            if(args.get(0) instanceof Nodes.LambdaVal == false){
                 return new Nodes.Bool(false);
             }
             return new Nodes.Bool(true);
@@ -661,6 +661,56 @@ public class LibMath {
             return new Nodes.Bool(false);
         });
         map.put(not.name, not);
+
+        /*
+         * and
+         * I am confused about why we need to implement 'and' as a built-in func
+         * since it is already a special form, and scanner will scan (and ....) 
+         * as an 'AND token', and parsed as AND node. But I still implement it
+         */
+        var and = new Nodes.BuiltInFunc("and", (List<IValue> args)->{
+            if (args.size() < 1)
+                throw new Exception("and expects at least one arguments");
+            for(int i = 0; i < args.size(); i++){
+                IValue res = args.get(i);
+                //if any of it is false, return false
+                if(res instanceof Nodes.Bool){
+                    if(((Nodes.Bool) res).val == false){
+                        return res;
+                    }
+                }
+                //return last element
+                if(i == args.size() - 1){
+                    return res;
+                }
+            }
+            return new Nodes.Bool(true);
+        });
+        map.put(and.name, and);
+
+        /*
+         * or
+         * same as and
+         */
+        var or = new Nodes.BuiltInFunc("or", (List<IValue> args)->{
+            if (args.size() < 1)
+                throw new Exception("or expects at least one arguments");
+            for(int i = 0; i < args.size(); i++){
+                IValue res = args.get(i);
+                //if any of it is not false, return it
+                if(res instanceof Nodes.Bool){
+                    if(((Nodes.Bool) res).val == true){
+                        return res;
+                    }
+                }
+                else{
+                    return res;
+                }
+            }
+            //if all elements are false, return false
+            return new Nodes.Bool(false);
+        });
+        map.put(or.name, or);
 
 
         /*
@@ -786,6 +836,7 @@ public class LibMath {
                 if(res != temp)
                     return new Nodes.Bool(false);
             }
+            res = temp;
         }
         return new Nodes.Bool(true);
     }

@@ -171,7 +171,7 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
                 return res;
             }
        }
-       return null;
+       return env.poundT;
     }
 
     /** Interpret an Or expression */
@@ -191,7 +191,7 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
             }
        }
        //if all elements are false, return false
-       return env.poundF.visitValue(this);
+       return env.poundF;
     }
 
     /** Interpret a Begin expression */
