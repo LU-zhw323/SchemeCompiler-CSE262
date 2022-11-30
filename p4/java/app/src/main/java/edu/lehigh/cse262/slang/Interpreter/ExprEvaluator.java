@@ -80,14 +80,16 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
     public IValue visitLambdaVal(Nodes.LambdaVal expr) throws Exception {
        //Get the definition
        Nodes.LambdaDef def = expr.lambda;
+        //Create a new evaluator with inner environment
+		ExprEvaluator evaluator = new ExprEvaluator(expr.env);
        //check parameter
        for(int i = 0; i < def.formals.size(); i++){
         //visitIdentifer() will check the existence of parameter for us
-        IValue check = def.formals.get(i).visitValue(this);
+        IValue check = def.formals.get(i).visitValue(evaluator);
        }
        //Perform actions
 	   for(int i = 0; i < def.body.size(); i++){
-		IValue res = def.body.get(i).visitValue(this);
+		IValue res = def.body.get(i).visitValue(evaluator);
 		if(i == def.body.size()-1){
 			return res;
 		}
@@ -241,14 +243,14 @@ public class ExprEvaluator implements IAstVisitor<IValue> {
                 Nodes.Identifier temp = def.formals.get(i);
                 String argument_name = temp.name;
                 IValue argument_val = args.get(i);
-                lambda_env.put(argument_name,argument_val);
+                ((Nodes.LambdaVal)built_in).env.put(argument_name,argument_val);
             }
             //Create a new evaluator with inner environment
-		    ExprEvaluator evaluator = new ExprEvaluator(lambda_env);
-            return ((Nodes.LambdaVal)built_in).visitValue(evaluator);
+		    //ExprEvaluator evaluator = new ExprEvaluator(((Nodes.LambdaVal)built_in).env);
+            return ((Nodes.LambdaVal)built_in).visitValue(this);
         }
         else {
-            throw new Exception("No such buily-in func or lambda")
+            throw new Exception("No such buily-in func or lambda");
         }
     }
 
