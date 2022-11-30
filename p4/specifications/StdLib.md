@@ -18,6 +18,7 @@ For example, `(- 10 3 4)` should return `3`, and `(> 1 2)` should return `#f`.
 * `(vector-set! vec idx val)`
 * `(vector vals...)` (zero or more values)
 * `(vector? val)`
+* `(make-vector size)` (creates a vector of given size; all values should be #f)
 
 ## List Functions
 
