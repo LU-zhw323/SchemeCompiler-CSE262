@@ -75,3 +75,26 @@
   </Apply>
   <Int val='33' />
   </Apply>
+<Apply>
+   <Identifier val='string-append' />
+   <Str val='nm' />
+   <Str val='sl' />
+  </Apply>
+  <Apply>
+   <Identifier val='substring' />
+   <Str val='nmsl' />
+   <Int val='1' />
+   <Int val='1' />
+  </Apply>
+  <Apply>
+   <Identifier val='string-ref' />
+   <Str val='nmsl' />
+   <Int val='3' />
+  </Apply>
+  <Apply>
+   <Identifier val='string' />
+   <Char val='n' />
+   <Char val='n' />
+   <Char val='n' />
+   <Char val='n' />
+  </Apply>

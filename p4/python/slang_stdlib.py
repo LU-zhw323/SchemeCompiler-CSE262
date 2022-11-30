@@ -305,7 +305,7 @@ def addListFuncs(env):
     #set-car
     def set_car(operation, args):
         if(len(args) != 2):
-            raise Exception(operation + "expects one argument")
+            raise Exception(operation + "expects two argument")
         if(args[0]['type'] != CONS):
             raise Exception(operation + "expects CONS")
         args[0]['car'] = args[1]
@@ -315,7 +315,7 @@ def addListFuncs(env):
     #set-cdr
     def set_cdr(operation, args):
         if(len(args) != 2):
-            raise Exception(operation + "expects one argument")
+            raise Exception(operation + "expects two argument")
         if(args[0]['type'] != CONS):
             raise Exception(operation + "expects CONS")
         args[0]['cdr'] = args[1]
@@ -324,8 +324,83 @@ def addListFuncs(env):
         
 
 def addStringFuncs(env):
-    """Add standard string functions to the given environment"""
-    pass
+     #str-append
+    def string_append(operation, args):
+        if(len(args) != 2):
+            raise Exception(operation + "expects two argument")
+        if(args[0]['type'] != STR or args[1]['type'] != STR):
+            raise Exception(operation + "expects STR")
+        return {'type':STR, 'val': args[0]['val'] + args[1]['val']}
+    env.put('string-append',{"type":BUILTIN, 'func':string_append})
+
+    #str-length
+    def str_length(operation, args):
+        if(len(args) != 1):
+            raise Exception(operation + "expects one argument")
+        if(args[0]["type"] != STR):
+            raise Exception(operation+ "expects STR")
+        return {"type": INT, 'val': len(args[0])}
+    env.put('string-length',{"type":BUILTIN, 'func':str_length})
+    
+    #str-substring
+    def str_sub(operation, args):
+        if(len(args) != 3):
+            raise Exception(operation + "expects three argument")
+        if(args[0]["type"] != STR):
+            raise Exception(operation + "expects STR")
+        if(args[1]['type'] != INT or args[2]['type'] != INT):
+            raise Exception(operation + "expects INT")
+        if(args[1]['val'] < 0 or args[1]['val'] >= len(args[0]['val'])):
+            raise Exception('Index out of bound')
+        if(args[2]['val'] < 0 or args[2]['val'] >= len(args[0]['val'])):
+            raise Exception('Index out of bound')
+        return {'type':STR, 'val':args[0]['val'][args[1]['val']:args[2]['val']]}
+    env.put('substring',{"type":BUILTIN, 'func':str_sub})
+
+    #string?
+    def str_check(operation, args):
+        if(len(args) != 1):
+            raise Exception(operation + "expects one argument")
+        if(args[0]["type"] != STR):
+            return env.poundF
+        else:
+            return env.poundT
+    env.put('string?',{"type":BUILTIN, 'func':str_check})
+
+    #string-ref
+    def str_ref(operation, args):
+        if(len(args) != 2):
+            raise Exception(operation + "expects two argument")
+        if(args[0]["type"] != STR):
+            raise Exception(operation + "expects STR")
+        if(args[1]['type'] != INT):
+            raise Exception(operation + "expects INT")
+        if(args[1]['val'] < 0 or args[1]['val'] >= len(args[0]['val'])):
+            raise Exception('Index out of bound')
+        return {'type':CHAR, 'val':args[0]['val'][args[1]['val']]}
+    env.put('string-ref',{"type":BUILTIN, 'func':str_ref})
+
+    #string-equal?
+    def str_eq(operation, args):
+        if(len(args) != 2):
+            raise Exception(operation + "expects two argument")
+        if(args[0]["type"] != STR or args[1]["type"] != STR):
+            raise Exception(operation + "expects STR")
+        if(args[0]['val'] == args[1]['val']):return env.poundT
+        else:return env.poundF
+    env.put('string-equal?',{"type":BUILTIN, 'func':str_eq})
+
+    #sting
+    def str_make(operation, args):
+        if(len(args) < 1):
+            raise Exception(operation + "expects at least one argument")
+        res = ''
+        for arg in args:
+            if(arg['type'] != CHAR):
+                raise Exception(operation + 'expects CHAR')
+            res += arg['val']
+        return {'type':STR, 'val':res}
+    env.put('string',{"type":BUILTIN, 'func':str_make})
 
 
 def addVectorFuncs(env):
