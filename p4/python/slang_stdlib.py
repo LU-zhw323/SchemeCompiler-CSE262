@@ -52,7 +52,7 @@ def addMathFuncs(env):
             return {"type":INT, "val":res}
         else:
             return {"type":DBL, "val":res}
-    env.put('+', add)
+    env.put('+', {"type":BUILTIN, 'func':add})
 
     #-
     def minus(operation,args):
@@ -71,7 +71,7 @@ def addMathFuncs(env):
             return {"type":INT, "val":res}
         else:
             return {"type":DBL, "val":res}
-    env.put('-', minus)
+    env.put('-', {"type":BUILTIN, 'func':minus})
 
     #*
     def multiply(operation, args):
@@ -86,7 +86,7 @@ def addMathFuncs(env):
             return {"type":INT, "val":res}
         else:
             return {"type":DBL, "val":res}
-    env.put('*', multiply)
+    env.put('*', {"type":BUILTIN, 'func':multiply})
 
     #/
     def devide(operation, args):
@@ -101,7 +101,7 @@ def addMathFuncs(env):
             return {"type":INT, "val":res}
         else:
             return {"type":DBL, "val":res}
-    env.put('/', devide)
+    env.put('/', {"type":BUILTIN, 'func':devide})
 
     #%
     def modulo(operation, args):
@@ -114,17 +114,17 @@ def addMathFuncs(env):
             return {"type":INT, "val":res}
         else:
             return {"type":DBL, "val":res}
-    env.put('%', modulo)
+    env.put('%', {"type":BUILTIN, 'func':modulo})
 
-    env.put('==', test_args)
+    env.put('==', {"type":BUILTIN, 'func':test_args})
     
-    env.put('<', test_args)
+    env.put('<', {"type":BUILTIN, 'func':test_args})
     
-    env.put('>', test_args)
+    env.put('>', {"type":BUILTIN, 'func':test_args})
     
-    env.put('<=', test_args)
+    env.put('<=', {"type":BUILTIN, 'func':test_args})
     
-    env.put('>=', test_args)
+    env.put('>=', {"type":BUILTIN, 'func':test_args})
 
     #basic math operation
     #for trigonometric operation, I didn't explictly handle the value error
@@ -168,7 +168,7 @@ def addMathFuncs(env):
 
     math_operation_list = ['abs','sqrt','acos','asin','atan','sin','sinh','cos','cosh','tan','tanh','log10','loge']
     for op in math_operation_list:
-        env.put(op, math_operation)
+        env.put(op, {"type":BUILTIN, 'func':math_operation})
     
     #number?, integer?, double?, symbol?, procedure?, null?, not
     def type_query(operation, args):
@@ -201,7 +201,7 @@ def addMathFuncs(env):
         return env.poundT
     type_query_list=['number?', 'integer?', 'double?', 'symbol?', 'procedure?', 'null?', 'not']
     for op in type_query_list:
-        env.put(op, type_query)
+        env.put(op, {"type":BUILTIN, 'func':type_query})
     
     #pow
     def pow(operaion, args):
@@ -214,7 +214,7 @@ def addMathFuncs(env):
             return {"type":INT, "val":res}
         else:
             return {"type":DBL, "val":res}
-    env.put('pow', pow)
+    env.put('pow', {"type":BUILTIN, 'func':pow})
 
     #integer to double, double to integer
     def transfer(operation, args):
@@ -230,8 +230,8 @@ def addMathFuncs(env):
             if(args[0]['type'] != DBL):
                 raise Exception("double->integer expects double")
             return{'type':INT, 'val': int(args[0]['val'])}
-    env.put('integer->double', transfer)
-    env.put('double->integer', transfer)
+    env.put('integer->double', {"type":BUILTIN, 'func':transfer})
+    env.put('double->integer', {"type":BUILTIN, 'func':transfer})
 
     #and
     def And(operation, args):
@@ -243,7 +243,7 @@ def addMathFuncs(env):
                 if IValue["val"] == False:
                     return IValue
         return env.poundT
-    env.put('and', And)
+    env.put('and', {"type":BUILTIN, 'func':And})
 
     #or
     def Or(operation, args):
@@ -254,7 +254,7 @@ def addMathFuncs(env):
                     return env.poundT
             else:return res
         return env.poundF
-    env.put('or', Or)
+    env.put('or',{"type":BUILTIN, 'func':Or})
 
 
 

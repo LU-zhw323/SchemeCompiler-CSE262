@@ -1,78 +1,67 @@
-<Apply>
- <Identifier val='double->integer' />
-<Dbl val='0.5' />
-</Apply>
-<Apply>
- <Identifier val='<' />
- <Int val='3' />
- <Int val='5' />
- <Int val='6' />
- <Int val='7' />
-</Apply>
-<Quote>
-  <Int val='32' />
-</Quote>
-<And>
-<Bool val='true' />
-<Bool val='true' />
-<Int val='2' />
-<Bool val='true' />
-<Int val='3' />
-</And>
-<Begin>
- <Char val='n' />
- <Char val='m' />
- <Char val='\\' />
-</Begin>
-<Cond>
- <Condition>
-  <Test>
-   <Bool val='true'/>
-  </Test>
-  <Actions>
-   <Int val='31221'/>
-  </Actions>
- </Condition>
- <Condition>
-  <Test>
-   <Bool val='false'/>
-  </Test>
-  <Actions>
-   <Int val='312'/>
-   <Int val='3122'/>
-  </Actions>
- </Condition>
-</Cond>
 <Define>
- <Identifier val='a' />
- <Int val='312' />
+  <Identifier val='bb' />
+  <Lambda>
+    <Formals>
+      <Identifier val='x' />
+    </Formals>
+    <Expressions>
+      <Apply>
+      <Identifier val='+' />
+      <Identifier val='x' />
+      <Int val='10' />
+      </Apply>
+    </Expressions>
+</Lambda>
 </Define>
-<Identifier val='a' />
-<Set>
- <Identifier val='a' />
- <Int val='31' />
-</Set>
-<If>
-<Bool val='false' />
-<Int val='3' />
-<Int val='4' />
-<If />
-<Or>
-<Bool val='false' />
-<Int val='2' />
-<Bool val='true' />
-<Int val='2' />
-<Bool val='true' />
-<Bool val='true' />
-</Or>
-<Lambda>
+<Apply>
+  <Identifier val='bb' />
+  <Int val='10' />
+</Apply>
+<Apply>
+   <Lambda>
  <Formals>
-  <Identifier val='a' />
+  <Identifier val='y' />
  </Formals>
  <Expressions>
   <Apply>
    <Identifier val='+' />
-   <Int val='1' />
+   <Int val='31' />
+   <Identifier val='y' />
   </Apply>
  </Expressions>
 </Lambda>
+   <Int val='31' />
+  </Apply>
+<Define>
+ <Identifier val='capture' />
+ <Lambda>
+ <Formals>
+  <Identifier val='x' />
+ </Formals>
+ <Expressions>
+  <Lambda>
+ <Formals>
+  <Identifier val='y' />
+ </Formals>
+ <Expressions>
+  <Apply>
+   <Identifier val='+' />
+   <Identifier val='x' />
+   <Identifier val='y' />
+  </Apply>
+ </Expressions>
+</Lambda>
+ </Expressions>
+</Lambda>
+</Define>
+<Define>
+ <Identifier val='passing' />
+  <Apply>
+   <Identifier val='capture' />
+   <Int val='30' />
+  </Apply>
+</Define>
+<Apply>
+   <Identifier val='passing' />
+   <Int val='31' />
+  </Apply>

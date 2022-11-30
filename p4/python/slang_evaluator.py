@@ -34,14 +34,34 @@ def evaluate(expr, env):
     if expr["type"] == APPLY:
         #evaluate identifier to get the built-in func back
         func = evaluate(expr["exprs"][0], env)
-        operation = expr["exprs"][0]['name']
+        operation = ""
+        if(expr["exprs"][0]['type'] == IDENTIFIER):
+            operation = expr["exprs"][0]['name']
         expr["exprs"].pop(0)
         list = []
         #evaluate the rest of the list
         for node in expr["exprs"]:
             list.append(evaluate(node, env))
         #perform built-in func
-        return func(operation, list)
+        if func['type'] == BUILTIN:
+            built_in = func['func']
+            return built_in(operation, list)
+        #perform lambda
+        if func['type'] == LAMBDAVAL:
+            lambda_def = func['def']
+            lambda_formal = lambda_def['formals']
+            if(len(lambda_formal) != len(list)):
+                raise Exception("Wrong number of argument")
+            for count in range(0, len(lambda_formal)):
+                formal = lambda_formal[count]
+                arg_name = formal['name']
+                arg_val = list[count]
+                func['env'].put(arg_name, arg_val)
+            return evaluate(func, func['env'])
+        else:
+            raise Exception("Application not found")
+
+
 
     #BEGIN
     if expr["type"] == BEGIN:
@@ -101,15 +121,16 @@ def evaluate(expr, env):
     #LambdaDef
     if expr["type"] == LAMBDADEF:
         inner = slang_env.makeInnerEnv(env)
-        lambda_val = {"type": LAMBDAVAL, "def":expr}
-        return evaluate(lambda_val, inner)
+        lambda_val = {"type": LAMBDAVAL, 'env': inner,  "def":expr}
+        return lambda_val
     
     #lambdaVal
     if expr["type"] == LAMBDAVAL:
+        local = expr['env']
         expression = expr['def']
         for id in expression["formals"]:
-            id_check = evaluate(id, env)
+            id_check = evaluate(id, local)
         for index, action in enumerate(expression["exprs"]):
-            res = evaluate(action, env)
+            res = evaluate(action, local)
             if index == len(expression["exprs"])-1:
                 return res
