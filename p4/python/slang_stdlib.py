@@ -262,9 +262,66 @@ def addMathFuncs(env):
 
 
 def addListFuncs(env):
-    """Add standard list functions to the given environment"""
-    pass
+    #car & cdr
+    def car_cdr(operation, args):
+        if(len(args) != 1):
+            raise Exception(operation + "expects one argument")
+        if(args[0]["type"] != CONS):
+            raise Exception(operation + "expects a con-cell")
+        if(operation == 'car'):
+            return args[0]['car']
+        else:
+            return args[0]['cdr']
+    env.put('car', {"type":BUILTIN, 'func':car_cdr})
+    env.put('cdr', {"type":BUILTIN, 'func':car_cdr})
+    
+    #cons
+    def cons(operation, args):
+        if(len(args) != 2):
+            raise Exception(operation + "expects two argument")
+        return {'type':CONS, 'car':args[0], "cdr":args[1]}
+    env.put('cons', {"type":BUILTIN, 'func':cons})
 
+    #list
+    def make_list(operation, args):
+        if(len(args) < 1):
+            raise Exception(operation + "expects at least one argument")
+        if(len(args) == 1):
+            return{"type":CONS, 'car':args[0], 'cdr':env.empty}
+        else:
+            car = args[0]
+            args.pop(0)
+            return {"type":CONS, 'car':car, 'cdr':make_list(operation, args)}
+    env.put('list',{"type":BUILTIN, 'func':make_list})
+
+    #list?
+    def check_list(operation, args):
+        if(len(args) != 1):
+            raise Exception(operation + "expects one argument")
+        if(args[0]['type'] == CONS):return env.poundT
+        else:return env.poundF
+    env.put('list?',{"type":BUILTIN, 'func':check_list})
+
+    #set-car
+    def set_car(operation, args):
+        if(len(args) != 2):
+            raise Exception(operation + "expects one argument")
+        if(args[0]['type'] != CONS):
+            raise Exception(operation + "expects CONS")
+        args[0]['car'] = args[1]
+        return None
+    env.put('set-car!',{"type":BUILTIN, 'func':set_car})
+
+    #set-cdr
+    def set_cdr(operation, args):
+        if(len(args) != 2):
+            raise Exception(operation + "expects one argument")
+        if(args[0]['type'] != CONS):
+            raise Exception(operation + "expects CONS")
+        args[0]['cdr'] = args[1]
+        return None
+    env.put('set-cdr!',{"type":BUILTIN, 'func':set_cdr})
+        
 
 def addStringFuncs(env):
     """Add standard string functions to the given environment"""

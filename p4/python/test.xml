@@ -65,3 +65,13 @@
    <Identifier val='passing' />
    <Int val='31' />
   </Apply>
+<Apply>
+   <Identifier val='set-car!' />
+   <Apply>
+   <Identifier val='list' />
+   <Int val='30' />
+   <Int val='32' />
+   <Int val='33' />
+  </Apply>
+  <Int val='33' />
+  </Apply>
