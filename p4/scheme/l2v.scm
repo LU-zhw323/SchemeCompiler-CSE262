@@ -1,4 +1,5 @@
 ;; list2vector takes a list and returns a vector, without using `list->vector`
+;;basically just modify the one from p3, replace 'let' with 'lambda'
 (define (list2vector l) 
     (define f (lambda (acc arg pos)
             (if (eq? pos (length arg))
